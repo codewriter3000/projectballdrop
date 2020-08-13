@@ -54,6 +54,9 @@ function Ball:update()
         lvl4()
       elseif getLevel() == 4 then
         print("Level 4 Complete")
+        lvl5()
+      elseif getLevel() == 5 then
+        print("Level 5 Complete")
         gameComplete()
       end
     end

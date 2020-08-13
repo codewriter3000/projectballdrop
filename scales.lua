@@ -27,3 +27,7 @@ end
 function getDecimalFromWidth(d)
   return d / love.graphics.getWidth()
 end
+
+function printCoords(x, y)
+  print("(" .. x .. ", " .. y .. ")")
+end

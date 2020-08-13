@@ -9,7 +9,6 @@ local inspect = require("inspect")
 function love.load()
   love.window.setMode(600, 600)
   lvl1()
-  lvl:getRoot(4, 4)
 end
 
 function love.update(dt)

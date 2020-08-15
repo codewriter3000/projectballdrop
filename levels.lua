@@ -26,40 +26,53 @@ function love.mousepressed(x, y, button)
   end
 end
 
-function love.mousemoved(x, y)
-  backup = lvl
+function love.mousemoved(x, y, dx, dy)
+  root = lvl:getRoot(drag[2][1], drag[2][2])
   if state == 'grabbed' then
     if not pcall(function()
       drag[2] = rec:getID(x, y)
-      print(" ")
-      print("drag[2]: " .. inspect(drag[2]))
-      print("drag[1]: " .. inspect(drag[1]))
-      --print("rec:hasObstacle(drag[1][1], drag[1][2]): " .. inspect(rec:hasObstacle(drag[1][1], drag[1][2])))
       --you are not intersecting another obstacle but if you are, it's your own
-      if drag[2][1] == 0 or drag[2][1] == 7 or drag[2][2] == 0 or drag[2][2] == 7 then
-        print("you've got a friend in me")
+      if drag[2][1] == 0 or drag[2][2] == 0 then
         state = 'none'
         return 0
       end
       if lvl:findTail(drag[2][1], drag[2][2]) ~= false then
-        if lvl:findTail(drag[2][1], drag[2][2])[1] == 7 or lvl:findTail(drag[2][1], drag[2][2])[2] == 7 then
-          print("owwww")
-          state = 'none'
-          return 0
+        if root.h then
+          if (rec:hasObstacle(drag[2][1], drag[2][2]) or rec:hasObstacle(lvl:findTail(drag[2][1], drag[2][2])[1], lvl:findTail(drag[2][1], drag[2][2])[2])) and dx < 0 then
+            print("there is already an obstacle here")
+            return 0
+          end
+          if lvl:findTail(drag[2][1], drag[2][2])[1] >= lvl.grid.c and dx >= 0 then
+            print("owwww")
+            state = 'none'
+            return 0
+          end
+        else
+          if (rec:hasObstacle(drag[2][1], drag[2][2]) or rec:hasObstacle(lvl:findTail(drag[2][1], drag[2][2])[1], lvl:findTail(drag[2][1], drag[2][2])[2])) and dy < 0 then
+            print("there is already an obstacle here")
+            return 0
+          end
+          if lvl:findTail(drag[2][1], drag[2][2])[2] >= lvl.grid.r and dy >= 0 then
+            print("owwww")
+            state = 'none'
+            return 0
+          end
         end
       end
       if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl:findRoot(drag[2][1], drag[2][2])) == inspect(lvl:findRoot(drag[1][1], drag[1][2]))) then
+        print("wtf")
         lvl:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
         drag[1] = drag[2]
+        bob = lvl:getRoot(drag[2][1], drag[2][2])
       else
-        --print("other oof")
+        print("other oof")
+        print("drag[2]: " .. inspect(drag[2]))
+        print("drag[1]: " .. inspect(drag[1]))
         state = 'none'
-        backup:draw()
       end
     end) then 
-      --print("oof")
+      print("oof")
       state = 'none'
-      backup:draw()
     end
   end
 end

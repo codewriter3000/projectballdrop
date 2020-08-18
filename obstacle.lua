@@ -13,7 +13,8 @@ Obstacle = {
   tX = nil, --temporary X grid value (for moving)
   tY = nil, --temporary Y grid value (for moving)
   x = nil, --current X grid value
-  y = nil --current Y grid value
+  y = nil, --current Y grid value
+  old = nil --obstacle backup
 }
 
 function Obstacle.new(l, c, iX, iY, h, g)
@@ -32,7 +33,7 @@ function Obstacle.new(l, c, iX, iY, h, g)
 end
 
 function Obstacle:draw()
-  --pcall(function()
+  --if not pcall(function()
     local o = self
     local l = self.l-1
     love.graphics.setColor(self.c[1], self.c[2], self.c[3])
@@ -44,6 +45,9 @@ function Obstacle:draw()
           return nil
         end
       end) then
+        --lvl.grid:moveObstacle(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1]-1, self.g.m[self.x][self.y][2])
+        --old:draw()
+        --print("nil boi")
         return nil
       end
       for i = 0, l do
@@ -59,6 +63,9 @@ function Obstacle:draw()
           return nil
         end
       end) then
+        --lvl.grid:moveObstacle(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2]-1)
+        --old:draw()
+        --print("nil boi")
         return nil
       end
       for i = 0, l do
@@ -70,7 +77,12 @@ function Obstacle:draw()
       love.graphics.rectangle("fill", self.g.m[self.x][self.y][1]-obstacleRadius, self.g.m[self.x][self.y][2], dX+(obstacleRadius*2), dY)
     end
     self:drawRoot()
-  --end)
+    old = self
+    --print("old updated")
+  --[[end) then
+    print("exception")
+    return nil
+  end]]
 end
 
 function Obstacle:drawRoot()

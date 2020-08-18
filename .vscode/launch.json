@@ -2,13 +2,19 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // C:/Users/16094/OneDrive/Desktop/LOVEGames/droptheball
+    // A:/ProgramFiles/LOVE/lovec.exe
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lua",
+            "name": "Debug Custom Lua Environment",
+            "type": "lua-local",
             "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/levels.lua"
+            "program": {
+                "command": "A:\\ProgramFiles\\LOVE\\lovec.exe"
+            },
+            "args": ["${workspaceFolder}"],
+            "scriptRoots": ["${workspaceFolder}"]
         }
     ]
 }

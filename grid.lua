@@ -14,14 +14,12 @@ Grid = {
 
 function Grid.new(x, y, d, r, c)
   local grid = setmetatable({}, {__index = Grid})
-  --if type(x) == "number" and type(y) == "number" and type(d) == "number" and type(r) == "number" and type(c) == "number" then
     grid.x = x
     grid.y = y
     grid.d = d
     grid.r = r
     grid.c = c
     return grid
-  --end
 end
 
 function Grid:draw() --creates the grid

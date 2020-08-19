@@ -45,33 +45,13 @@ function love.mousemoved(x, y, dx, dy)
         return 0
       end
       --you are not intersecting another obstacle but if you are, it's your own
-      --???if root or tail are false then give them a previous working root and tail
-      --[[if root ~= false and tail ~= false then
-        if (drag[2][1] == 0 or drag[2][2] == 0) or (root.h and tail[1] > lvl.grid.c) or (not root.h and tail[2] > lvl.grid.r) then
-          --you are colliding with the grid border
-          drag[2] = bdrag
-          return 0
-        end
-      else
-        --move complete
-        bdrag = drag[1]
-      end]]
       --checks if you're backing into an object
-      --((not rec:hasObstacle(lvl.grid:findTail(drag[2][1], drag[2][2])[1], lvl.grid:findTail(drag[2][1], drag[2][2])[2])) or inspect(lvl.grid:findRoot(lvl.grid:findTail(drag[2][1], drag[2][2])[1], lvl.grid:findTail(drag[2][1], drag[2][2])[2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2])))
-      --if not pcall(function()
         if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
           lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
           drag[1] = drag[2]
         else
           state = 'none'
         end
-      --[[end) then
-        print("oof")
-      end
-    --[[end) then 
-      print("djf")
-      state = 'none'
-    end]]
   end
 end
 --level constructor

@@ -216,6 +216,7 @@ function Grid:findRoot(x, y) --find the root of 2 points
     end
     return false
   end
+  return false
 end
 function Grid:rootsAreEqual(x, y, x0, y0)
   root = self:getRoot(x, y)
@@ -264,22 +265,21 @@ function Grid:moveObstacle(x, y, x0, y0)
     else
       rootOb = self:getRoot(root[1], root[2])
     end
-      if x ~= x0 or y ~= y0 then
+      if x ~= x0 or y ~= y0 and root ~= false then
         if not rootOb then
-          return nil
+          return 0
         end
         if rootOb.h == true then
           --supposing a new obstacle was created with the root being at (getMouseID()[1], y), if the tail of this obstacle was off the grid
           --then don't move the obstacle
           --(l, c, iX, iY, h, g)
-          --(drag[2][1] == 0 or drag[2][2] == 0) or (root.h and tail[1] > lvl.grid.c) or (not root.h and tail[2] > lvl.grid.r)
           tmp = Obstacle.new(rootOb.l, rootOb.c, self:getMouseID()[1], rootOb.y, rootOb.h, rootOb.g)
-          if (self:getMouseID()[1] > 0) and (tmp:findTail()[1] <= lvl.grid.c) then
+          if (self:getMouseID()[1] > 0) and (tmp:findTail()[1] <= lvl.grid.c) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][1] > drag[1][1]) then
             self:getRoot(root[1], root[2]).x = self:getMouseID()[1]
           end
         else
           tmp = Obstacle.new(rootOb.l, rootOb.c, rootOb.x, self:getMouseID()[2], rootOb.h, rootOb.g)
-          if (self:getMouseID()[2] > 0) and (tmp:findTail()[2] <= lvl.grid.r) then
+          if (self:getMouseID()[2] > 0) and (tmp:findTail()[2] <= lvl.grid.r) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][2] > drag[1][2]) then
             self:getRoot(root[1], root[2]).y = self:getMouseID()[2]
           end
         end

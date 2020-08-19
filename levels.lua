@@ -39,7 +39,11 @@ function love.mousemoved(x, y, dx, dy)
   if state == 'grabbed' then
     --if not pcall(function()
       drag[2] = rec:getID(x, y)
-      tail = lvl.grid:findTail(drag[2][1], drag[2][2])
+      if not pcall(function()
+        tail = lvl.grid:findTail(drag[2][1], drag[2][2])
+      end) then
+        return 0
+      end
       --you are not intersecting another obstacle but if you are, it's your own
       --???if root or tail are false then give them a previous working root and tail
       --[[if root ~= false and tail ~= false then
@@ -53,11 +57,16 @@ function love.mousemoved(x, y, dx, dy)
         bdrag = drag[1]
       end]]
       --checks if you're backing into an object
-      if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
-        lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
-        drag[1] = drag[2]
-      else
-        state = 'none'
+      --((not rec:hasObstacle(lvl.grid:findTail(drag[2][1], drag[2][2])[1], lvl.grid:findTail(drag[2][1], drag[2][2])[2])) or inspect(lvl.grid:findRoot(lvl.grid:findTail(drag[2][1], drag[2][2])[1], lvl.grid:findTail(drag[2][1], drag[2][2])[2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2])))
+      --if not pcall(function()
+        if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
+          lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
+          drag[1] = drag[2]
+        else
+          state = 'none'
+        end
+      --[[end) then
+        print("oof")
       end
     --[[end) then 
       print("djf")

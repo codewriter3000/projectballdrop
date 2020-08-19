@@ -28,7 +28,7 @@ function lvl1()
   table.insert(os, o5)
   o6 = Obstacle.new(3, {0, 0.75, 0}, 1, 3, false, rec)
   table.insert(os, o6)
-  o7 = Obstacle.new(3, {0.5, 0, 0.5}, 4, 6, true, rec) --(1, 6)
+  o7 = Obstacle.new(3, {0.5, 0, 0.5}, 1, 6, true, rec) --(1, 6)
   table.insert(os, o7)
   lvl = Level.new(rec, b, os)
 end

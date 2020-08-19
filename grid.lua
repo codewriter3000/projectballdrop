@@ -173,27 +173,25 @@ function Grid:isRoot(x, y)
 end
 function Grid:findTail(x, y)
   if not self:isRoot(x, y) then
-    --print("nope not a root")
     return false
   else
     root = self:getRoot(x, y)
     if root.h == true then
       if self:rootsAreEqual(x, y, x+root.l-1, y) then
-        --print(inspect(x+root.l-1, y))
         return {x+root.l-1, y}
       end
-      --print("god help you horizontal")
     else
-      --printCoords(x+root.l-1, y)
       if self:rootsAreEqual(x, y, x, y+root.l-1) then
-        --print(inspect({x, y+root.l-1}))
         return {x, y+root.l-1}
       end
-      --print("god help you vertical")
     end
   end
   return false
 end
+--go left until you find a root
+--find out if the root could be possible (root.x + l < x < root.x)
+--do the same thing but going up
+--return false if neither
 function Grid:findRoot(x, y) --find the root of 2 points
   selectedObstacle = {}
   if not self:hasObstacle(x, y) then
@@ -216,18 +214,8 @@ function Grid:findRoot(x, y) --find the root of 2 points
       end
       v2 = v2 - 1
     end
-    --[[print("findRoot()")
-    print("x: " .. x)
-    print("y: " .. y)
-    print("self.grid:hasObstacle(x, y): " .. inspect(self.grid:hasObstacle(x, y)) .. " (SHOULD BE TRUE)")
-
-    print("how df did i end up here")]]
     return false
   end
-    --go left until you find a root
-    --find out if the root could be possible (root.x + l < x < root.x)
-    --do the same thing but going up
-    --return false if neither
 end
 function Grid:rootsAreEqual(x, y, x0, y0)
   root = self:getRoot(x, y)
@@ -249,6 +237,7 @@ function Grid:rootsAreEqual(x, y, x0, y0)
     end
   end
 end
+--returns an obstacle given a root
 function Grid:getRoot(x, y)
   if self:isRoot(x, y) then
     for i,v in pairs(lvl.obstacles) do
@@ -259,13 +248,15 @@ function Grid:getRoot(x, y)
   end
   return false
 end
+    --[[
+      CONDITIONS TO MOVE:
+      - The obstacle will not collide with the ball or another obstacle
+      - The obstacle will not fall off the grid
+    ]]
+--find the root
+--if h == true, then move the obstacle to the row of the cursor
+--else move the obstacle to the column of the cursor
 function Grid:moveObstacle(x, y, x0, y0)
-    --[[print("-----------------------------------------")
-    print("x: " .. x)
-    print("y: " .. y)
-    print("x0: " .. x0)
-    print("y0: " .. y0)
-    print("-----------------------------------------")]]
     root = self:findRoot(x, y) --where the root of the obstacle is located
     rootOb = nil
     if root == false then
@@ -273,42 +264,24 @@ function Grid:moveObstacle(x, y, x0, y0)
     else
       rootOb = self:getRoot(root[1], root[2])
     end
-    --print(inspect(root))
-    --mouse = self:findRoot(self.grid:getMouseID()[1], self.grid:getMouseID()[2]) --where the mouse is located on the screen
-    --print("moving: " .. inspect(self.grid:getMouseID()))
-    --print("x: " .. x)
-    --print("y: " .. y)
-    --[[
-      CONDITIONS TO MOVE:
-      - The obstacle will not collide with the ball or another obstacle
-      - The obstacle will not fall off the grid
-      -
-    ]]
-    --if not pcall(function()
       if x ~= x0 or y ~= y0 then
         if not rootOb then
-          --print("we're no strangers to love")
           return nil
         end
         if rootOb.h == true then
-          --printGrid(self.grid)
-          A = self:hasObstacle(self:getMouseID()[1], self:getMouseID()[2])
-          --if not A then
-            --print("d: " .. d)
+          --supposing a new obstacle was created with the root being at (getMouseID()[1], y), if the tail of this obstacle was off the grid
+          --then don't move the obstacle
+          --(l, c, iX, iY, h, g)
+          --(drag[2][1] == 0 or drag[2][2] == 0) or (root.h and tail[1] > lvl.grid.c) or (not root.h and tail[2] > lvl.grid.r)
+          tmp = Obstacle.new(rootOb.l, rootOb.c, self:getMouseID()[1], rootOb.y, rootOb.h, rootOb.g)
+          if (self:getMouseID()[1] > 0) and (tmp:findTail()[1] <= lvl.grid.c) then
             self:getRoot(root[1], root[2]).x = self:getMouseID()[1]
-          --end
+          end
         else
-          --printGrid(self.grid)
-          --if not A then
-            --print("d: " .. d)
+          tmp = Obstacle.new(rootOb.l, rootOb.c, rootOb.x, self:getMouseID()[2], rootOb.h, rootOb.g)
+          if (self:getMouseID()[2] > 0) and (tmp:findTail()[2] <= lvl.grid.r) then
             self:getRoot(root[1], root[2]).y = self:getMouseID()[2]
-          --end
+          end
         end
       end
-    --end) then
-      --print("failed")
-    --end
-    --find the root
-    --if h == true, then move the obstacle to the row of the cursor
-    --else move the obstacle to the column of the cursor
 end

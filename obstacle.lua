@@ -89,3 +89,11 @@ function Obstacle:drawRoot()
   love.graphics.setColor(1, 1, 1)
   love.graphics.circle("fill", self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], obstacleRadius)
 end
+
+function Obstacle:findTail(debug)
+  if self.h == true then
+    return {self.x+self.l-1, self.y}
+  else
+    return {self.x, self.y+self.l-1}
+  end
+end

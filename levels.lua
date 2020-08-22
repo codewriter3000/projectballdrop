@@ -1,4 +1,5 @@
 require "obstacle"
+require "goal"
 local inspect = require("inspect")
 
 --the Level object
@@ -6,6 +7,7 @@ Level = {
   grid = nil,
   ball = nil,
   obstacles = {},
+  goal = nil
 }
 ----------------
 --mouse events--
@@ -35,7 +37,6 @@ function love.mousemoved(x, y, dx, dy)
   end) then
     root = false
   end
-  -- a giant mess that needs to be fixed
   if state == 'grabbed' then
     --if not pcall(function()
       drag[2] = rec:getID(x, y)
@@ -54,25 +55,29 @@ function love.mousemoved(x, y, dx, dy)
         end
   end
 end
---level constructor
+---------------------
+--level constructor--
+---------------------
 local mt = {__index = Level}
-function Level.new(grid, ball, obstacles)
+function Level.new(grid, ball, obstacles, goal)
   local level = setmetatable({}, mt)
   level.grid = grid
   level.ball = ball
   level.obstacles = obstacles
+  level.goal = goal
   return level
 end
 --draws the entire level
 function Level:draw()
-  if not pcall(function()
+  --if not pcall(function()
     self.grid:draw()
     for i,v in pairs(self.obstacles) do
       v:draw()
     end
     self.ball:draw()
-  end) then
-  end
+    self.goal:draw()
+  --end) then
+  --end
 end
 --updates the entire level
 function Level:update()

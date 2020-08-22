@@ -1,3 +1,4 @@
+local Timer = require("hump-master.timer")
 --uses VSC debugger
 if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
   require("lldebugger").start()
@@ -9,6 +10,7 @@ require "levels"
 require "grid"
 require "ball"
 require "leveldata"
+require "hump-master.timer"
 local inspect = require("inspect")
 
 --sets the window screen and calls lvl1() to set up level 1
@@ -19,7 +21,7 @@ function love.load()
 end
 
 function love.update(dt)
-  
+  Timer.update(dt)
 end
 
 --continuously draws lvl, which is a singleton object which equals the current level that is being played
@@ -61,3 +63,9 @@ function bootlegUnitTest()
     (6, 6)
   ]]
 end
+
+--[[function wait(t)
+  Timer.after(t, function()
+    print("timer done")
+  end)
+end]]

@@ -1,5 +1,3 @@
-
-
 function getHeightFromDecimal(h)
   if h ~= nil then
     if h > 1 then

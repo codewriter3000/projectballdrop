@@ -1,4 +1,5 @@
 require "levels"
+local inspect = require("inspect")
 
 local level = 1
 function getLevel()
@@ -30,7 +31,8 @@ function lvl1()
   table.insert(os, o6)
   o7 = Obstacle.new(3, {0.5, 0, 0.5}, 1, 6, true, rec) --(1, 6)
   table.insert(os, o7)
-  lvl = Level.new(rec, b, os)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
 end
 
 function lvl2()

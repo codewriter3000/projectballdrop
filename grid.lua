@@ -9,6 +9,16 @@ Grid = {
   d = nil,
   r = nil,
   c = nil,
+  scaleX = nil,
+  scaleY = nil,
+  xD = nil,
+  yD = nil,
+  topLeft = nil,
+  topRight = nil,
+  bottomLeft = nil,
+  bottomRight = nil,
+  xCount = nil,
+  yCount = nil,
   m = {} --midpoints
 }
 
@@ -19,38 +29,38 @@ function Grid.new(x, y, d, r, c)
     grid.d = d
     grid.r = r
     grid.c = c
+    grid.scaleX = getWidthFromDecimal(x)
+    grid.scaleY = getHeightFromDecimal(y)
+    grid.xD = getWidthFromDecimal(d)
+    grid.yD = getHeightFromDecimal(d)
+    grid.topLeft = {grid.scaleX, grid.scaleY}
+    grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
+    grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
+    grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.yD}
+    grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
+    grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
+    --midpoints
+    i = 1
+    for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
+      grid.m[i] = {}
+      j = 1
+      for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2, grid.yCount do
+        grid.m[i][j] = {x, y, false}
+        j = j + 1
+      end
+      i = i + 1
+    end
     return grid
 end
 
 function Grid:draw() --creates the grid
   love.graphics.setColor(255, 255, 255)
-  scaleX = getWidthFromDecimal(self.x)
-  scaleY = getHeightFromDecimal(self.y)
-  xD = getWidthFromDecimal(self.d)
-  yD = getHeightFromDecimal(self.d)
-  topLeft = {scaleX, scaleY}
-  topRight = {scaleX + xD, scaleY}
-  bottomLeft = {scaleX, scaleY + yD}
-  bottomRight = {scaleX + xD, scaleY + yD}
-  xCount = (topRight[1]-topLeft[1])/self.c
-  yCount = (bottomLeft[2]-topLeft[2])/self.r
-  love.graphics.rectangle("line", scaleX, scaleY, xD, yD)
-  for x = topLeft[1] + xCount, topRight[1] - xCount, xCount do
-    love.graphics.line(x, topLeft[2], x, bottomLeft[2])
+  love.graphics.rectangle("line", self.scaleX, self.scaleY, self.xD, self.yD)
+  for x = self.topLeft[1] + self.xCount, self.topRight[1] - self.xCount, self.xCount do
+    love.graphics.line(x, self.topLeft[2], x, self.bottomLeft[2])
   end
-  for y = topLeft[2] + yCount, bottomLeft[2] - yCount, yCount do
-    love.graphics.line(topLeft[1], y, topRight[1], y)
-  end
-  --midpoints
-  i = 1
-  for x = topLeft[1] + xCount/2, topRight[1] - xCount/2, xCount do
-    self.m[i] = {}
-    j = 1
-    for y = topLeft[2] + yCount/2, bottomLeft[2] - yCount/2, yCount do
-      self.m[i][j] = {x, y, false}
-      j = j + 1
-    end
-    i = i + 1
+  for y = self.topLeft[2] + self.yCount, self.bottomLeft[2] - self.yCount, self.yCount do
+    love.graphics.line(self.topLeft[1], y, self.topRight[1], y)
   end
 end
 
@@ -96,6 +106,14 @@ function Grid:getID(x, y)
     local cell_height_px = self.m[1][2][2] - self.m[1][1][2]
     return {x / cell_width_px, y / cell_height_px}
   end
+end
+
+function Grid:getWidth()
+  return self.m[2][1][1] - self.m[1][1][1]
+end
+
+function Grid:getHeight()
+  return self.m[1][2][2] - self.m[1][1][2]
 end
 
 function Grid:getIDAlt(x, y)

@@ -72,22 +72,16 @@ function Level.new(grid, ball, obstacles, goal)
 end
 --draws the entire level
 function Level:draw()
-  --if not pcall(function()
-    self.grid:draw()
-    for i,v in pairs(self.obstacles) do
-      v:draw()
-    end
-    self.ball:draw()
-    self.goal:draw()
-  --end) then
-  --end
+  self.goal:draw()
+  self.grid:draw()
+  for i,v in pairs(self.obstacles) do
+    v:draw()
+  end
+  self.ball:draw()
 end
 --updates the entire level
 function Level:update()
   self.ball:update()
-  --[[for i,v in pairs(self.obstacles) do
-    v:update()
-  end]]
 end
 --a meme used for debugging purposes
 function getGnomed()

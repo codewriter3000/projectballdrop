@@ -133,8 +133,8 @@ function Grid:getID(x, y)
   if (not (self.c > 1) or (self.r > 1)) then --this shorthand function physically will not work if there is either only 1 row or 1 column
     return self:getIDAlt(x, y)
   else
-    local cell_width_px = self.m[2][1][1] - self.m[1][1][1]
-    local cell_height_px = self.m[1][2][2] - self.m[1][1][2]
+    local cell_width_px = self.xCount--self.m[2][1][1] - self.m[1][1][1]
+    local cell_height_px = self.yCount--self.m[1][2][2] - self.m[1][1][2]
     return {x / cell_width_px, y / cell_height_px}
   end
 end

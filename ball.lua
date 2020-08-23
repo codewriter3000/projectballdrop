@@ -77,7 +77,7 @@ function Ball:update()
     elseif self.d == "south" then
       if self.g.m[self.x][self.y+1][3] == false then
         Timer.script(function(wait)
-          --wait(1)
+          --wait(0.1)
           self.y = self.y + 1
         end)
         --print("hi")

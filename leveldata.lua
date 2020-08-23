@@ -33,7 +33,6 @@ function resetLevel()
   table.insert(os, o1)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setCompletion(false)
   setLevel(l)
 end
 
@@ -61,7 +60,6 @@ function lvl1()
   table.insert(os, o7)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setLevel(1)
 end
 
 function lvl2()
@@ -84,7 +82,6 @@ function lvl2()
   table.insert(os, o5)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setLevel(2)
 end
 
 function lvl3()
@@ -110,7 +107,6 @@ function lvl3()
   table.insert(os, o7)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setLevel(3)
 end
 
 function lvl4()
@@ -132,7 +128,6 @@ function lvl4()
   table.insert(os, o5)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setLevel(4)
 end
 
 function lvl5()
@@ -162,7 +157,6 @@ function lvl5()
   table.insert(os, o9)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
-  setLevel(5)
 end
 
 function gameComplete()

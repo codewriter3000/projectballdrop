@@ -72,7 +72,7 @@ function Grid:updateRawValues()
         if self:rootsAreEqual(self:findRoot(i, j)[1], self:findRoot(i, j)[2], i, j) then
           self.m[i][j][3] = true
         else
-          self.m[i][j][3] = false
+          self.m[i][j][3] = true
         end
       end) then
         self.m[i][j][3] = false

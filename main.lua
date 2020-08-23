@@ -3,8 +3,15 @@
   - Fix raw view bug (COMPLETE)
   - Add goals (COMPLETE)
 
-  0020:
+  0020: (ABORTED)
   - Add reset button
+
+  0025:
+  - Add reset button
+  - Add main menu with the following: (COMPLETE)
+    - Level Selection
+    - Credits
+    - Contribute
 
   0030:
   - Add directional pieces
@@ -23,6 +30,10 @@
     - Silver Pack
     - Gold Pack
   - Game enhancements
+
+  0500D:
+  - The first demo release
+  - More to come
 ]]
 local Timer = require("hump-master.timer")
 local suit = require("suit-master")
@@ -46,24 +57,28 @@ function love.load()
   getGnomed()
 end
 
-function love.update(dt)
-  Timer.update(dt)
-end
-
 --continuously draws lvl, which is a singleton object which equals the current level that is being played
 menuID = 0
 function love.draw()
   if getLevel() ~= 0 then
-    lvl:draw()
-    lvl:update()
+    lvl:draw()    
   else
     if menuID == 0 then
       mainMenu()
     elseif menuID == 1 then
       credits()
+    elseif menuID == 2 then
+      contribute()
     end
   end
   suit.draw()
+end
+
+function love.update(dt)
+  Timer.update(dt)
+  pcall(function()
+    lvl:update()
+  end)
 end
 
 function mainMenu()
@@ -75,11 +90,24 @@ function mainMenu()
     menuID = 1
     credits()
   end
+  if suit.Button("Contribute", getWidthFromDecimal(0.4), getWidthFromDecimal(0.35), 300,30).hit then
+    menuID = 2
+    credits()
+  end
 end
 
 function credits()
-  suit.Label("Creator: Alex Micharski (Snapchat: firplius)", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
+  suit.Label("Creator: Alex Micharski (Snapchat: firplius, Discord: maddog#0001)", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
   suit.Label("Made with Love2D Engine", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.25))
+  if suit.Button("Back", getWidthFromDecimal(0.4), getWidthFromDecimal(0.3), 300,30).hit then
+    menuID = 0
+    mainMenu()
+  end
+end
+
+function contribute()
+  suit.Label("PayPal Address: amicharski@outlook.com", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
+  suit.Label("Help Wanted: amicharski@outlook.com", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.25))
   if suit.Button("Back", getWidthFromDecimal(0.4), getWidthFromDecimal(0.3), 300,30).hit then
     menuID = 0
     mainMenu()

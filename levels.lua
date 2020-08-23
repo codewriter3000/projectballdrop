@@ -40,9 +40,7 @@ function love.mousemoved(x, y, dx, dy)
     root = false
   end
   if state == 'grabbed' then
-    --lvl.grid:printRaw()
-    --print("little bit of chicken fried")
-    --if not pcall(function()
+    pcall(function()
       drag[2] = rec:getID(x, y)
       if not pcall(function()
         tail = lvl.grid:findTail(drag[2][1], drag[2][2])
@@ -51,13 +49,14 @@ function love.mousemoved(x, y, dx, dy)
       end
       --you are not intersecting another obstacle but if you are, it's your own
       --checks if you're backing into an object
-        if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
-          lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
-          drag[1] = drag[2]
-        else
-          --find a better way to do this
-          state = 'none'
-        end
+      if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
+        lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
+        drag[1] = drag[2]
+      else
+        --find a better way to do this
+        state = 'none'
+      end
+    end)
   end
 end
 ---------------------

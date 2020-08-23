@@ -25,6 +25,7 @@
   - Game enhancements
 ]]
 local Timer = require("hump-master.timer")
+local suit = require("suit-master")
 --uses VSC debugger
 if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
   require("lldebugger").start()
@@ -42,7 +43,6 @@ local inspect = require("inspect")
 --sets the window screen and calls lvl1() to set up level 1
 function love.load()
   love.window.setMode(600, 600)
-  lvl1()
   getGnomed()
 end
 
@@ -51,9 +51,39 @@ function love.update(dt)
 end
 
 --continuously draws lvl, which is a singleton object which equals the current level that is being played
+menuID = 0
 function love.draw()
-  lvl:draw()
-  lvl:update()
+  if getLevel() ~= 0 then
+    lvl:draw()
+    lvl:update()
+  else
+    if menuID == 0 then
+      mainMenu()
+    elseif menuID == 1 then
+      credits()
+    end
+  end
+  suit.draw()
+end
+
+function mainMenu()
+  suit.Label("D-Ball Alpha", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
+  if suit.Button("Play", getWidthFromDecimal(0.4), getWidthFromDecimal(0.25), 300,30).hit then
+    setLevel(1)
+  end
+  if suit.Button("Credits", getWidthFromDecimal(0.4), getWidthFromDecimal(0.3), 300,30).hit then
+    menuID = 1
+    credits()
+  end
+end
+
+function credits()
+  suit.Label("Creator: Alex Micharski (Snapchat: firplius)", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
+  suit.Label("Made with Love2D Engine", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.25))
+  if suit.Button("Back", getWidthFromDecimal(0.4), getWidthFromDecimal(0.3), 300,30).hit then
+    menuID = 0
+    mainMenu()
+  end
 end
 
 --a bootleg unit test

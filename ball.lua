@@ -54,7 +54,7 @@ function Ball:draw()
   else
     assert(false, "Ball direction should be a cardinal direction")
   end
-  self.g.m[self.x][self.y][3] = true;
+  --self.g.m[self.x][self.y][3] = true;
 end
 --once goals start moving, this function will not work
 function Ball:isInGoal()
@@ -70,7 +70,7 @@ function Ball:update()
     if self.d == "north" then
       if self.g.m[self.x][self.y-1][3] == false then
         Timer.script(function(wait)
-          wait(0.1)
+          --wait(0.1)
           self.y = self.y - 1
         end)
       end
@@ -85,14 +85,14 @@ function Ball:update()
     elseif self.d == "east" then
       if self.g.m[self.x+1][self.y][3] == false then
         Timer.script(function(wait)
-          wait(0.1)
+          --wait(0.1)
           self.x = self.x + 1
         end)
       end
     elseif self.d == "west" then
       if self.g.m[self.x-1][self.y][3] == false then
         Timer.script(function(wait)
-          wait(0.1)
+          --wait(0.1)
           self.x = self.x - 1
         end)
       end
@@ -101,16 +101,16 @@ function Ball:update()
     if self:isInGoal() then
       if getLevel() == 1 then
         print("Level 1 Complete")
-        lvl2()
+        setLevel(2)
       elseif getLevel() == 2 then
         print("Level 2 Complete")
-        lvl3()
+        setLevel(3)
       elseif getLevel() == 3 then
         print("Level 3 Complete")
-        lvl4()
+        setLevel(4)
       elseif getLevel() == 4 then
         print("Level 4 Complete")
-        lvl5()
+        setLevel(5)
       elseif getLevel() == 5 then
         print("Level 5 Complete")
         gameComplete()

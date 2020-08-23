@@ -1,5 +1,7 @@
 require "obstacle"
 require "goal"
+require "scales"
+suit = require('suit-master')
 local inspect = require("inspect")
 
 --the Level object
@@ -78,6 +80,9 @@ function Level:draw()
     v:draw()
   end
   self.ball:draw()
+  if suit.Button("Reset", getWidthFromDecimal(0.1), getWidthFromDecimal(0.025), 300,30).hit then
+    resetLevel()
+  end
 end
 --updates the entire level
 function Level:update()

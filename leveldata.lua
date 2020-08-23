@@ -1,12 +1,40 @@
 require "levels"
 local inspect = require("inspect")
 
-local level = 1
+local level = 0
 function getLevel()
   return level
 end
+
 function setLevel(l)
   level = l
+  if l == 1 then
+    lvl1()
+  elseif l == 2 then
+    lvl2()
+  elseif l == 3 then
+    lvl3()
+  elseif l == 4 then
+    lvl4()
+  elseif l == 5 then
+    lvl5()
+  end
+end
+
+function resetLevel()
+  l = getLevel()
+  rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  drag = {}
+  drag[1] = {}
+  drag[2] = {}
+  b = Ball.new(4, 3, rec)
+  os = {}
+  o1 = Obstacle.new(2, {1, 0.5, 0}, 2, 2, false, rec)
+  table.insert(os, o1)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
+  setCompletion(false)
+  setLevel(l)
 end
 
 function lvl1()
@@ -33,6 +61,7 @@ function lvl1()
   table.insert(os, o7)
   gl = Goal.new({1, 0, 0}, 4, 6, rec)
   lvl = Level.new(rec, b, os, gl)
+  setLevel(1)
 end
 
 function lvl2()

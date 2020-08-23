@@ -53,7 +53,8 @@ function lvl2()
   table.insert(os, o4)
   o5 = Obstacle.new(3, {0, 0.5, 1}, 6, 4, false, rec)
   table.insert(os, o5)
-  lvl = Level.new(rec, b, os)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
   setLevel(2)
 end
 
@@ -78,7 +79,8 @@ function lvl3()
   table.insert(os, o6)
   o7 = Obstacle.new(3, {0.5, 0, 0.5}, 4, 6, true, rec)
   table.insert(os, o7)
-  lvl = Level.new(rec, b, os)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
   setLevel(3)
 end
 
@@ -99,7 +101,8 @@ function lvl4()
   table.insert(os, o4)
   o5 = Obstacle.new(2, {0, 0.5, 1}, 6, 4, false, rec)
   table.insert(os, o5)
-  lvl = Level.new(rec, b, os)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
   setLevel(4)
 end
 
@@ -128,7 +131,8 @@ function lvl5()
   table.insert(os, o8)
   o9 = Obstacle.new(3, {0.5, 0, 1}, 4, 6, true, rec)
   table.insert(os, o9)
-  lvl = Level.new(rec, b, os)
+  gl = Goal.new({1, 0, 0}, 4, 6, rec)
+  lvl = Level.new(rec, b, os, gl)
   setLevel(5)
 end
 

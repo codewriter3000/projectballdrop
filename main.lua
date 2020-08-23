@@ -1,3 +1,26 @@
+--[[
+  0020:
+  - Fix bug with grid:updateRawValues() *FIXED*
+  - Add reset button
+
+  0030:
+  - Add directional pieces
+  - Add main menu with the following:
+    - Level Selection
+    - Credits
+    - Contribute
+
+  0040:
+  - 50 total levels
+    - Starter Pack
+
+  0050:
+  - 200 total levels
+    - Bronze Pack
+    - Silver Pack
+    - Gold Pack
+  - Game enhancements
+]]
 local Timer = require("hump-master.timer")
 --uses VSC debugger
 if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
@@ -27,6 +50,7 @@ end
 --continuously draws lvl, which is a singleton object which equals the current level that is being played
 function love.draw()
   lvl:draw()
+  lvl:update()
 end
 
 --a bootleg unit test

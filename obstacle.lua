@@ -33,9 +33,9 @@ function Obstacle.new(l, c, iX, iY, h, g)
 end
 
 function Obstacle:draw()
-    local o = self
+  --self.g:updateRawValues()
     local l = self.l-1
-    love.graphics.setColor(self.c[1], self.c[2], self.c[3])
+    love.graphics.setColor(self.c)
     love.graphics.circle("fill", self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], obstacleRadius)
     --enable every consumed tile
     if self.h == true then
@@ -44,10 +44,10 @@ function Obstacle:draw()
           return nil
         end
       end) then
-        return nil
+        return false
       end
       for i = 0, l do
-        self.g.m[self.x+i][self.y][3] = true --throws exception
+        self.g.m[self.x+i][self.y][3] = true
       end
       dX = self.g.m[self.x+l][self.y][1] - self.g.m[self.x][self.y][1]
       dY = self.g.m[self.x+l][self.y][2] - self.g.m[self.x][self.y][2]
@@ -59,7 +59,7 @@ function Obstacle:draw()
           return nil
         end
       end) then
-        return nil
+        return false
       end
       for i = 0, l do
         self.g.m[self.x][self.y+i][3] = true

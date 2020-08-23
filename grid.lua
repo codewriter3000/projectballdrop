@@ -62,6 +62,37 @@ function Grid:draw() --creates the grid
   for y = self.topLeft[2] + self.yCount, self.bottomLeft[2] - self.yCount, self.yCount do
     love.graphics.line(self.topLeft[1], y, self.topRight[1], y)
   end
+  --self:printRaw()
+end
+
+function Grid:updateRawValues()
+  for i = 1, self.c do
+    for j = 1, self.r do
+      if not pcall(function()
+        if self:rootsAreEqual(self:findRoot(i, j)[1], self:findRoot(i, j)[2], i, j) then
+          self.m[i][j][3] = true
+        else
+          self.m[i][j][3] = false
+        end
+      end) then
+        self.m[i][j][3] = false
+      end
+    end
+  end
+end
+
+function Grid:printRaw()
+  --print(" ")
+  for i = 1, self.c do
+    for j = 1, self.r do
+      --printCoords(i, j)
+      --print(self.m[i][j][3])
+      if self.m[i][j][3] == true then
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("fill", self.m[i][j][1] - self:getWidth()/2, self.m[i][j][2] - self:getHeight()/2, self:getWidth(), self:getHeight())
+      end
+    end
+  end
 end
 
 function Grid:getColumn(x)
@@ -291,13 +322,20 @@ function Grid:moveObstacle(x, y, x0, y0)
           --(l, c, iX, iY, h, g)
           tmp = Obstacle.new(rootOb.l, rootOb.c, self:getMouseID()[1], rootOb.y, rootOb.h, rootOb.g)
           if (self:getMouseID()[1] > 0) and (tmp:findTail()[1] <= lvl.grid.c) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][1] > drag[1][1]) then
-            self:getRoot(root[1], root[2]).x = self:getMouseID()[1]
+            pcall(function()
+              self:getRoot(root[1], root[2]).x = self:getMouseID()[1]
+              --self.m[root[1]][root[2]][3] = false
+            end)
           end
         else
           tmp = Obstacle.new(rootOb.l, rootOb.c, rootOb.x, self:getMouseID()[2], rootOb.h, rootOb.g)
           if (self:getMouseID()[2] > 0) and (tmp:findTail()[2] <= lvl.grid.r) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][2] > drag[1][2]) then
-            self:getRoot(root[1], root[2]).y = self:getMouseID()[2]
+            pcall(function()
+              self:getRoot(root[1], root[2]).y = self:getMouseID()[2]
+              --self.m[root[1]][root[2]][3] = false
+            end)
           end
         end
       end
+    self:updateRawValues()
 end

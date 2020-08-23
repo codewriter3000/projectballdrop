@@ -27,8 +27,10 @@ function Ball.new(iX, iY, g)
 end
 
 function Ball:draw()
+  --print("self.g.m[self.x][self.y]: " .. inspect(self.g.m[self.x][self.y]))
   love.graphics.setColor(1, 0, 0)
   love.graphics.circle("fill", self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], 30)
+  
   if self.d == "south" then
     love.graphics.setColor(1, 1, 1)
     love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 15, self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 15)
@@ -53,7 +55,6 @@ function Ball:draw()
     assert(false, "Ball direction should be a cardinal direction")
   end
   self.g.m[self.x][self.y][3] = true;
-  self:update()
 end
 --once goals start moving, this function will not work
 function Ball:isInGoal()
@@ -65,57 +66,73 @@ function Ball:isInGoal()
 end
 
 function Ball:update()
-  if self:isInGoal() then
-    if getLevel() == 1 then
-      print("Level 1 Complete")
-      lvl2()
-    elseif getLevel() == 2 then
-      print("Level 2 Complete")
-      lvl3()
-    elseif getLevel() == 3 then
-      print("Level 3 Complete")
-      lvl4()
-    elseif getLevel() == 4 then
-      print("Level 4 Complete")
-      lvl5()
-    elseif getLevel() == 5 then
-      print("Level 5 Complete")
-      gameComplete()
-    end
-  end
-  if self.d == "north" then
-    if self.g.m[self.x][self.y-1][3] == false then
-      Timer.script(function(wait)
-        wait(0.1)
-        self.y = self.y - 1
-      end)
-    end
-  elseif self.d == "south" then
-    if self.g.m[self.x][self.y+1][3] == false then
-      Timer.script(function(wait)
-        wait(0.1)
-        print("moving")
-        self.y = self.y + 1
-      end)
-    end
-  elseif self.d == "east" then
-  elseif self.d == "west" then
-  end
-  for i = 0, self.g.c - self.y do
-    if self.g.m[self.x][self.g.c][2] == self.g.c then
-      return nil
-    end
-      if self.g.m[self.x][self.y+1][3] == false then
+  if not pcall(function()
+    if self.d == "north" then
+      if self.g.m[self.x][self.y-1][3] == false then
         Timer.script(function(wait)
           wait(0.1)
-          self.y = self.y + 1
+          self.y = self.y - 1
         end)
-        --[[local inc = Timer.after(0, function()
-          self.y = self.y + 1
-        end)
-        inc()]]
-        --print("self.y: " .. self.y)
-        --print("self.g.r: " .. self.g.r)
       end
+    elseif self.d == "south" then
+      if self.g.m[self.x][self.y+1][3] == false then
+        Timer.script(function(wait)
+          --wait(1)
+          print("moving")
+          self.y = self.y + 1
+        end)
+        --print("hi")
+      end
+    elseif self.d == "east" then
+      if self.g.m[self.x+1][self.y][3] == false then
+        Timer.script(function(wait)
+          wait(0.1)
+          self.x = self.x + 1
+        end)
+      end
+    elseif self.d == "west" then
+      if self.g.m[self.x-1][self.y][3] == false then
+        Timer.script(function(wait)
+          wait(0.1)
+          self.x = self.x - 1
+        end)
+      end
+    end
+    for i = 0, self.g.c - self.y do
+      if self.g.m[self.x][self.g.c][2] == self.g.c then
+        return nil
+      end
+        if self.g.m[self.x][self.y+1][3] == false then
+          Timer.script(function(wait)
+            wait(0.1)
+            self.y = self.y + 1
+          end)
+          --[[local inc = Timer.after(0, function()
+            self.y = self.y + 1
+          end)
+          inc()]]
+          --print("self.y: " .. self.y)
+          --print("self.g.r: " .. self.g.r)
+        end
+    end
+  end) then
+    if self:isInGoal() then
+      if getLevel() == 1 then
+        print("Level 1 Complete")
+        lvl2()
+      elseif getLevel() == 2 then
+        print("Level 2 Complete")
+        lvl3()
+      elseif getLevel() == 3 then
+        print("Level 3 Complete")
+        lvl4()
+      elseif getLevel() == 4 then
+        print("Level 4 Complete")
+        lvl5()
+      elseif getLevel() == 5 then
+        print("Level 5 Complete")
+        gameComplete()
+      end
+    end
   end
 end

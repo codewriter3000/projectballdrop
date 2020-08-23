@@ -38,6 +38,8 @@ function love.mousemoved(x, y, dx, dy)
     root = false
   end
   if state == 'grabbed' then
+    --lvl.grid:printRaw()
+    --print("little bit of chicken fried")
     --if not pcall(function()
       drag[2] = rec:getID(x, y)
       if not pcall(function()
@@ -51,6 +53,7 @@ function love.mousemoved(x, y, dx, dy)
           lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
           drag[1] = drag[2]
         else
+          --find a better way to do this
           state = 'none'
         end
   end
@@ -82,9 +85,9 @@ end
 --updates the entire level
 function Level:update()
   self.ball:update()
-  for i,v in pairs(self.obstacles) do
+  --[[for i,v in pairs(self.obstacles) do
     v:update()
-  end
+  end]]
 end
 --a meme used for debugging purposes
 function getGnomed()

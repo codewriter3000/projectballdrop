@@ -78,7 +78,6 @@ function Ball:update()
       if self.g.m[self.x][self.y+1][3] == false then
         Timer.script(function(wait)
           --wait(1)
-          print("moving")
           self.y = self.y + 1
         end)
         --print("hi")
@@ -97,23 +96,6 @@ function Ball:update()
           self.x = self.x - 1
         end)
       end
-    end
-    for i = 0, self.g.c - self.y do
-      if self.g.m[self.x][self.g.c][2] == self.g.c then
-        return nil
-      end
-        if self.g.m[self.x][self.y+1][3] == false then
-          Timer.script(function(wait)
-            wait(0.1)
-            self.y = self.y + 1
-          end)
-          --[[local inc = Timer.after(0, function()
-            self.y = self.y + 1
-          end)
-          inc()]]
-          --print("self.y: " .. self.y)
-          --print("self.g.r: " .. self.g.r)
-        end
     end
   end) then
     if self:isInGoal() then

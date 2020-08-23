@@ -1,6 +1,9 @@
 --[[
+  0019:
+  - Fix raw view bug (COMPLETE)
+  - Add goals (COMPLETE)
+
   0020:
-  - Fix bug with grid:updateRawValues() *FIXED*
   - Add reset button
 
   0030:

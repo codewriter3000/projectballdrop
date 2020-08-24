@@ -94,10 +94,18 @@ function mainMenu()
     menuID = 2
     credits()
   end
+  suit.Label("Discord: 3XuPBVt", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.4))
+  if suit.Button("A Secret Surprise", getWidthFromDecimal(0.4), getWidthFromDecimal(0.9), 300,30).hit then
+    Timer.script(function(wait)
+      gnome = love.graphics.newImage("gnomed.png")
+      love.graphics.draw(gnome, 0, 0, 0)
+      wait(1)
+    end)
+  end
 end
 
 function credits()
-  suit.Label("Creator: Alex Micharski (Snapchat: firplius, Discord: maddog#0001)", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
+  suit.Label("Creator: Alex Micharski (Snapchat: firplius, Discord: maddog#0001)", {align="center"}, getWidthFromDecimal(0.3), getHeightFromDecimal(0.2))
   suit.Label("Made with Love2D Engine", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.25))
   if suit.Button("Back", getWidthFromDecimal(0.4), getWidthFromDecimal(0.3), 300,30).hit then
     menuID = 0

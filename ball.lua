@@ -4,6 +4,8 @@ require "goal"
 local inspect = require("inspect")
 local Timer = require("hump-master.timer")
 
+ballRadius = 30
+
 Ball = {
   iX = nil, --initial X grid value
   iY = nil, --initial Y grid value
@@ -13,7 +15,7 @@ Ball = {
   d = nil --cardinal direction
 }
 
-function Ball.new(iX, iY, g)
+function Ball.new(iX, iY, g, d)
   local ball = setmetatable({}, {__index = Ball})
   --if type(iX) == "number" and type(iY) == "number" then
     ball.iX = iX
@@ -21,7 +23,7 @@ function Ball.new(iX, iY, g)
     ball.g = g
     ball.x = iX
     ball.y = iY
-    ball.d = "south" --can be "south", "west", "north", or "east"
+    ball.d = d --can be "south", "west", "north", or "east"
     return ball
   --end
 end
@@ -29,32 +31,32 @@ end
 function Ball:draw()
   --print("self.g.m[self.x][self.y]: " .. inspect(self.g.m[self.x][self.y]))
   love.graphics.setColor(1, 0, 0)
-  love.graphics.circle("fill", self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], 30)
+  love.graphics.circle("fill", self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2], ballRadius)
   
   if self.d == "south" then
     love.graphics.setColor(1, 1, 1)
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 15, self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 15)
-    love.graphics.line(self.g.m[self.x][self.y][1] - 7, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 15)
-    love.graphics.line(self.g.m[self.x][self.y][1] + 7, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 15)
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/2, self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/2)
+    love.graphics.line(self.g.m[self.x][self.y][1] - ballRadius/4, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/2)
+    love.graphics.line(self.g.m[self.x][self.y][1] + ballRadius/4, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/2)
   elseif self.d == "east" then
     love.graphics.setColor(1, 1, 1)
-    love.graphics.line(self.g.m[self.x][self.y][1] + 15, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1] - 15, self.g.m[self.x][self.y][2])
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 7, self.g.m[self.x][self.y][1] + 15, self.g.m[self.x][self.y][2])
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 7, self.g.m[self.x][self.y][1] + 15, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1] + ballRadius/2, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1] - ballRadius/2, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/4, self.g.m[self.x][self.y][1] + ballRadius/2, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/4, self.g.m[self.x][self.y][1] + ballRadius/2, self.g.m[self.x][self.y][2])
   elseif self.d == "north" then
     love.graphics.setColor(1, 1, 1)
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 15, self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 15)
-    love.graphics.line(self.g.m[self.x][self.y][1] - 7, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 15)
-    love.graphics.line(self.g.m[self.x][self.y][1] + 7, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 15)
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/2, self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/2)
+    love.graphics.line(self.g.m[self.x][self.y][1] - ballRadius/4, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/2)
+    love.graphics.line(self.g.m[self.x][self.y][1] + ballRadius/4, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/2)
   elseif self.d == "west" then
     love.graphics.setColor(1, 1, 1)
-    love.graphics.line(self.g.m[self.x][self.y][1] + 15, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1] - 15, self.g.m[self.x][self.y][2])
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - 7, self.g.m[self.x][self.y][1] - 15, self.g.m[self.x][self.y][2])
-    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + 7, self.g.m[self.x][self.y][1] - 15, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1] + ballRadius/2, self.g.m[self.x][self.y][2], self.g.m[self.x][self.y][1] - ballRadius/2, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] - ballRadius/4, self.g.m[self.x][self.y][1] - ballRadius/2, self.g.m[self.x][self.y][2])
+    love.graphics.line(self.g.m[self.x][self.y][1], self.g.m[self.x][self.y][2] + ballRadius/4, self.g.m[self.x][self.y][1] - ballRadius/2, self.g.m[self.x][self.y][2])
   else
     assert(false, "Ball direction should be a cardinal direction")
   end
-  --self.g.m[self.x][self.y][3] = true;
+  self.g.m[self.x][self.y][3] = true;
 end
 --once goals start moving, this function will not work
 function Ball:isInGoal()
@@ -98,7 +100,18 @@ function Ball:update()
     end
   end) then
     if self:isInGoal() then
-      if getLevel() == 1 then
+      print("Level " .. getLevel() .. " Complete")
+      --if getLevel() == 1 then
+        --setLevel(10)
+      --end
+      if getLevel() ~= 10 then
+        setLevel(getLevel() + 1)
+        return 0
+      else
+        print("CONGRATULATIONS")
+        gameComplete()
+      end
+      --[[if getLevel() == 1 then
         print("Level 1 Complete")
         setLevel(2)
       elseif getLevel() == 2 then
@@ -112,8 +125,11 @@ function Ball:update()
         setLevel(5)
       elseif getLevel() == 5 then
         print("Level 5 Complete")
+        setLevel(6)
+      elseif getLevel() == 6 then
+        print("Level 6 Complete")
         gameComplete()
-      end
+      end]]
     end
   end
 end

@@ -7,7 +7,7 @@
   - Add reset button
 
   0025:
-  - Add reset button
+  - Add reset button (COMPLETE)
   - Add main menu with the following: (COMPLETE)
     - Level Selection
     - Credits

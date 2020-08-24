@@ -62,7 +62,7 @@ function Grid:draw() --creates the grid
   for y = self.topLeft[2] + self.yCount, self.bottomLeft[2] - self.yCount, self.yCount do
     love.graphics.line(self.topLeft[1], y, self.topRight[1], y)
   end
-  --self:printRaw()
+  self:printRaw()
 end
 
 function Grid:updateRawValues()

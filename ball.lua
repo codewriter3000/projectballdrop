@@ -80,7 +80,6 @@ function Ball:update()
           --wait(0.1)
           self.y = self.y + 1
         end)
-        --print("hi")
       end
     elseif self.d == "east" then
       if self.g.m[self.x+1][self.y][3] == false then

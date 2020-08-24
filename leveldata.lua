@@ -27,7 +27,7 @@ function resetLevel()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
   o1 = Obstacle.new(2, {1, 0.5, 0}, 2, 2, false, rec)
   table.insert(os, o1)
@@ -41,7 +41,7 @@ function lvl1()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
 
   o1 = Obstacle.new(2, {1, 0.5, 0}, 2, 2, false, rec)
@@ -67,7 +67,7 @@ function lvl2()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
 
   o1 = Obstacle.new(3, {1, 0.5, 0}, 3, 4, false, rec)
@@ -89,7 +89,7 @@ function lvl3()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
   o1 = Obstacle.new(2, {1, 0.5, 0}, 1, 1, true, rec)
   table.insert(os, o1)
@@ -114,7 +114,7 @@ function lvl4()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
   o1 = Obstacle.new(3, {1, 0.5, 0}, 1, 1, true, rec)
   table.insert(os, o1)
@@ -135,7 +135,7 @@ function lvl5()
   drag = {}
   drag[1] = {}
   drag[2] = {}
-  b = Ball.new(4, 3, rec)
+  b = Ball.new(4, 2, rec)
   os = {}
   o1 = Obstacle.new(3, {1, 0.5, 0}, 1, 1, true, rec)
   table.insert(os, o1)

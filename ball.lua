@@ -68,7 +68,7 @@ function Ball:isInGoal()
 end
 
 function Ball:update()
-  if not pcall(function()
+  pcall(function()
     if self.d == "north" then
       if self.g.m[self.x][self.y-1][3] == false then
         Timer.script(function(wait)
@@ -98,38 +98,19 @@ function Ball:update()
         end)
       end
     end
-  end) then
+  end)
     if self:isInGoal() then
       print("Level " .. getLevel() .. " Complete")
-      --if getLevel() == 1 then
-        --setLevel(10)
-      --end
-      if getLevel() ~= 10 then
+      if getLevel() == 1 then
+        setLevel(30)
+        return 0
+      end
+      if getLevel() < 30 then
         setLevel(getLevel() + 1)
         return 0
       else
         print("CONGRATULATIONS")
         gameComplete()
       end
-      --[[if getLevel() == 1 then
-        print("Level 1 Complete")
-        setLevel(2)
-      elseif getLevel() == 2 then
-        print("Level 2 Complete")
-        setLevel(3)
-      elseif getLevel() == 3 then
-        print("Level 3 Complete")
-        setLevel(4)
-      elseif getLevel() == 4 then
-        print("Level 4 Complete")
-        setLevel(5)
-      elseif getLevel() == 5 then
-        print("Level 5 Complete")
-        setLevel(6)
-      elseif getLevel() == 6 then
-        print("Level 6 Complete")
-        gameComplete()
-      end]]
-    end
   end
 end

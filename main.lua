@@ -15,7 +15,8 @@
 
   0030:
   - Add directional pieces
-  - Add main menu with the following:
+  - Fix bugs where obstacles can go across balls and the tails can go across each other (optional)
+  - Add main menu with the following: (COMPLETE)
     - Level Selection
     - Credits
     - Contribute

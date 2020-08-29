@@ -50,8 +50,9 @@ function love.mousemoved(x, y, dx, dy)
       --you are not intersecting another obstacle but if you are, it's your own
       --checks if you're backing into an object
       if drag[2] ~= drag[1] and rec:hasObstacle(drag[1][1], drag[1][2]) and ((not rec:hasObstacle(drag[2][1], drag[2][2])) or inspect(lvl.grid:findRoot(drag[2][1], drag[2][2])) == inspect(lvl.grid:findRoot(drag[1][1], drag[1][2]))) then
-        lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2])
-        drag[1] = drag[2]
+        if lvl.grid:moveObstacle(drag[1][1], drag[1][2], drag[2][1], drag[2][2]) then
+          drag[1] = drag[2]
+        end
       else
         --find a better way to do this
         state = 'none'
@@ -86,6 +87,19 @@ end
 --updates the entire level
 function Level:update()
   self.ball:update()
+end
+--removes the obstacle at (x, y)
+function Level:removeObstacle(x, y)
+  if self.grid:findRoot(x, y) then
+    for i,v in pairs(self.obstacles) do
+      if v.x == x and v.y == y then
+        table.remove(self.obstacles, v)
+        return true
+      end
+    end
+  else
+    return false
+  end
 end
 --a meme used for debugging purposes
 function getGnomed()

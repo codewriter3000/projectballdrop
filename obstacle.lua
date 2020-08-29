@@ -85,3 +85,21 @@ function Obstacle:findTail(debug)
     return {self.x, self.y+self.l-1}
   end
 end
+
+--checks if any part of the obstacle collides with another obstacle
+function Obstacle:noCollisions(lv)
+  if self.h == true then
+    for l = 0, self.l-1 do
+      if self.g.hasObstacle(self.x+l, self.y) and not self.g.rootsAreEqual(self.x, self.y, self.x-1, self.y) then
+        return true
+      end
+    end
+  else
+    for l = 0, self.l-1 do
+      if self.g.hasObstacle(self.x, self.y+l) and not self.g.rootsAreEqual(self.x, self.y, self.x, self.y-1) then
+        return true
+      end
+    end
+  end
+  return false
+end

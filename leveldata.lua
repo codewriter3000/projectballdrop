@@ -68,6 +68,8 @@ function setLevel(l)
     lvl29()
   elseif l == 30 then
     lvl30()
+  elseif l == 31 then
+    lvl31()
   end
 end
 
@@ -1064,6 +1066,43 @@ function lvl30()
   o9 = Obstacle.new(2, {0.5, 0, 1}, 5, 4, true, rec)
   table.insert(os, o9)
   gl = Goal.new({1, 0, 0}, 1, 3, rec)
+  lvl = Level.new(rec, b, os, gl)
+end
+
+function lvl31()
+  obstacleRadius = 27
+  ballRadius = 27
+  rec = Grid.new(0.1, 0.1, 0.8, 7, 7)
+  drag = {}
+  drag[1] = {}
+  drag[2] = {}
+  b = Ball.new(7, 6, rec, "west")
+  os = {}
+  o1 = Obstacle.new(2, {237/255, 213/255, 28/255}, 1, 1, false, rec)
+  table.insert(os, o1)
+  o2 = Obstacle.new(2, {221/255, 196/255, 26/255}, 3, 1, true, rec)
+  table.insert(os, o2)
+  o3 = Obstacle.new(2, {205/255, 179/255, 25/255}, 5, 1, false, rec)
+  table.insert(os, o3)
+  o4 = Obstacle.new(2, {190/255, 162/255, 23/255}, 6, 1, true, rec)
+  table.insert(os, o4)
+  o5 = Obstacle.new(2, {174/255, 145/255, 21/255}, 2, 2, true, rec)
+  table.insert(os, o5)
+  o6 = Obstacle.new(2, {158/255, 128/255, 20/255}, 4, 5, false, rec)
+  table.insert(os, o6)
+  o7 = Obstacle.new(2, {142/255, 111/255, 18/255}, 6, 2, true, rec)
+  table.insert(os, o7)
+  o8 = Obstacle.new(2, {126/255, 94/255, 17/255}, 1, 3, false, rec)
+  table.insert(os, o8)
+  o9 = Obstacle.new(2, {110/255, 77/255, 15/255}, 6, 3, false, rec)
+  table.insert(os, o9)
+  o10 = Obstacle.new(2, {95/255, 60/255, 13/255}, 2, 4, true, rec)
+  table.insert(os, o10)
+  o11 = Obstacle.new(2, {79/255, 43/255, 12/255}, 4, 4, true, rec)
+  table.insert(os, o11)
+  o12 = Obstacle.new(2, {63/255, 26/255, 10/255}, 1, 5, true, rec)
+  table.insert(os, o12)
+  gl = Goal.new({1, 0, 0}, 1, 6, rec)
   lvl = Level.new(rec, b, os, gl)
 end
 

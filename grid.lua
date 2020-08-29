@@ -321,21 +321,41 @@ function Grid:moveObstacle(x, y, x0, y0)
           --then don't move the obstacle
           --(l, c, iX, iY, h, g)
           tmp = Obstacle.new(rootOb.l, rootOb.c, self:getMouseID()[1], rootOb.y, rootOb.h, rootOb.g)
+          --print(" ")
           if (self:getMouseID()[1] > 0) and (tmp:findTail()[1] <= lvl.grid.c) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][1] > drag[1][1]) then
+            --print("drag[2][1] - drag[1][1]: " .. drag[2][1] - drag[1][1])
+            if math.abs(drag[2][1] - drag[1][1]) ~= 1 then
+              
+              state = 'none'
+              --print("allah akbar")
+              return 0
+            end
             pcall(function()
               self:getRoot(root[1], root[2]).x = self:getMouseID()[1]
               --self.m[root[1]][root[2]][3] = false
             end)
+          else
+            return false
           end
         else
           tmp = Obstacle.new(rootOb.l, rootOb.c, rootOb.x, self:getMouseID()[2], rootOb.h, rootOb.g)
           if (self:getMouseID()[2] > 0) and (tmp:findTail()[2] <= lvl.grid.r) and not (self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]) and drag[2][2] > drag[1][2]) then
+            --print("drag[2][2] - drag[1][2]: " .. drag[2][2] - drag[1][2])
+            if math.abs(drag[2][2] - drag[1][2]) ~= 1 then
+              state = 'none'
+              --print("allah akbar")
+              return 0
+            end
             pcall(function()
+              --print("self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2]: " .. inspect(self:hasObstacle(tmp:findTail()[1], tmp:findTail()[2])))
               self:getRoot(root[1], root[2]).y = self:getMouseID()[2]
               --self.m[root[1]][root[2]][3] = false
             end)
+          else
+            return false
           end
         end
       end
     self:updateRawValues()
+    return true
 end

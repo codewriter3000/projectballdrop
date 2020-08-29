@@ -83,6 +83,8 @@ function love.update(dt)
 end
 
 function mainMenu()
+  suit.Label("WARNING: THIS GAME IS IN ALPHA", {align="center"}, getWidthFromDecimal(0.3), getHeightFromDecimal(0.1))
+  suit.Label("THIS GAME MAY NOT WORK RIGHT", {algin="center"}, getWidthFromDecimal(0.3), getHeightFromDecimal(0.15))
   suit.Label("D-Ball Alpha", {align="center"}, getWidthFromDecimal(0.4), getHeightFromDecimal(0.2))
   if suit.Button("Play", getWidthFromDecimal(0.4), getWidthFromDecimal(0.25), 300,30).hit then
     setLevel(1)

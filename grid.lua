@@ -4,21 +4,21 @@ require "obstacle"
 local inspect = require("inspect")
 
 Grid = {
-  x = nil,
-  y = nil,
-  d = nil,
-  r = nil,
-  c = nil,
-  scaleX = nil,
-  scaleY = nil,
-  xD = nil,
-  yD = nil,
-  topLeft = nil,
-  topRight = nil,
-  bottomLeft = nil,
-  bottomRight = nil,
-  xCount = nil,
-  yCount = nil,
+  x = nil, --x-value of the upper left corner (decimal)
+  y = nil, --y-value of the upper left corner (decimal)
+  d = nil, --magnitude of the height and width of the grid (decimal)
+  r = nil, --number of rows in the grid
+  c = nil, --number of columns in the grid
+  scaleX = nil, --x in pixels
+  scaleY = nil, --y in pixels
+  xD = nil, --width of the grid in pixels
+  yD = nil, --height of the grid in pixels
+  topLeft = nil, --coords of the top left corner
+  topRight = nil, --coords of the top right corner
+  bottomLeft = nil, --coords of the bottom left corner
+  bottomRight = nil, --coords of the bottom right corner
+  xCount = nil, --width of each cell
+  yCount = nil, --height of each cell
   m = {} --midpoints
 }
 
@@ -31,24 +31,76 @@ function Grid.new(x, y, d, r, c)
     grid.c = c
     grid.scaleX = getWidthFromDecimal(x)
     grid.scaleY = getHeightFromDecimal(y)
-    grid.xD = getWidthFromDecimal(d)
-    grid.yD = getHeightFromDecimal(d)
+    --print("getWidthFromDecimal(d): " .. getWidthFromDecimal(d))
+    --print("getHeightFromDecimal(d): " .. getHeightFromDecimal(d))
+    if love.graphics.getWidth() < love.graphics.getHeight() then
+      grid.xD = getWidthFromDecimal(d)
+      grid.yD = getWidthFromDecimal(d)
+    elseif love.graphics.getWidth() > love.graphics.getHeight() then
+      grid.xD = getHeightFromDecimal(d)
+      grid.yD = getHeightFromDecimal(d)
+    else
+      grid.xD = getWidthFromDecimal(d)
+      grid.yD = getHeightFromDecimal(d)
+    end
     grid.topLeft = {grid.scaleX, grid.scaleY}
-    grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
-    grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
-    grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.yD}
+    --print("love.graphics.getWidth: " .. love.graphics.getWidth())
+    --print("love.graphics.getHeight: " .. love.graphics.getHeight())
+    --[[if love.graphics.getWidth() < love.graphics.getHeight() then
+      grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
+      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.xD}
+      grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.xD}
+    elseif love.graphics.getWidth() > love.graphics.getHeight() then
+      grid.topRight = {grid.scaleX + grid.yD, grid.scaleY}
+      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
+      grid.bottomRight = {grid.scaleX + grid.yD, grid.scaleY + grid.yD}
+    else]]
+      grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
+      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
+      grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.yD}
+    --end
     grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
     grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
     --midpoints
-    i = 1
-    for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
-      grid.m[i] = {}
-      j = 1
-      for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2, grid.yCount do
-        grid.m[i][j] = {x, y, false}
-        j = j + 1
+    if love.graphics.getWidth() < love.graphics.getHeight() then
+      i = 1
+      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
+        grid.m[i] = {}
+        j = 1
+        for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2 + grid.yCount, grid.yCount do
+          grid.m[i][j] = {x, y, false}
+          j = j + 1
+        end
+        --print("j: " .. j)
+        i = i + 1
       end
-      i = i + 1
+      --print("i: " .. i)
+    elseif love.graphics.getWidth() > love.graphics.getHeight() then
+      i = 1
+      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2 + grid.xCount, grid.xCount do
+        grid.m[i] = {}
+        j = 1
+        for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2, grid.yCount do
+          grid.m[i][j] = {x, y, false}
+          j = j + 1
+        end
+        --print("j: " .. j)
+        i = i + 1
+      end
+      --print("i: " .. i)
+    else
+      i = 1
+      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
+        grid.m[i] = {}
+        j = 1
+        for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2, grid.yCount do
+          grid.m[i][j] = {x, y, false}
+          j = j + 1
+        end
+        --print("j: " .. j)
+        i = i + 1
+      end
+      --print("i: " .. i)
     end
     return grid
 end
@@ -56,10 +108,10 @@ end
 function Grid:draw() --creates the grid
   love.graphics.setColor(255, 255, 255)
   love.graphics.rectangle("line", self.scaleX, self.scaleY, self.xD, self.yD)
-  for x = self.topLeft[1] + self.xCount, self.topRight[1] - self.xCount, self.xCount do
+  for x = self.topLeft[1] + self.xCount, self.topRight[1], self.xCount do
     love.graphics.line(x, self.topLeft[2], x, self.bottomLeft[2])
   end
-  for y = self.topLeft[2] + self.yCount, self.bottomLeft[2] - self.yCount, self.yCount do
+  for y = self.topLeft[2] + self.yCount, self.bottomLeft[2], self.yCount do
     love.graphics.line(self.topLeft[1], y, self.topRight[1], y)
   end
   --self:printRaw()

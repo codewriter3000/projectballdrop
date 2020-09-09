@@ -89,9 +89,9 @@ function resetLevel()
 end
 
 function lvl1()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -117,9 +117,9 @@ function lvl1()
 end
 
 function lvl2()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -141,9 +141,9 @@ function lvl2()
 end
 
 function lvl3()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -168,9 +168,9 @@ function lvl3()
 end
 
 function lvl4()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -191,9 +191,9 @@ function lvl4()
 end
 
 function lvl5()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -222,9 +222,9 @@ function lvl5()
 end
 
 function lvl6()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -249,9 +249,9 @@ function lvl6()
 end
 
 function lvl7()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -276,9 +276,9 @@ function lvl7()
 end
 
 function lvl8()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -313,9 +313,9 @@ function lvl8()
 end
 
 function lvl9()
-  obstacleRadius = 15
-  ballRadius = 15
   rec = Grid.new(0.1, 0.1, 0.8, 10, 10)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -370,9 +370,9 @@ function lvl9()
 end
 
 function lvl10()
-  obstacleRadius = 27
-  ballRadius = 27
   rec = Grid.new(0.1, 0.1, 0.8, 7, 7)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -397,9 +397,9 @@ function lvl10()
 end
 
 function lvl11()
-  obstacleRadius = 33
-  ballRadius = 33
   rec = Grid.new(0.1, 0.1, 0.8, 5, 5)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -424,9 +424,9 @@ function lvl11()
 end
 
 function lvl12()
-  obstacleRadius = 33
-  ballRadius = 33
   rec = Grid.new(0.1, 0.1, 0.8, 5, 5)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -449,9 +449,9 @@ function lvl12()
 end
 
 function lvl13()
-  obstacleRadius = 23
-  ballRadius = 23
   rec = Grid.new(0.1, 0.1, 0.8, 8, 8)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -486,9 +486,9 @@ function lvl13()
 end
 
 function lvl14()
-  obstacleRadius = 23
-  ballRadius = 23
   rec = Grid.new(0.1, 0.1, 0.8, 8, 8)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -523,9 +523,9 @@ function lvl14()
 end
 
 function lvl15()
-  obstacleRadius = 27
-  ballRadius = 27
   rec = Grid.new(0.1, 0.1, 0.8, 7, 7)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -554,9 +554,9 @@ function lvl15()
 end
 
 function lvl16()
-  obstacleRadius = 38
-  ballRadius = 38
   rec = Grid.new(0.1, 0.1, 0.8, 4, 4)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -575,9 +575,9 @@ function lvl16()
 end
 
 function lvl17()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -609,9 +609,9 @@ function lvl17()
 end
 
 function lvl18()
-  obstacleRadius = 30
-  ballRadius = 30
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   drag = {}
   drag[1] = {}
   drag[2] = {}
@@ -638,8 +638,8 @@ function lvl18()
 end
 
 function lvl19()
-  obstacleRadius = 30
-  ballRadius = 30
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   rec = Grid.new(0.1, 0.1, 0.8, 6, 6)
   drag = {}
   drag[1] = {}
@@ -667,8 +667,8 @@ function lvl19()
 end
 
 function lvl20()
-  obstacleRadius = 15
-  ballRadius = 15
+  obstacleRadius = rec.xCount * 0.4
+  ballRadius = rec.yCount * 0.4
   rec = Grid.new(0.1, 0.1, 0.8, 10, 10)
   drag = {}
   drag[1] = {}

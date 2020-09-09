@@ -15,13 +15,13 @@ Level = {
 --mouse events--
 ----------------
 local state = 'none' --can be 'none' or 'grabbed' (enum?)
-function love.touchreleased(x, y, button)
+function love.mousereleased(x, y, button)
   if button == 1 then
     state = 'none'
   end
 end
 
-function love.touchpressed(x, y, button)
+function love.mousepressed(x, y, button)
   if button == 1 then
     if state == 'none' then
       pcall(function()
@@ -33,7 +33,7 @@ function love.touchpressed(x, y, button)
   end
 end
 local bdrag = nil
-function love.touchmoved(x, y, dx, dy)
+function love.mousemoved(x, y, dx, dy)
   if not pcall(function()
     root = lvl.grid:getRoot(drag[2][1], drag[2][2])
   end) then

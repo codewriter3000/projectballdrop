@@ -1,3 +1,5 @@
+local inspect = require("inspect")
+
 Goal = {
     c = nil, --color
     iX = nil, --initial X grid value
@@ -18,5 +20,7 @@ function Goal:draw()
     --print("width: " .. self.g:getWidth())
     --print("Height: " .. self.g:getHeight())
     love.graphics.setColor(self.c)
+    --print("self.g.m: " .. inspect(self.g.m))
+    --print("self.g.m[self.iX][self.iY][1]: " .. inspect(self.g.m[self.iX][self.iY][1]))
     love.graphics.rectangle("fill", self.g.m[self.iX][self.iY][1] - self.g:getWidth()/2, self.g.m[self.iX][self.iY][2] - self.g:getHeight()/2, self.g:getWidth(), self.g:getHeight())
 end

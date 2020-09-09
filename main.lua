@@ -1,4 +1,10 @@
 --[[
+  Key:
+  - A = Android
+  - I = iOS
+  - M = Mac OSX
+  - S = Switch
+  - (no letter) = Windows
   0019:
   - Fix raw view bug (COMPLETE)
   - Add goals (COMPLETE)
@@ -12,6 +18,16 @@
     - Level Selection
     - Credits
     - Contribute
+  
+  00285: (COMPLETE)
+  - Partially fixed bug where obstacles can overlap
+  - Added support for Android
+
+  00285A: (COMPLETE)
+  - First Android release
+
+  00286A:
+  - Made Android playable
 
   0030:
   - Add directional pieces
@@ -54,7 +70,9 @@ local inspect = require("inspect")
 
 --sets the window screen and calls lvl1() to set up level 1
 function love.load()
-  love.window.setMode(600, 600)
+  love.window.setMode(360, 720) --9:18
+  --love.window.setMode(720, 360) --18:9
+  --love.window.setMode(600, 600) --default
   getGnomed()
 end
 

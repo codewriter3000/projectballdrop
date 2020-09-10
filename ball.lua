@@ -102,7 +102,7 @@ function Ball:update()
     if self:isInGoal() then
       print("Level " .. getLevel() .. " Complete")
       --[[if getLevel() == 1 then
-        setLevel(10)
+        setLevel(9)
         return 0
       end]]
       if getLevel() < 30 then

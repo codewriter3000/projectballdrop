@@ -70,6 +70,10 @@ local inspect = require("inspect")
 
 --sets the window screen and calls lvl1() to set up level 1
 function love.load()
+  local _, _, flags = love.window.getMode()
+  -- The window's flags contain the index of the monitor it's currently in.
+  local width, height = love.window.getDesktopDimensions(flags.display)
+  --love.window.setMode(width, height) --fullscreen
   love.window.setMode(360, 720) --9:18
   --love.window.setMode(720, 360) --18:9
   --love.window.setMode(600, 600) --default

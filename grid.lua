@@ -31,64 +31,56 @@ function Grid.new(x, y, d, r, c)
     grid.c = c
     grid.scaleX = getWidthFromDecimal(x)
     grid.scaleY = getHeightFromDecimal(y)
-    --print("getWidthFromDecimal(d): " .. getWidthFromDecimal(d))
-    --print("getHeightFromDecimal(d): " .. getHeightFromDecimal(d))
+    grid.topLeft = {grid.scaleX, grid.scaleY}
     if love.graphics.getWidth() < love.graphics.getHeight() then
       grid.xD = getWidthFromDecimal(d)
       grid.yD = getWidthFromDecimal(d)
-    elseif love.graphics.getWidth() > love.graphics.getHeight() then
-      grid.xD = getHeightFromDecimal(d)
-      grid.yD = getHeightFromDecimal(d)
-    else
-      grid.xD = getWidthFromDecimal(d)
-      grid.yD = getHeightFromDecimal(d)
-    end
-    grid.topLeft = {grid.scaleX, grid.scaleY}
-    --print("love.graphics.getWidth: " .. love.graphics.getWidth())
-    --print("love.graphics.getHeight: " .. love.graphics.getHeight())
-    --[[if love.graphics.getWidth() < love.graphics.getHeight() then
       grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
+      --print("topRight: " .. inspect(grid.topRight))
       grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.xD}
+      --print("bottomLeft: " .. inspect(grid.bottomLeft))
       grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.xD}
-    elseif love.graphics.getWidth() > love.graphics.getHeight() then
-      grid.topRight = {grid.scaleX + grid.yD, grid.scaleY}
-      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
-      grid.bottomRight = {grid.scaleX + grid.yD, grid.scaleY + grid.yD}
-    else]]
-      grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
-      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
-      grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.yD}
-    --end
-    grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
-    grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
-    --midpoints
-    if love.graphics.getWidth() < love.graphics.getHeight() then
+      --print("bottomRight: " .. inspect(grid.topRight))
+      grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
+      --print("xCount: " .. grid.xCount)
+      grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
+      --print("yCount: " .. grid.yCount)
       i = 1
-      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
+      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2 + 0.1, grid.xCount do
         grid.m[i] = {}
         j = 1
         for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2 + grid.yCount, grid.yCount do
           grid.m[i][j] = {x, y, false}
           j = j + 1
         end
-        --print("j: " .. j)
         i = i + 1
       end
-      --print("i: " .. i)
     elseif love.graphics.getWidth() > love.graphics.getHeight() then
+      grid.xD = getHeightFromDecimal(d)
+      grid.yD = getHeightFromDecimal(d)
+      grid.topRight = {grid.scaleX + grid.yD, grid.scaleY}
+      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
+      grid.bottomRight = {grid.scaleX + grid.yD, grid.scaleY + grid.yD}
+      grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
+      grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
       i = 1
-      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2 + grid.xCount, grid.xCount do
+      for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2 + grid.xCount + 0.1, grid.xCount do
         grid.m[i] = {}
         j = 1
-        for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2, grid.yCount do
+        for y = grid.topLeft[2] + grid.yCount/2, grid.bottomLeft[2] - grid.yCount/2 + 0.1, grid.yCount do
           grid.m[i][j] = {x, y, false}
           j = j + 1
         end
-        --print("j: " .. j)
         i = i + 1
       end
-      --print("i: " .. i)
     else
+      grid.xD = getWidthFromDecimal(d)
+      grid.yD = getHeightFromDecimal(d)
+      grid.topRight = {grid.scaleX + grid.xD, grid.scaleY}
+      grid.bottomLeft = {grid.scaleX, grid.scaleY + grid.yD}
+      grid.bottomRight = {grid.scaleX + grid.xD, grid.scaleY + grid.yD}
+      grid.xCount = (grid.topRight[1]-grid.topLeft[1])/c
+      grid.yCount = (grid.bottomLeft[2]-grid.topLeft[2])/r
       i = 1
       for x = grid.topLeft[1] + grid.xCount/2, grid.topRight[1] - grid.xCount/2, grid.xCount do
         grid.m[i] = {}
@@ -97,10 +89,8 @@ function Grid.new(x, y, d, r, c)
           grid.m[i][j] = {x, y, false}
           j = j + 1
         end
-        --print("j: " .. j)
         i = i + 1
       end
-      --print("i: " .. i)
     end
     return grid
 end

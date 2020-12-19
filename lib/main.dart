@@ -1,15 +1,7 @@
-import 'package:flame/util.dart';
 import 'package:flutter/material.dart';
-import 'package:flame/flame.dart';
 import 'package:flutter/services.dart';
 
-import 'game_controller.dart';
-
 void main() async {
-  Util flameUtil = Util();
-  await flameUtil.fullScreen();
-  await flameUtil.setOrientation(DeviceOrientation.portraitUp);
-  GameController gameController = GameController();
   runApp(DBall());
 }
 
@@ -298,6 +290,62 @@ class Play extends StatefulWidget {
 class _PlayState extends State<Play> {
   @override
   Widget build(BuildContext context) {
-    return GameController().widget;
+    return MaterialApp(
+        home: Scaffold(
+            backgroundColor: Color(0xFF151515),
+            body: SafeArea(
+                child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text(
+                            "Game",
+                            style: TextStyle(
+                              fontFamily: "Goldman",
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 60,
+                              color: Color(0xFFFFFFFF),
+                            ),
+                          ),
+                          Text(
+                            'yay this is the game',
+                            style: TextStyle(
+                              fontFamily: "Goldman",
+                              fontSize: 20,
+                              color: Color(0xFFFFFFFF),
+                            ),
+                          ),
+                          FlatButton(
+                            padding: EdgeInsets.only(left: 100, right: 100),
+                            onPressed: () {
+                              print("Back");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => DBall()),
+                              );
+                            },
+                            child: Card(
+                                margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
+                                borderOnForeground: false,
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Text(
+                                    "Back",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontFamily: "Goldman"
+                                    ),
+                                  ),
+                                )
+                            ),
+                          ),
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 }

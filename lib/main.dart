@@ -1,11 +1,14 @@
+import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 
 void main() async {
   runApp(DBall());
 }
 
+
 class DBall extends StatefulWidget {
+
   @override
   _DBallState createState() => _DBallState();
 }
@@ -27,7 +30,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var DBall = new MaterialApp(
+    return new MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 4,
@@ -64,7 +67,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
                           print("DBall");
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Play()),
+                            MaterialPageRoute(builder: (context) => GameView()),
                           );
                         },
                         child: Card(
@@ -141,7 +144,6 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
         ),
       ),
     );
-    return DBall;
   }
 }
 
@@ -241,75 +243,6 @@ class _ContributeState extends State<Contribute> {
                           ),
                           Text(
                             'Join our Discord Server: 3XuPBVt',
-                              style: TextStyle(
-                                fontFamily: "Goldman",
-                                 fontSize: 20,
-                                  color: Color(0xFFFFFFFF),
-                              ),
-                          ),
-                          FlatButton(
-                            padding: EdgeInsets.only(left: 100, right: 100),
-                            onPressed: () {
-                              print("Back");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DBall()),
-                              );
-                            },
-                            child: Card(
-                                margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
-                                borderOnForeground: false,
-                                child: Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Text(
-                                    "Back",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontFamily: "Goldman"
-                                    ),
-                                  ),
-                                )
-                            ),
-                          ),
-                        ]
-                    )
-                )
-            )
-        )
-    );
-  }
-}
-
-class Play extends StatefulWidget {
-  @override
-  _PlayState createState() => _PlayState();
-}
-
-//View
-class _PlayState extends State<Play> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-            backgroundColor: Color(0xFF151515),
-            body: SafeArea(
-                child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Text(
-                            "Game",
-                            style: TextStyle(
-                              fontFamily: "Goldman",
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 60,
-                              color: Color(0xFFFFFFFF),
-                            ),
-                          ),
-                          Text(
-                            'yay this is the game',
                             style: TextStyle(
                               fontFamily: "Goldman",
                               fontSize: 20,

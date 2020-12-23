@@ -144,14 +144,19 @@ class Grid {
           new Offset(levelPainter.getWidthFromDecimal(xBottomRight),
           levelPainter.getHeightFromDecimal(yBottomRight))
     ), paint);
-    //for(int i = 1; i < this.rows; i++){
+    for(int i = 1; i < this.rows; i++){
       for(int j = 1; j < this.columns; j++){
-        levelPainter.canvas.drawLine(new Offset(levelPainter.getWidthFromDecimal(xUpperLeft + columns/4*xBottomRight),
-        levelPainter.getWidthFromDecimal(yUpperLeft)),
-        new Offset(levelPainter.getWidthFromDecimal(xUpperLeft + columns/4*xBottomRight),
-        levelPainter.getWidthFromDecimal(yBottomRight),
-        ), paint);
-      //}
+        levelPainter.canvas.drawLine(new Offset(levelPainter.getWidthFromDecimal(xUpperLeft + (xBottomRight-xUpperLeft)*j/columns),
+            levelPainter.getHeightFromDecimal(yUpperLeft)),
+            new Offset(levelPainter.getWidthFromDecimal(xUpperLeft + (xBottomRight-xUpperLeft)*j/columns),
+              levelPainter.getHeightFromDecimal(yBottomRight),
+            ), paint);
+        levelPainter.canvas.drawLine(new Offset(levelPainter.getWidthFromDecimal(xUpperLeft),
+            levelPainter.getHeightFromDecimal(yUpperLeft + (yBottomRight-yUpperLeft)*i/rows)),
+            new Offset(levelPainter.getWidthFromDecimal(xBottomRight),
+              levelPainter.getHeightFromDecimal(yUpperLeft + (yBottomRight-yUpperLeft)*i/rows),
+            ), paint);
+      }
     }
   }
 }

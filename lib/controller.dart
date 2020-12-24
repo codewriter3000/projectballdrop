@@ -1,0 +1,1 @@
+//reads the gestures from the canvas and tells the view what to do

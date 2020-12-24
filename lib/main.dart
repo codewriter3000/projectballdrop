@@ -64,7 +64,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
                       FlatButton(
                         padding: EdgeInsets.only(left: 50, right: 50),
                         onPressed: () {
-                          print("DBall");
+                          //print("DBall");
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => GameView()),
@@ -89,7 +89,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
                       FlatButton(
                         padding: EdgeInsets.only(left: 100, right: 100),
                         onPressed: () {
-                          print("Credits");
+                          //print("Credits");
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Credits()),
@@ -114,7 +114,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
                       FlatButton(
                         padding: EdgeInsets.only(left: 50, right: 50),
                         onPressed: () {
-                          print("Contribute");
+                          //print("Contribute");
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => Contribute()),

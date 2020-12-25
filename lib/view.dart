@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'controller.dart';
+
 class GameView extends StatefulWidget {
   @override
   _GameViewState createState() => _GameViewState();
@@ -16,15 +18,53 @@ class _GameViewState extends State<GameView> {
             body: SafeArea(
                     child: LayoutBuilder(
                       builder: (_, constraints) => GestureDetector(
-                        onHorizontalDragDown: (hi){
-                          print('local position: ${hi.localPosition}');
-                          print('global position: ${hi.globalPosition}');
+                        onHorizontalDragStart: (hi){
+                          Controller controller = new Controller();
+                          controller.startDrag = hi.localPosition;
                         },
-                        child: Container(
+                        onHorizontalDragUpdate: (hi){
+                          Controller controller = new Controller();
+                          controller.currentPos = hi.localPosition;
+                          print(controller.getCoords());
+                        },
+                        child: Container( //TODO: fix the container so it doesn't take up the entire screen and center align the grid
                           width: constraints.widthConstraints().maxWidth,
                           height: constraints.heightConstraints().maxHeight,
                           //color: Colors.blue,
-                          child: CustomPaint(painter: LevelPainter()),
+                          child: CustomPaint(
+                              painter: LevelPainter(),
+                              child: Container(
+                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                                child: FlatButton(
+                                  //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                                  onPressed: () {
+                                    print("Reset");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => GameView()),
+                                    );
+                                  },
+                                  child: Card(
+                                      //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
+                                      borderOnForeground: false,
+                                      child: Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(2),
+                                          child: Text(
+                                            "Reset Level",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                fontFamily: "Goldman"
+                                            ),
+                                          ),
+                                        )
+                                      )
+                                  ),
+                                ),
+                              )//*/
+                          ),
                         ),
                       ),
                     ),
@@ -129,6 +169,8 @@ class LevelPainter extends CustomPainter {
     o7.draw();
     b1.draw();
     g1.draw();
+    Controller controller = new Controller();
+    controller.grid = grid;
   }
 
   @override
@@ -242,6 +284,14 @@ class Grid {
       }
     }
   }
+
+  void printTiles(){
+    //TODO: print out the tiles in a grid in the output
+    List<bool> tmp = tiles;
+    for(int i = 0; i < rows; i++){
+      print(tmp.sublist(columns*i, ((i+1)*columns)));
+    }
+  }
 }
 
 abstract class FieldElement {
@@ -291,7 +341,7 @@ class Obstacle extends FieldElement{
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-2+length)].dx,
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/2)), paint);
         for(int i = 0; i < length; i++){
-          grid.tiles[(grid.rows*(initialY-1))+(initialX-1)] = true;
+          grid.tiles[(grid.rows*(initialY-1))+(initialX-1+i)] = true;
         }
       } else {
         levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)], 25, paint);
@@ -301,7 +351,7 @@ class Obstacle extends FieldElement{
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/2,
             grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)].dy)), paint);
         for(int i = 0; i < length; i++){
-          grid.tiles[(grid.rows*(initialY-1))+(initialX-1)] = true;
+          grid.tiles[(grid.rows*(initialY-1+i))+(initialX-1)] = true;
         }
       }
       levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], 25, whitePaint);

@@ -41,6 +41,58 @@ class Controller {
     return new Offset(dx, dy);
   }
 
+  bool obstacleExists(Offset coords){
+    if(grid.tiles[((coords.dy-1)*grid.rows + coords.dx).toInt() - 1] == true && !(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows)){
+      return true;
+    } else if(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  List<bool> obstacleBorders(Obstacle obstacle){
+    //finds out the possible ways an obstacle can move
+    //0 = top or left, 1 = bottom or right
+    List<bool> tmp = new List(2);
+    if(obstacle.horizontal){
+      print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
+      if(obstacleExists(new Offset(obstacle.currX-1.0, obstacle.currY+0.0))){
+        tmp[0] = true;
+      } else {
+        tmp[0] = false;
+      }
+      print('${obstacle.currX+obstacle.length+0.0} ${obstacle.currY+0.0}');
+      if(obstacleExists(new Offset(obstacle.currX+obstacle.length+0.0, obstacle.currY+0.0))){
+        tmp[1] = true;
+      } else {
+        tmp[1] = false;
+      }
+    } else {
+      print('${obstacle.currX+0.0} ${obstacle.currY-1.0}');
+      if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY-1.0))){
+        tmp[0] = true;
+      } else {
+        tmp[0] = false;
+      }
+      print('${obstacle.currX+0.0} ${obstacle.currY+obstacle.length+0.0}');
+      if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY+obstacle.length+0.0))){
+        tmp[1] = true;
+      } else {
+        tmp[1] = false;
+      }
+    }
+    return tmp;
+  }
+
+  Obstacle findObstacle(){
+
+  }
+
+  void moveObstacle(){
+
+  }
+
   void printStats(){
     if(grid != null && currentPos != null){
       print('currentPos: $currentPos');

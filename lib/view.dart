@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'controller.dart';
 
+int lvl = 1;
+
 class GameView extends StatefulWidget {
   @override
   _GameViewState createState() => _GameViewState();
@@ -25,7 +27,11 @@ class _GameViewState extends State<GameView> {
                         onHorizontalDragUpdate: (hi){
                           Controller controller = new Controller();
                           controller.currentPos = hi.localPosition;
-                          print(controller.getCoords());
+                          controller.moveObstacle();
+                        },
+                        onHorizontalDragEnd: (hi){
+                          Controller controller = new Controller();
+                          controller.startDrag = null;
                         },
                         child: Container( //TODO: fix the container so it doesn't take up the entire screen and center align the grid
                           width: constraints.widthConstraints().maxWidth,
@@ -171,6 +177,14 @@ class LevelPainter extends CustomPainter {
     g1.draw();
     Controller controller = new Controller();
     controller.grid = grid;
+    grid.printTiles();
+    print(controller.obstacleBorders(o1));
+    print(controller.obstacleBorders(o2));
+    print(controller.obstacleBorders(o3));
+    print(controller.obstacleBorders(o4));
+    print(controller.obstacleBorders(o5));
+    print(controller.obstacleBorders(o6));
+    print(controller.obstacleBorders(o7));
   }
 
   @override
@@ -286,7 +300,6 @@ class Grid {
   }
 
   void printTiles(){
-    //TODO: print out the tiles in a grid in the output
     List<bool> tmp = tiles;
     for(int i = 0; i < rows; i++){
       print(tmp.sublist(columns*i, ((i+1)*columns)));
@@ -318,6 +331,8 @@ class Obstacle extends FieldElement{
     this.color = color;
     this.initialX = initialX;
     this.initialY = initialY;
+    this.currX = initialX;
+    this.currY = initialY;
     this.grid = grid;
     this.length = length;
     this.horizontal = horizontal;
@@ -412,6 +427,7 @@ class Ball extends FieldElement {
       levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
       levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/3, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
     }
+    grid.tiles[(grid.rows*(initialY-1))+(initialX-1)] = true;
   }
 
   bool canMove(){

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'controller.dart';
+import 'model.dart';
 
 int lvl = 1;
 
@@ -89,6 +90,8 @@ class LevelPainter extends CustomPainter {
     canvasHeight = size.width;
     canvasWidth = size.height;
     this.canvas = canvas;
+    //TODO: parse json here
+    Level level = new Level(1);
     Grid grid = new Grid(
         this,
         0.05,

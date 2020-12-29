@@ -56,26 +56,26 @@ class Controller {
     //0 = top or left, 1 = bottom or right
     List<bool> tmp = new List(2);
     if(obstacle.horizontal){
-      print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
+      //print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
       if(obstacleExists(new Offset(obstacle.currX-1.0, obstacle.currY+0.0))){
         tmp[0] = true;
       } else {
         tmp[0] = false;
       }
-      print('${obstacle.currX+obstacle.length+0.0} ${obstacle.currY+0.0}');
+      //print('${obstacle.currX+obstacle.length+0.0} ${obstacle.currY+0.0}');
       if(obstacleExists(new Offset(obstacle.currX+obstacle.length+0.0, obstacle.currY+0.0))){
         tmp[1] = true;
       } else {
         tmp[1] = false;
       }
     } else {
-      print('${obstacle.currX+0.0} ${obstacle.currY-1.0}');
+      //print('${obstacle.currX+0.0} ${obstacle.currY-1.0}');
       if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY-1.0))){
         tmp[0] = true;
       } else {
         tmp[0] = false;
       }
-      print('${obstacle.currX+0.0} ${obstacle.currY+obstacle.length+0.0}');
+      //print('${obstacle.currX+0.0} ${obstacle.currY+obstacle.length+0.0}');
       if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY+obstacle.length+0.0))){
         tmp[1] = true;
       } else {

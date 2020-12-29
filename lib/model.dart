@@ -2,22 +2,50 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart';
+import 'dart:async' show Future;
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'view.dart';
 
+Future<String> loadAsset() async {
+  return await rootBundle.loadString('levels/level1.json');
+}
+
 class Level {
-  final levels = new File('levels.json');
-  static var jsonLevels = jsonDecode('levels.json');
+  //static var jsonLevels = jsonDecode('levels.json');
+  var pathToFile;
+  var file;
   Ball ball;
   Goal goal;
   List<Obstacle> obstacle;
   int id;
 
   Level(int id){
-    print(levels.readAsString());
+    this.pathToFile = join(dirname(Platform.script.toFilePath()), '..', 'level1.json');
+    this.file = File(pathToFile);
+    //print(readAsString());
     this.id = id;
-    print(jsonLevels);
+    print("Constructor is constructing");
+    execute();
+  }
 
+  void execute() async {
+    print("Executor is executing");
+    if(await file.exists()){
+      var contents = StringBuffer();
+      var contentStream = file.openRead();
+
+      contentStream
+          .transform(Utf8Decoder())
+          .transform(LineSplitter())
+          .listen((String line) => contents.write(line),
+
+          onDone: () => print(contents.toString()),
+          onError: (e) => print('[Problems]: $e'));
+    } else {
+      print("The file does not exist");
+    }
   }
 }
 

@@ -180,14 +180,14 @@ class LevelPainter extends CustomPainter {
     g1.draw();
     Controller controller = new Controller();
     controller.grid = grid;
-    grid.printTiles();
+    /*grid.printTiles();
     print(controller.obstacleBorders(o1));
     print(controller.obstacleBorders(o2));
     print(controller.obstacleBorders(o3));
     print(controller.obstacleBorders(o4));
     print(controller.obstacleBorders(o5));
     print(controller.obstacleBorders(o6));
-    print(controller.obstacleBorders(o7));
+    print(controller.obstacleBorders(o7));*/
   }
 
   @override

@@ -221,6 +221,11 @@ class Contribute extends StatefulWidget {
 }
 
 class _ContributeState extends State<Contribute> {
+
+  Future fetchLevels() async {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

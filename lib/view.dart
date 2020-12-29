@@ -12,6 +12,15 @@ class GameView extends StatefulWidget {
 }
 
 class _GameViewState extends State<GameView> {
+  Level level;
+
+  @override
+  void initState() {
+    level = new Level(lvl);
+    level.execute().then((_) => setState(() {}));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -39,7 +48,7 @@ class _GameViewState extends State<GameView> {
                           height: constraints.heightConstraints().maxHeight,
                           //color: Colors.blue,
                           child: CustomPaint(
-                              painter: LevelPainter(),
+                              painter: LevelPainter(level),
                               child: Container(
                                 margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
                                 child: FlatButton(
@@ -82,102 +91,25 @@ class _GameViewState extends State<GameView> {
 }
 
 class LevelPainter extends CustomPainter {
+  Level level;
   double canvasHeight;
   double canvasWidth;
   Canvas canvas;
+
+  LevelPainter(this.level);
+
   @override
   void paint(Canvas canvas, Size size) {
+    final grid = level.grid;
     canvasHeight = size.width;
     canvasWidth = size.height;
     this.canvas = canvas;
+    if (grid == null){
+      return;
+    }
     //TODO: parse json here
-    Level level = new Level(1);
-    Grid grid = new Grid(
-        this,
-        0.05,
-        0.05,
-        0.9,
-        6,
-        6);
-    grid.draw();
-    Ball b1 = new Ball(
-      this,
-      Colors.red,
-      4,
-      3,
-      grid,
-      'down');
-    Obstacle o1 = new Obstacle(
-      this,
-      Colors.green,
-      1,
-      3,
-      grid,
-      3,
-      false);
-    Obstacle o2 = new Obstacle(
-        this,
-        Colors.brown,
-        2,
-        1,
-        grid,
-        2,
-        true);
-    Obstacle o3 = new Obstacle(
-        this,
-        Colors.teal,
-        4,
-        1,
-        grid,
-        3,
-        true);
-    Obstacle o4 = new Obstacle(
-        this,
-        Colors.orange,
-        2,
-        2,
-        grid,
-        2,
-        false);
-    Obstacle o5 = new Obstacle(
-        this,
-        Colors.yellow,
-        6,
-        2,
-        grid,
-        2,
-        false);
-    Obstacle o6 = new Obstacle(
-        this,
-        Colors.blue,
-        3,
-        4,
-        grid,
-        3,
-        true);
-    Obstacle o7 = new Obstacle(
-        this,
-        Colors.purple,
-        1,
-        6,
-        grid,
-        3,
-        true);
-    Goal g1 = new Goal(
-      this,
-      Colors.red,
-      4,
-      6,
-      grid);
-    o1.draw();
-    o2.draw();
-    o3.draw();
-    o4.draw();
-    o5.draw();
-    o6.draw();
-    o7.draw();
-    b1.draw();
-    g1.draw();
+    //construct everything and draw them
+
     Controller controller = new Controller();
     controller.grid = grid;
     /*grid.printTiles();
@@ -191,7 +123,7 @@ class LevelPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => null;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 
   double getHeightFromDecimal(double decimal){
     if (decimal.ceil() != 1){
@@ -232,7 +164,6 @@ class ScaleDecimalOutOfRangeException implements Exception {
 }
 
 class Grid {
-  LevelPainter levelPainter;
   double xUpperLeft; //scale decimal
   double yUpperLeft; //scale decimal
   double magnitude; //scale decimal
@@ -247,8 +178,7 @@ class Grid {
   List<Offset> midPoints = List<Offset>.empty(growable: true); //scale decimals
   List<bool> tiles = List<bool>.empty(growable: true); //detects whether a field element exists on this square
 
-  Grid(levelPainter, xUpperLeft, yUpperLeft, magnitude, rows, columns){
-    this.levelPainter = levelPainter;
+  Grid(xUpperLeft, yUpperLeft, magnitude, rows, columns){
     this.xUpperLeft = xUpperLeft;
     this.yUpperLeft = yUpperLeft;
     this.magnitude = magnitude;
@@ -273,6 +203,10 @@ class Grid {
         //tiles[(rows*(i-1))+(j-1)] = false;
       }
     }
+  }
+
+  static Grid fromJson(dynamic data){
+
   }
 
   void draw(){

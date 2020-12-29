@@ -14,38 +14,27 @@ Future<String> loadAsset() async {
 
 class Level {
   //static var jsonLevels = jsonDecode('levels.json');
-  var pathToFile;
-  var file;
+  Future<String> file;
+  Grid grid;
   Ball ball;
   Goal goal;
   List<Obstacle> obstacle;
   int id;
+  Map<String, dynamic> decodedJson;
 
   Level(int id){
-    this.pathToFile = join(dirname(Platform.script.toFilePath()), '..', 'level1.json');
-    this.file = File(pathToFile);
-    //print(readAsString());
-    this.id = id;
     print("Constructor is constructing");
-    execute();
   }
 
-  void execute() async {
-    print("Executor is executing");
-    if(await file.exists()){
-      var contents = StringBuffer();
-      var contentStream = file.openRead();
-
-      contentStream
-          .transform(Utf8Decoder())
-          .transform(LineSplitter())
-          .listen((String line) => contents.write(line),
-
-          onDone: () => print(contents.toString()),
-          onError: (e) => print('[Problems]: $e'));
-    } else {
-      print("The file does not exist");
-    }
+  Future execute() async {
+    await loadAsset();
+    this.file = loadAsset();
+    decodedJson = json.decode(await file);
+    print(decodedJson.keys.toList());
+    id = decodedJson['id'];
+    print("id: $id");
+    grid = decodedJson['grid'];
+    print("grid: $grid");
   }
 }
 

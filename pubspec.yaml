@@ -48,7 +48,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - levels/level1.json
+    - levels/
   # To add assets to your application, add an assets section, like this:
   fonts:
   - family: Goldman

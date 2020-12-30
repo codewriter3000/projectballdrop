@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'model.dart';
 
-int lvl = 1;
-
 class GameView extends StatefulWidget {
+  static int lvl = 2;
   @override
   _GameViewState createState() => _GameViewState();
 }
@@ -16,7 +15,7 @@ class _GameViewState extends State<GameView> {
 
   @override
   void initState() {
-    level = new Level(lvl);
+    level = new Level(GameView.lvl);
     level.execute().then((_) => setState(() {}));
     super.initState();
   }
@@ -100,7 +99,6 @@ class LevelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    //TODO: draw literally everything
     final grid = level.grid;
     canvasHeight = size.width;
     canvasWidth = size.height;
@@ -111,8 +109,11 @@ class LevelPainter extends CustomPainter {
     }
     grid.levelPainter = this;
     grid.draw();
+    final goal = level.goal;
+    goal.grid = grid;
+    goal.levelPainter = this;
+    goal.draw();
     for(final obstacle in level.obstacles){
-      print('for obstacle: $obstacle');
       obstacle.grid = grid;
       obstacle.levelPainter = this;
       obstacle.draw();
@@ -121,11 +122,6 @@ class LevelPainter extends CustomPainter {
     ball.grid = grid;
     ball.levelPainter = this;
     ball.draw();
-    final goal = level.goal;
-    goal.grid = grid;
-    goal.levelPainter = this;
-    goal.draw();
-    //construct everything and draw them
 
     Controller controller = new Controller();
     controller.grid = grid;
@@ -327,7 +323,7 @@ class Obstacle extends FieldElement{
       ..strokeWidth = 1
       ..color = Colors.white;
       if(this.horizontal == true){
-        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-2+length)], 25, paint);
+        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-2+length)], grid.width/2, paint);
         levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx,
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/2), new Offset(
@@ -337,7 +333,7 @@ class Obstacle extends FieldElement{
           grid.tiles[(grid.rows*(initialY-1))+(initialX-1+i)] = true;
         }
       } else {
-        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)], 25, paint);
+        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)], grid.width/2, paint);
         levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/2,
             grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), new Offset(
@@ -347,7 +343,7 @@ class Obstacle extends FieldElement{
           grid.tiles[(grid.rows*(initialY-1+i))+(initialX-1)] = true;
         }
       }
-      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], 25, whitePaint);
+      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], grid.width/2, whitePaint);
   }
 }
 
@@ -395,7 +391,7 @@ class Ball extends FieldElement {
       ..style = PaintingStyle.fill
       ..strokeWidth = 1
       ..color = Colors.white;
-    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], 25, paint);
+    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], grid.width/2, paint);
     if(direction == Direction.DOWN){
       levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
       levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
@@ -447,32 +443,8 @@ class Goal extends FieldElement {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5
       ..color = color;
-    levelPainter.canvas.drawRect(new Rect.fromCircle(center: grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], radius: 25), paint);
+    levelPainter.canvas.drawRect(new Rect.fromCircle(center: grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], radius: grid.width*5/8), paint);
   }
 }
 
-/*FlatButton(
-                                padding: EdgeInsets.only(left: 50, right: 50),
-                                onPressed: () {
-                                  print("Reset");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => GameView()),
-                                  );
-                                },
-                                child: Card(
-                                    margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
-                                    borderOnForeground: false,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Text(
-                                        "Reset Level",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontFamily: "Goldman"
-                                        ),
-                                      ),
-                                    )
-                                ),
-                              ),*/
+//25 is the magic number for a 6x6 grid

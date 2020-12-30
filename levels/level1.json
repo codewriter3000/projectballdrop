@@ -8,10 +8,12 @@
     "columns": 6
   },
   "ball": {
-    "color": "0xFFF44336",
-    "initX": 4,
-    "initY": 3,
-    "direction": "down"
+    "1": {
+      "color": "0xFFF44336",
+      "initX": 4,
+      "initY": 3,
+      "direction": "down"
+    }
   },
   "goal": {
     "color": "0xFFF44336",

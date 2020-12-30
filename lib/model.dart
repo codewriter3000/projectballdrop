@@ -13,12 +13,11 @@ Future<String> loadAsset() async {
 }
 
 class Level {
-  //static var jsonLevels = jsonDecode('levels.json');
   Future<String> file;
   Grid grid;
-  Ball ball;
+  var ball;
   Goal goal;
-  List<Obstacle> obstacle;
+  List<Obstacle> obstacles;
   int id;
   Map<String, dynamic> decodedJson;
 
@@ -33,8 +32,11 @@ class Level {
     print(decodedJson.keys.toList());
     id = decodedJson['id'];
     print("id: $id");
-    grid = decodedJson['grid'];
-    print("grid: $grid");
+    grid = Grid.fromJson(decodedJson['grid']);
+    ball = (decodedJson['ball'] as List).map((data) => Ball.fromJson(data)).toList();
+    print("ball: $ball");
+    obstacles = (decodedJson['obstacles'] as List).map((data) => Obstacle.fromJson(data)).toList();
+    print('obstacles: $obstacles');
   }
 }
 

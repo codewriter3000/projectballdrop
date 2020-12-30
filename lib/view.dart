@@ -105,8 +105,22 @@ class LevelPainter extends CustomPainter {
     canvasWidth = size.height;
     this.canvas = canvas;
     if (grid == null){
+      print("grid is null");
       return;
     }
+    grid.levelPainter = this;
+    grid.draw();
+    for (final obstacle in level.obstacles){
+      print('for obstacle: $obstacle');
+      obstacle.levelPainter = this;
+      obstacle.draw();
+    }
+    for (final ball in level.ball){
+      print('for ball: $ball');
+      ball.levelPainter = this;
+      ball.draw();
+    }
+
     //TODO: parse json here
     //construct everything and draw them
 
@@ -164,6 +178,7 @@ class ScaleDecimalOutOfRangeException implements Exception {
 }
 
 class Grid {
+  LevelPainter levelPainter;
   double xUpperLeft; //scale decimal
   double yUpperLeft; //scale decimal
   double magnitude; //scale decimal
@@ -184,6 +199,19 @@ class Grid {
     this.magnitude = magnitude;
     this.rows = rows;
     this.columns = columns;
+  }
+
+  static Grid fromJson(dynamic data){
+    return Grid(
+      data['xUpperLeft'],
+      data['yUpperLeft'],
+      data['magnitude'],
+      data['rows'],
+      data['columns']
+    );
+  }
+
+  void draw(){
     if (levelPainter.canvasWidth < levelPainter.canvasHeight){
       xBottomRight = xUpperLeft + magnitude;
       //convert magnitude into pixels & apply magnitude in pixels to height
@@ -203,13 +231,6 @@ class Grid {
         //tiles[(rows*(i-1))+(j-1)] = false;
       }
     }
-  }
-
-  static Grid fromJson(dynamic data){
-
-  }
-
-  void draw(){
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
@@ -255,6 +276,7 @@ abstract class FieldElement {
 }
 
 class Obstacle extends FieldElement{
+  int id;
   int length; //length of the obstacle
   bool horizontal; //true = horizontal, false = vertical
   int tempX; //temporary x-value
@@ -263,8 +285,7 @@ class Obstacle extends FieldElement{
   int currY; //current y-value
   Obstacle old; //old backup of obstacle
 
-  Obstacle(LevelPainter levelPainter, Color color, int initialX, int initialY, Grid grid, int length, bool horizontal){
-    this.levelPainter = levelPainter;
+  Obstacle(Color color, int initialX, int initialY, Grid grid, int length, bool horizontal){
     this.color = color;
     this.initialX = initialX;
     this.initialY = initialY;
@@ -273,6 +294,17 @@ class Obstacle extends FieldElement{
     this.grid = grid;
     this.length = length;
     this.horizontal = horizontal;
+  }
+
+  static Obstacle fromJson(dynamic data){
+    return Obstacle(
+      data['color'],
+      data['initialX'],
+      data['initialY'],
+      data['grid'],
+      data['length'],
+      data['horizontal']
+    );
   }
 
   @override
@@ -318,12 +350,12 @@ enum Direction {
 }
 
 class Ball extends FieldElement {
+  int id;
   int currX;
   int currY;
   Direction direction;
 
-  Ball(LevelPainter levelPainter, Color color, int initialX, int initialY, Grid grid, String direction){
-    this.levelPainter = levelPainter;
+  Ball(Color color, int initialX, int initialY, Grid grid, String direction){
     this.color = color;
     this.initialX = initialX;
     this.initialY = initialY;
@@ -334,6 +366,16 @@ class Ball extends FieldElement {
       case 'left': this.direction = Direction.LEFT; break;
       case 'right': this.direction = Direction.RIGHT; break;
     }
+  }
+
+  static Ball fromJson(dynamic data){
+    return Ball(
+      data['color'],
+      data['initialX'],
+      data['initialY'],
+      data['grid'],
+      data['direction']
+    );
   }
 
   @override
@@ -374,15 +416,24 @@ class Ball extends FieldElement {
 }
 
 class Goal extends FieldElement {
+  int id;
   int currX;
   int currY;
 
-  Goal(LevelPainter levelPainter, Color color, int initialX, int initialY, Grid grid){
-    this.levelPainter = levelPainter;
+  Goal(Color color, int initialX, int initialY, Grid grid){
     this.color = color;
     this.initialX = initialX;
     this.initialY = initialY;
     this.grid = grid;
+  }
+
+  static Goal fromJson(dynamic data){
+    return Goal(
+      data['color'],
+      data['initialX'],
+      data['initialY'],
+      data['grid']
+    );
   }
 
   @override

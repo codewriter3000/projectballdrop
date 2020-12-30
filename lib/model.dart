@@ -16,7 +16,7 @@ class Level {
   Future<String> file;
   Grid grid;
   var ball;
-  Goal goal;
+  var goal;
   List<Obstacle> obstacles;
   int id;
   Map<String, dynamic> decodedJson;
@@ -29,14 +29,16 @@ class Level {
     await loadAsset();
     this.file = loadAsset();
     decodedJson = json.decode(await file);
-    print(decodedJson.keys.toList());
     id = decodedJson['id'];
-    print("id: $id");
     grid = Grid.fromJson(decodedJson['grid']);
-    ball = (decodedJson['ball'] as List).map((data) => Ball.fromJson(data)).toList();
-    print("ball: $ball");
-    obstacles = (decodedJson['obstacles'] as List).map((data) => Obstacle.fromJson(data)).toList();
-    print('obstacles: $obstacles');
+    ball = Ball.fromJson(decodedJson['ball']['1']);//(decodedJson['ball'] as List).map((data) => Ball.fromJson(data)).toList();
+    goal = Goal.fromJson(decodedJson['goal']['1']);
+    obstacles = List<Obstacle>();
+    for(int i = 1; i <= decodedJson['obstacles'].length; i++){
+      obstacles.add(Obstacle.fromJson(decodedJson['obstacles']['$i']));
+    }
+    //obstacles = null;//(decodedJson['obstacles'] as List).map((data) => Obstacle.fromJson(data)).toList();
+    //print('obstacles: $obstacles');
   }
 }
 

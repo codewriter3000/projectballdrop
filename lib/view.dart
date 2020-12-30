@@ -100,6 +100,7 @@ class LevelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    //TODO: draw literally everything
     final grid = level.grid;
     canvasHeight = size.width;
     canvasWidth = size.height;
@@ -110,18 +111,20 @@ class LevelPainter extends CustomPainter {
     }
     grid.levelPainter = this;
     grid.draw();
-    for (final obstacle in level.obstacles){
+    for(final obstacle in level.obstacles){
       print('for obstacle: $obstacle');
+      obstacle.grid = grid;
       obstacle.levelPainter = this;
       obstacle.draw();
     }
-    for (final ball in level.ball){
-      print('for ball: $ball');
-      ball.levelPainter = this;
-      ball.draw();
-    }
-
-    //TODO: parse json here
+    final ball = level.ball;
+    ball.grid = grid;
+    ball.levelPainter = this;
+    ball.draw();
+    final goal = level.goal;
+    goal.grid = grid;
+    goal.levelPainter = this;
+    goal.draw();
     //construct everything and draw them
 
     Controller controller = new Controller();
@@ -138,6 +141,10 @@ class LevelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+
+  static Color hexToColor(String code) {
+    return new Color(int.parse(code));
+  }
 
   double getHeightFromDecimal(double decimal){
     if (decimal.ceil() != 1){
@@ -211,7 +218,7 @@ class Grid {
     );
   }
 
-  void draw(){
+  void setMidpoints(){
     if (levelPainter.canvasWidth < levelPainter.canvasHeight){
       xBottomRight = xUpperLeft + magnitude;
       //convert magnitude into pixels & apply magnitude in pixels to height
@@ -231,6 +238,10 @@ class Grid {
         //tiles[(rows*(i-1))+(j-1)] = false;
       }
     }
+  }
+
+  void draw(){
+    setMidpoints();
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
@@ -285,13 +296,12 @@ class Obstacle extends FieldElement{
   int currY; //current y-value
   Obstacle old; //old backup of obstacle
 
-  Obstacle(Color color, int initialX, int initialY, Grid grid, int length, bool horizontal){
-    this.color = color;
+  Obstacle(String color, int initialX, int initialY, int length, bool horizontal){
+    this.color = LevelPainter.hexToColor(color);
     this.initialX = initialX;
     this.initialY = initialY;
     this.currX = initialX;
     this.currY = initialY;
-    this.grid = grid;
     this.length = length;
     this.horizontal = horizontal;
   }
@@ -299,9 +309,8 @@ class Obstacle extends FieldElement{
   static Obstacle fromJson(dynamic data){
     return Obstacle(
       data['color'],
-      data['initialX'],
-      data['initialY'],
-      data['grid'],
+      data['initX'],
+      data['initY'],
       data['length'],
       data['horizontal']
     );
@@ -355,11 +364,10 @@ class Ball extends FieldElement {
   int currY;
   Direction direction;
 
-  Ball(Color color, int initialX, int initialY, Grid grid, String direction){
-    this.color = color;
+  Ball(String color, int initialX, int initialY, String direction){
+    this.color = LevelPainter.hexToColor(color);
     this.initialX = initialX;
     this.initialY = initialY;
-    this.grid = grid;
     switch(direction){
       case "up": this.direction = Direction.UP; break;
       case "down": this.direction = Direction.DOWN; break;
@@ -371,9 +379,8 @@ class Ball extends FieldElement {
   static Ball fromJson(dynamic data){
     return Ball(
       data['color'],
-      data['initialX'],
-      data['initialY'],
-      data['grid'],
+      data['initX'],
+      data['initY'],
       data['direction']
     );
   }
@@ -420,19 +427,17 @@ class Goal extends FieldElement {
   int currX;
   int currY;
 
-  Goal(Color color, int initialX, int initialY, Grid grid){
-    this.color = color;
+  Goal(String color, int initialX, int initialY){
+    this.color = LevelPainter.hexToColor(color);
     this.initialX = initialX;
     this.initialY = initialY;
-    this.grid = grid;
   }
 
   static Goal fromJson(dynamic data){
     return Goal(
       data['color'],
-      data['initialX'],
-      data['initialY'],
-      data['grid']
+      data['initX'],
+      data['initY']
     );
   }
 

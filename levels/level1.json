@@ -16,9 +16,11 @@
     }
   },
   "goal": {
-    "color": "0xFFF44336",
-    "initX": 4,
-    "initY": 6
+    "1": {
+      "color": "0xFFF44336",
+      "initX": 4,
+      "initY": 6
+    }
   },
   "obstacles": {
     "1": {

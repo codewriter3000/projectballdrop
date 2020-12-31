@@ -1,5 +1,6 @@
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 void main() async {

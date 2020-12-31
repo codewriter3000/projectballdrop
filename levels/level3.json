@@ -1,0 +1,55 @@
+{
+  "id": 2,
+  "grid": {
+    "xUpperLeft": 0.05,
+    "yUpperLeft": 0.05,
+    "magnitude": 0.9,
+    "rows": 5,
+    "columns": 5
+  },
+  "ball": {
+    "1": {
+      "color": "0xFFFF5722",
+      "initX": 1,
+      "initY": 1,
+      "direction": "down"
+    }
+  },
+  "goal": {
+    "1": {
+      "color": "0xFFFF5722",
+      "initX": 1,
+      "initY": 4
+    }
+  },
+  "obstacles": {
+    "1": {
+      "color": "0xFFF44336",
+      "initX": 1,
+      "initY": 2,
+      "length": 2,
+      "horizontal": true
+    },
+    "2": {
+      "color": "0xFF009688",
+      "initX": 2,
+      "initY": 1,
+      "length": 3,
+      "horizontal": true
+    },
+    "3": {
+      "color": "0xFFFF9800",
+      "initX": 4,
+      "initY": 2,
+      "length": 3,
+      "horizontal": false
+    },
+    "4": {
+      "color": "0xFFFFEB3B",
+      "initX": 1,
+      "initY": 4,
+      "length": 3,
+      "horizontal": true
+    }
+  }
+}

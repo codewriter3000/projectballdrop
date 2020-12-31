@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'controller.dart';
 import 'model.dart';
 
 class GameView extends StatefulWidget {
-  static int lvl = 2;
+  static int lvl = 1;
   @override
   _GameViewState createState() => _GameViewState();
 }
@@ -125,14 +126,12 @@ class LevelPainter extends CustomPainter {
 
     Controller controller = new Controller();
     controller.grid = grid;
-    /*grid.printTiles();
-    print(controller.obstacleBorders(o1));
-    print(controller.obstacleBorders(o2));
-    print(controller.obstacleBorders(o3));
-    print(controller.obstacleBorders(o4));
-    print(controller.obstacleBorders(o5));
-    print(controller.obstacleBorders(o6));
-    print(controller.obstacleBorders(o7));*/
+    controller.levelPainter = this;
+    /*for(double i = this.getWidthFromDecimal(grid.xUpperLeft); i <= this.getWidthFromDecimal(grid.xBottomRight); i++){
+      for(double j = this.getHeightFromDecimal(grid.yUpperLeft); j <= this.getHeightFromDecimal(grid.yBottomRight); j++){
+        print(controller.getCoords(Offset(i, j)));
+      }
+    }*/
   }
 
   @override
@@ -165,6 +164,7 @@ class LevelPainter extends CustomPainter {
   double getDecimalFromWidth(double width){
     return width / canvasWidth;
   }
+
 }
 
 class ScaleDecimalOutOfRangeException implements Exception {
@@ -443,7 +443,7 @@ class Goal extends FieldElement {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 5
       ..color = color;
-    levelPainter.canvas.drawRect(new Rect.fromCircle(center: grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], radius: grid.width*5/8), paint);
+    levelPainter.canvas.drawRect(new Rect.fromCircle(center: grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], radius: grid.width*15/32), paint);
   }
 }
 

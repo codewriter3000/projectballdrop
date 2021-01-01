@@ -7,12 +7,14 @@ import 'model.dart';
 
 class GameView extends StatefulWidget {
   static int lvl = 1;
+  static _GameViewState of(BuildContext context) => context.findAncestorStateOfType<_GameViewState>();
   @override
   _GameViewState createState() => _GameViewState();
 }
 
 class _GameViewState extends State<GameView> {
   Level level;
+  final changeNotifier = ChangeNotifier();
 
   @override
   void initState() {
@@ -48,7 +50,7 @@ class _GameViewState extends State<GameView> {
                           height: constraints.heightConstraints().maxHeight,
                           //color: Colors.blue,
                           child: CustomPaint(
-                              painter: LevelPainter(level),
+                              painter: LevelPainter(level, changeNotifier),
                               child: Container(
                                 margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
                                 child: FlatButton(
@@ -95,8 +97,11 @@ class LevelPainter extends CustomPainter {
   double canvasHeight;
   double canvasWidth;
   Canvas canvas;
+  ChangeNotifier changeNotifier;
 
-  LevelPainter(this.level);
+  LevelPainter(this.level, Listenable repaint) : super(repaint: repaint){
+   changeNotifier = repaint;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -322,28 +327,28 @@ class Obstacle extends FieldElement{
       ..style = PaintingStyle.fill
       ..strokeWidth = 1
       ..color = Colors.white;
-      if(this.horizontal == true){
-        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-2+length)], grid.width/2, paint);
-        levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx,
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/2), new Offset(
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-2+length)].dx,
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/2)), paint);
-        for(int i = 0; i < length; i++){
-          grid.tiles[(grid.rows*(initialY-1))+(initialX-1+i)] = true;
-        }
-      } else {
-        levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)], grid.width/2, paint);
-        levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/2,
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), new Offset(
-            grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/2,
-            grid.midPoints[(grid.rows*(initialY-2+length))+(initialX-1)].dy)), paint);
-        for(int i = 0; i < length; i++){
-          grid.tiles[(grid.rows*(initialY-1+i))+(initialX-1)] = true;
-        }
+    if(this.horizontal == true){
+      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-2+length)], grid.width/2, paint);
+      levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx,
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/2), new Offset(
+          grid.midPoints[(grid.rows*(currY-1))+(currX-2+length)].dx,
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/2)), paint);
+      for(int i = 0; i < length; i++){
+        grid.tiles[(grid.rows*(currY-1))+(currX-1+i)] = true;
       }
-      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], grid.width/2, whitePaint);
+    } else {
+      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-2+length))+(currX-1)], grid.width/2, paint);
+      levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/2,
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), new Offset(
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/2,
+          grid.midPoints[(grid.rows*(currY-2+length))+(currX-1)].dy)), paint);
+      for(int i = 0; i < length; i++){
+        grid.tiles[(grid.rows*(currY-1+i))+(currX-1)] = true;
+      }
+    }
+    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-1)], grid.width/2, whitePaint);
   }
 }
 

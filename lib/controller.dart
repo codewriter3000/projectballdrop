@@ -3,8 +3,9 @@
 import 'dart:ui';
 
 import 'package:d_ball/view.dart';
+import 'package:flutter/cupertino.dart';
 
-class Controller {
+class Controller extends ChangeNotifier {
   static final Controller _controller = new Controller._internal();
 
   LevelPainter levelPainter;
@@ -140,13 +141,13 @@ class Controller {
       Obstacle root = findRoot();
       if(root.horizontal){
         if(getCoords(startDrag).dx != getCoords(currentPos).dx){
-          print('XXXXXXXXXXXXXXXXXXXXXXXXXXX');
           root.currX = (getCoords(currentPos).dx).toInt();
+          levelPainter.changeNotifier.notifyListeners();
         }
       } else {
         if(getCoords(startDrag).dy != getCoords(currentPos).dy){
-          print('YYYYYYYYYYYYYYYYYYYYYYYYYYY');
           root.currY = (getCoords(currentPos).dy).toInt();
+          levelPainter.changeNotifier.notifyListeners();
         }
       }
     }

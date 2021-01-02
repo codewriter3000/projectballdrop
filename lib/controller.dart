@@ -140,13 +140,15 @@ class Controller extends ChangeNotifier {
       //if the current mouse cell is different from the start drag cell, then start the move process
       Obstacle root = findRoot();
       if(root.horizontal){
-        if(getCoords(startDrag).dx != getCoords(currentPos).dx){
+        if((getCoords(startDrag).dx != getCoords(currentPos).dx) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currX = (getCoords(currentPos).dx).toInt();
+          levelPainter.level.ball.tryMove();
           levelPainter.changeNotifier.notifyListeners();
         }
       } else {
-        if(getCoords(startDrag).dy != getCoords(currentPos).dy){
+        if((getCoords(startDrag).dy != getCoords(currentPos).dy) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currY = (getCoords(currentPos).dy).toInt();
+          levelPainter.level.ball.tryMove();
           levelPainter.changeNotifier.notifyListeners();
         }
       }
@@ -154,8 +156,37 @@ class Controller extends ChangeNotifier {
   }
 
   //checks if the move is legal
-  bool verifyMove(Offset old, Offset prime){
-    return true;
+  bool verifyMove(Offset old, Offset prime, Obstacle root){
+    print('------------------------------------');
+    //print('prime.dx: ${prime.dx}');
+    //print('prime.dx+root.length-1: ${prime.dx+root.length-1}');
+    //print(root);
+    //print('prime.dy: ${prime.dy}');
+    //print('prime.dy+root.length-1: ${prime.dy+root.length-1}');
+    if(root.horizontal) {
+      if (prime.dx == 0.0 || prime.dx + root.length - 1 >= 7.0) {
+        //print('obstacle is HORIZONTAL and being moved outside of grid');
+        return false;
+        // && ( || (root.grid.tiles[(grid.rows*((prime.dy).toInt()-1))+((prime.dx).toInt()-1)] == true || root.grid.tiles[(grid.rows*((prime.dy).toInt()-1))+((prime.dx+root.length-1).toInt()-1)] == true))){
+      } else {
+        return true;
+      }
+    } else {
+      //print("ROOT IS VERTICALLLLLLLLLLLLLLLLLLLLLL");
+      if(prime.dy == 0.0 || prime.dy + root.length - 1 >= 7.0){
+        //print('obstacle is VERTICAL and being moved outside of grid');
+        return false;
+      } else {
+        return true;
+      }
+    }
+    /*} else if(((!root.horizontal) && (prime.dy == 0.0 || prime.dy+root.length-1 >= 7.0)) || (root.grid.tiles[(grid.rows*((prime.dy+root.length-1).toInt()-1))+((prime.dx).toInt()-1)] == true)){
+      print(false);
+      return false;
+    } else {
+      print(true);
+      return true;
+    }*/
   }
 
   void printStats(){

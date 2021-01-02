@@ -9,6 +9,7 @@
   },
   "ball": {
     "1": {
+      "id": 1,
       "color": "0xFFF44336",
       "initX": 4,
       "initY": 3,
@@ -17,6 +18,7 @@
   },
   "goal": {
     "1": {
+      "id": 1,
       "color": "0xFFF44336",
       "initX": 4,
       "initY": 6

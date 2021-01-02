@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:gestures/gestures.dart';
 
 import 'controller.dart';
+import 'full_drag.dart';
 import 'model.dart';
+
+final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
   static int lvl = 1;
@@ -14,7 +17,6 @@ class GameView extends StatefulWidget {
 
 class _GameViewState extends State<GameView> {
   Level level;
-  final changeNotifier = ChangeNotifier();
 
   @override
   void initState() {
@@ -32,19 +34,33 @@ class _GameViewState extends State<GameView> {
             body: SafeArea(
                     child: LayoutBuilder(
                       builder: (_, constraints) => GestureDetector(
-                        onHorizontalDragStart: (hi){
+                        //TODO: make onDragStarted a union of onVerticalDragStarted and onHorizontalDragStarted
+                        onPanStart: (hi){
                           Controller controller = new Controller();
                           controller.startDrag = hi.localPosition;
+                          print("ON PAN START");
+                          print("local: ${controller.startDrag}");
+                          print("update: ${controller.currentPos}");
                         },
-                        onHorizontalDragUpdate: (hi){
+                        //TODO: make onDragUpdate a union of onVerticalDragUpdate and onHorizontalDragUpdate
+                        onPanUpdate: (hi){
                           Controller controller = new Controller();
                           controller.currentPos = hi.localPosition;
+                          //print("ON PAN UPDATE");
+                          //print("local: ${controller.startDrag}");
+                          //print("update: ${controller.currentPos}");
                           controller.moveObstacle();
                         },
-                        onHorizontalDragEnd: (hi){
+                        //TODO: take a guess
+                        onPanEnd: (hi){
                           Controller controller = new Controller();
+                          print("ON PAN END");
+                          print("local: ${controller.startDrag}");
+                          print("update: ${controller.currentPos}");
                           controller.startDrag = null;
+                          controller.currentPos = null;
                         },
+
                         child: Container( //TODO: fix the container so it doesn't take up the entire screen and center align the grid
                           width: constraints.widthConstraints().maxWidth,
                           height: constraints.heightConstraints().maxHeight,
@@ -241,6 +257,12 @@ class Grid {
     }
   }
 
+  /*void matchBallAndGoal(){
+    for(Ball b in levelPainter.level.ball){
+
+    }
+  }*/
+
   void draw(){
     setMidpoints();
     final paint = Paint()
@@ -267,12 +289,24 @@ class Grid {
             ), paint);
       }
     }
+    for(int i = 0; i < tiles.length; i++){
+      tiles[i] = false;
+    }
   }
 
   void printTiles(){
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = Colors.redAccent;
     List<bool> tmp = tiles;
     for(int i = 0; i < rows; i++){
       print(tmp.sublist(columns*i, ((i+1)*columns)));
+    }
+    for(int i = 0; i < midPoints.length; i++){
+      if(tiles[i] == true){
+        levelPainter.canvas.drawCircle(midPoints[i], 5, paint);
+      }
     }
   }
 }
@@ -317,6 +351,17 @@ class Obstacle extends FieldElement{
     );
   }
 
+  String toString(){
+    return 'id: $id\n'
+        'color: $color\n'
+        'initX: $initialX\n'
+        'initY: $initialY\n'
+        'currX: $currX\n'
+        'currY: $currY\n'
+        'length: $length\n'
+        'horizontal: $horizontal';
+  }
+
   @override
   void draw() {
     final paint = Paint()
@@ -349,6 +394,7 @@ class Obstacle extends FieldElement{
       }
     }
     levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-1)], grid.width/2, whitePaint);
+    //grid.printTiles();
   }
 }
 
@@ -364,11 +410,15 @@ class Ball extends FieldElement {
   int currX;
   int currY;
   Direction direction;
+  Goal goal;
 
-  Ball(String color, int initialX, int initialY, String direction){
+  Ball(int id, String color, int initialX, int initialY, String direction){
+    this.id = id;
     this.color = LevelPainter.hexToColor(color);
     this.initialX = initialX;
     this.initialY = initialY;
+    this.currX = initialX;
+    this.currY = initialY;
     switch(direction){
       case "up": this.direction = Direction.UP; break;
       case "down": this.direction = Direction.DOWN; break;
@@ -379,6 +429,7 @@ class Ball extends FieldElement {
 
   static Ball fromJson(dynamic data){
     return Ball(
+      data['id'],
       data['color'],
       data['initX'],
       data['initY'],
@@ -396,30 +447,59 @@ class Ball extends FieldElement {
       ..style = PaintingStyle.fill
       ..strokeWidth = 1
       ..color = Colors.white;
-    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)], grid.width/2, paint);
+    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-1)], grid.width/2, paint);
     if(direction == Direction.DOWN){
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/3), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/3), whitePaint);
     } else if(direction == Direction.UP){
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/3), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/3), whitePaint);
     } else if(direction == Direction.LEFT){
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/3, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/3, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
     } else if(direction == Direction.RIGHT){
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
-      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx - grid.width/3, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), new Offset(grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(initialY-1))+(initialX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/4), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
+      levelPainter.canvas.drawLine(new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/3, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), new Offset(grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/4, grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), whitePaint);
     }
-    grid.tiles[(grid.rows*(initialY-1))+(initialX-1)] = true;
+    grid.tiles[(grid.rows*(currY-1))+(currX-1)] = true;
   }
 
-  bool canMove(){
-    //TODO
-    return null;
+  void tryMove(){
+    while(currX != grid.levelPainter.level.goal.initialX || currY != grid.levelPainter.level.goal.initialY){
+      if(direction == Direction.RIGHT){
+        if(grid.tiles[(grid.rows*(currY-1))+(currX)] == false){
+          currX += 1;
+        } else {
+          return;
+        }
+      } else if(direction == Direction.DOWN){
+        print("direction is down");
+        if(grid.tiles[(grid.rows*(currY))+(currX-1)] == false){
+          currY += 1;
+        } else {
+          return;
+        }
+      } else if(direction == Direction.UP){
+        if(grid.tiles[(grid.rows*(currY-2))+(currX-1)] == false){
+          currY -= 1;
+        } else {
+          return;
+        }
+      } else if(direction == Direction.LEFT){
+        if(grid.tiles[(grid.rows*(currY-1))+(currX-2)] == false){
+          currX -= 1;
+        } else {
+          return;
+        }
+      } else {
+        throw Exception();
+      }
+    }
+    print("LEVEL COMPLETE");
   }
 }
 
@@ -428,7 +508,8 @@ class Goal extends FieldElement {
   int currX;
   int currY;
 
-  Goal(String color, int initialX, int initialY){
+  Goal(int id, String color, int initialX, int initialY){
+    this.id = id;
     this.color = LevelPainter.hexToColor(color);
     this.initialX = initialX;
     this.initialY = initialY;
@@ -436,9 +517,10 @@ class Goal extends FieldElement {
 
   static Goal fromJson(dynamic data){
     return Goal(
+      data['id'],
       data['color'],
       data['initX'],
-      data['initY']
+      data['initY'],
     );
   }
 

@@ -1,3 +1,7 @@
+///Alex Micharski Updated 2 Jan 2021
+///Micharski Technologies (c)2021 All Rights Reserved
+
+
 //reads the gestures from the canvas and tells the view what to do
 //(grid.rows*(initialY-1))+(initialX-1)
 import 'dart:ui';
@@ -67,12 +71,16 @@ class Controller extends ChangeNotifier {
   }
 
   bool obstacleExists(Offset coords){
-    if(grid.tiles[((coords.dy-1)*grid.rows + coords.dx).toInt() - 1] == true && !(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows)){
+    try{
+      if(grid.tiles[((coords.dy-1)*grid.rows + coords.dx).toInt() - 1] == true && !(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows)){
+        return true;
+      } else if(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows){
+        return true;
+      } else {
+        return false;
+      }
+    } catch (RangeError) {
       return true;
-    } else if(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows){
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -80,33 +88,33 @@ class Controller extends ChangeNotifier {
     //finds out the possible ways an obstacle can move
     //0 = top or left, 1 = bottom or right
     List<bool> tmp = new List(2);
-    if(obstacle.horizontal){
-      //print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
-      if(obstacleExists(new Offset(obstacle.currX-1.0, obstacle.currY+0.0))){
-        tmp[0] = true;
+      if(obstacle.horizontal){
+        //print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
+        if(obstacleExists(new Offset(obstacle.currX-1.0, obstacle.currY+0.0))){
+          tmp[0] = true;
+        } else {
+          tmp[0] = false;
+        }
+        //print('${obstacle.currX+obstacle.length+0.0} ${obstacle.currY+0.0}');
+        if(obstacleExists(new Offset(obstacle.currX+obstacle.length+0.0, obstacle.currY+0.0))){
+          tmp[1] = true;
+        } else {
+          tmp[1] = false;
+        }
       } else {
-        tmp[0] = false;
+        //print('${obstacle.currX+0.0} ${obstacle.currY-1.0}');
+        if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY-1.0))){
+          tmp[0] = true;
+        } else {
+          tmp[0] = false;
+        }
+        //print('${obstacle.currX+0.0} ${obstacle.currY+obstacle.length+0.0}');
+        if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY+obstacle.length+0.0))){
+          tmp[1] = true;
+        } else {
+          tmp[1] = false;
+        }
       }
-      //print('${obstacle.currX+obstacle.length+0.0} ${obstacle.currY+0.0}');
-      if(obstacleExists(new Offset(obstacle.currX+obstacle.length+0.0, obstacle.currY+0.0))){
-        tmp[1] = true;
-      } else {
-        tmp[1] = false;
-      }
-    } else {
-      //print('${obstacle.currX+0.0} ${obstacle.currY-1.0}');
-      if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY-1.0))){
-        tmp[0] = true;
-      } else {
-        tmp[0] = false;
-      }
-      //print('${obstacle.currX+0.0} ${obstacle.currY+obstacle.length+0.0}');
-      if(obstacleExists(new Offset(obstacle.currX+0.0, obstacle.currY+obstacle.length+0.0))){
-        tmp[1] = true;
-      } else {
-        tmp[1] = false;
-      }
-    }
     return tmp;
   }
 
@@ -131,7 +139,7 @@ class Controller extends ChangeNotifier {
     }
   }
 
-  void moveObstacle(){
+  void moveObstacle() {
     //find the root of the obstacle you are moving
     //exit the void if you did not start your drag on an obstacle
     if(findRoot() == null){
@@ -142,42 +150,91 @@ class Controller extends ChangeNotifier {
       if(root.horizontal){
         if((getCoords(startDrag).dx != getCoords(currentPos).dx) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currX = (getCoords(currentPos).dx).toInt();
-          levelPainter.level.ball.tryMove();
           levelPainter.changeNotifier.notifyListeners();
         }
       } else {
         if((getCoords(startDrag).dy != getCoords(currentPos).dy) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currY = (getCoords(currentPos).dy).toInt();
-          levelPainter.level.ball.tryMove();
           levelPainter.changeNotifier.notifyListeners();
         }
       }
     }
   }
 
+  void tryBallMove(){
+    while(levelPainter.level.ball.currX != grid.levelPainter.level.goal.initialX || levelPainter.level.ball.currY != grid.levelPainter.level.goal.initialY){
+      if(levelPainter.level.ball.direction == Direction.RIGHT){
+        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX)] == false){
+          print("ball is moved");
+          levelPainter.level.ball.currX += 1;
+        } else {
+          return;
+        }
+      } else if(levelPainter.level.ball.direction == Direction.DOWN){
+        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY))+(levelPainter.level.ball.currX-1)] == false){
+          print("ball is moved");
+          levelPainter.level.ball.currY += 1;
+        } else {
+          return;
+        }
+      } else if(levelPainter.level.ball.direction == Direction.UP){
+        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-2))+(levelPainter.level.ball.currX-1)] == false){
+          print("ball is moved");
+          levelPainter.level.ball.currY -= 1;
+        } else {
+          return;
+        }
+      } else if(levelPainter.level.ball.direction == Direction.LEFT){
+        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX-2)] == false){
+          print("ball is moved");
+          levelPainter.level.ball.currX -= 1;
+        } else {
+          return;
+        }
+      } else {
+        throw Exception();
+      }
+    }
+    print("LEVEL ${GameView.lvl} COMPLETE");
+    GameView.lvl += 1;
+  }
+
   //checks if the move is legal
   bool verifyMove(Offset old, Offset prime, Obstacle root){
     print('------------------------------------');
+    //grid.printTiles();
     //print('prime.dx: ${prime.dx}');
     //print('prime.dx+root.length-1: ${prime.dx+root.length-1}');
     //print(root);
     //print('prime.dy: ${prime.dy}');
     //print('prime.dy+root.length-1: ${prime.dy+root.length-1}');
+    //turn the entire obstacle tiles to false
     if(root.horizontal) {
+      /*for(int i = 0; i < root.length; i++){
+        levelPainter.level.grid.tiles[(levelPainter.level.grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
+      }*/
       if (prime.dx == 0.0 || prime.dx + root.length - 1 >= 7.0) {
         //print('obstacle is HORIZONTAL and being moved outside of grid');
         return false;
-        // && ( || (root.grid.tiles[(grid.rows*((prime.dy).toInt()-1))+((prime.dx).toInt()-1)] == true || root.grid.tiles[(grid.rows*((prime.dy).toInt()-1))+((prime.dx+root.length-1).toInt()-1)] == true))){
       } else {
-        return true;
+        if((prime.dx < old.dx && obstacleBorders(root)[0] == true) || (prime.dx+root.length-1 > old.dx+root.length-1 && obstacleBorders(root)[1] == true)){
+          //print('obstacle is HORIZONTAL and being merged with an existing field element');
+          return false;
+        } else {
+          return true;
+        }
       }
     } else {
-      //print("ROOT IS VERTICALLLLLLLLLLLLLLLLLLLLLL");
       if(prime.dy == 0.0 || prime.dy + root.length - 1 >= 7.0){
         //print('obstacle is VERTICAL and being moved outside of grid');
         return false;
       } else {
-        return true;
+        //print('obstacle is VERTICAL and being merged with an existing field element');
+        if((prime.dy < old.dy && obstacleBorders(root)[0] == true) || (prime.dy+root.length-1 > old.dy+root.length-1 && obstacleBorders(root)[1] == true)){
+          return false;
+        } else {
+          return true;
+        }
       }
     }
     /*} else if(((!root.horizontal) && (prime.dy == 0.0 || prime.dy+root.length-1 >= 7.0)) || (root.grid.tiles[(grid.rows*((prime.dy+root.length-1).toInt()-1))+((prime.dx).toInt()-1)] == true)){

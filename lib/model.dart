@@ -1,3 +1,6 @@
+///Alex Micharski Updated 2 Jan 2021
+///Micharski Technologies (c)2021 All Rights Reserved
+
 //tells the view how to move
 
 import 'dart:convert';

@@ -202,13 +202,13 @@ class Controller extends ChangeNotifier {
 
   //checks if the move is legal
   bool verifyMove(Offset old, Offset prime, Obstacle root){
-    print('------------------------------------');
-    //grid.printTiles();
-    //print('prime.dx: ${prime.dx}');
-    //print('prime.dx+root.length-1: ${prime.dx+root.length-1}');
-    //print(root);
-    //print('prime.dy: ${prime.dy}');
-    //print('prime.dy+root.length-1: ${prime.dy+root.length-1}');
+    print('old: $old');
+    print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
+    if(old.dx != root.currX || old.dy != root.currY){
+      print("GUN GUN GUN EVERYBODY DOWN");
+      return false;
+    }
+    //print('------------------------------------');
     //turn the entire obstacle tiles to false
     if(root.horizontal) {
       /*for(int i = 0; i < root.length; i++){

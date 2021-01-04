@@ -81,6 +81,7 @@ class _GameViewState extends State<GameView> {
                                       print("###############################################");
                                       Navigator.push(
                                         context,
+                                        //TODO: DISPOSE EVERYTHING AND RELOAD THE LEVEL
                                         MaterialPageRoute(builder: (context) => GameView()),
                                       );
                                       GameView.lvlComplete = false;

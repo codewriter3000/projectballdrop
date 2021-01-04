@@ -197,6 +197,7 @@ class Controller extends ChangeNotifier {
     }
     print("LEVEL ${GameView.lvl} COMPLETE");
     GameView.lvl += 1;
+    GameView.lvlComplete = true;
   }
 
   //checks if the move is legal

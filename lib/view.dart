@@ -13,6 +13,7 @@ final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
   static int lvl = 0;
+  static bool lvlComplete = false;
   static _GameViewState of(BuildContext context) => context.findAncestorStateOfType<_GameViewState>();
   @override
   _GameViewState createState() => _GameViewState();
@@ -53,27 +54,38 @@ class _GameViewState extends State<GameView> {
                           controller.startDrag = null;
                           controller.currentPos = null;
                         },
-
                         child: Container( //TODO: fix the container so it doesn't take up the entire screen and center align the grid
                           width: constraints.widthConstraints().maxWidth,
                           height: constraints.heightConstraints().maxHeight,
-                          //color: Colors.blue,
-                          child: CustomPaint(
-                              painter: LevelPainter(level, changeNotifier),
                               child: Container(
-                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                                child: FlatButton(
-                                  //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
-                                  onPressed: () {
-                                    print("###############################################");
-                                    print("###############################################");
-                                    print("###############################################");
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => GameView()),
-                                    );
-                                  },
-                                  child: Card(
+                                  child: CustomPaint(
+                                      painter: LevelPainter(level, changeNotifier),
+                                    child: Column(
+                                  children: <Widget>[
+                                  Text(
+                                    "Level ${GameView.lvl}",
+                                    style: TextStyle(
+                                      fontFamily: "Goldman",
+                                      //fontWeight: FontWeight.bold,
+                                      fontSize: 60,
+                                      color: Color(0xFFFFFFFF),
+                                    ),
+                                  ),
+                                Container(
+                                  //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                                  child: FlatButton(
+                                    //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                                    onPressed: () {
+                                      print("###############################################");
+                                      print("###############################################");
+                                      print("###############################################");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => GameView()),
+                                      );
+                                      GameView.lvlComplete = false;
+                                    },
+                                    child: Card(
                                       //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
                                       borderOnForeground: false,
                                       child: Align(
@@ -81,27 +93,31 @@ class _GameViewState extends State<GameView> {
                                         child: Padding(
                                           padding: EdgeInsets.all(2),
                                           child: Text(
-                                            "Reset Level",
+                                            "${GameView.lvlComplete == true ? 'Next Level' : 'Reset Level'}",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: 30,
                                                 fontFamily: "Goldman"
                                             ),
                                           ),
-                                        )
-                                      )
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              )//*/
+                                ],
+                                  ),
+                              ),
+                      ),
+                        ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                )
-            )
-        );
+    );
   }
 }
+
 
 class LevelPainter extends CustomPainter {
   Level level;
@@ -230,24 +246,49 @@ class Grid {
     );
   }
 
+  String toString(){
+    return 'levelPainter: $levelPainter\n'
+        'xUpperLeft: $xUpperLeft\n'
+        'yUpperLeft: $yUpperLeft\n'
+        'magnitude: $magnitude\n'
+        'rows: $rows\n'
+        'columns: $columns\n'
+        'xBottomRight: $xBottomRight\n'
+        'yBottomRight: $yBottomRight\n'
+        'cellWidth: $cellWidth\n'
+        'cellHeight: $cellHeight\n'
+        'width: $width\n'
+        'midPoints: $midPoints\n'
+        'tiles: $tiles\n';
+  }
+
   void setMidpoints(){
     if (levelPainter.canvasWidth < levelPainter.canvasHeight){
       xBottomRight = xUpperLeft + magnitude;
       //convert magnitude into pixels & apply magnitude in pixels to height
       yBottomRight = yUpperLeft + levelPainter.getDecimalFromHeight(levelPainter.getWidthFromDecimal(magnitude));
     } else {
-      yBottomRight = yUpperLeft + magnitude;
       xBottomRight = xUpperLeft + levelPainter.getDecimalFromWidth(levelPainter.getHeightFromDecimal(magnitude));
+      yBottomRight = yUpperLeft + magnitude;
     }
     for(int i = 1; i <= this.rows; i++){
-      if(i == 1){
-        width = levelPainter.getHeightFromDecimal(((yUpperLeft + (yBottomRight-yUpperLeft)*(i-1)/rows) + (yUpperLeft + (yBottomRight-yUpperLeft)*(i)/rows))/2);
-      }
       for(int j = 1; j <= this.columns; j++){
+        /*
+        print('first part: ${xUpperLeft + (xBottomRight-xUpperLeft)*(j-1)/columns}');
+        print('2nd part: ${(xBottomRight-xUpperLeft)*(j-1)/columns}');
+        print('3rd part: $columns');
+        print('4th part: ${(xBottomRight-xUpperLeft)*(j-1)}');
+        print('5th part: ${(xBottomRight-xUpperLeft)}');
+        print('6th part: ${j-1}');*/
         midPoints.add(new Offset(levelPainter.getWidthFromDecimal(((xUpperLeft + (xBottomRight-xUpperLeft)*(j-1)/columns) + (xUpperLeft + (xBottomRight-xUpperLeft)*(j)/columns))/2),
             levelPainter.getHeightFromDecimal(((yUpperLeft + (yBottomRight-yUpperLeft)*(i-1)/rows) + (yUpperLeft + (yBottomRight-yUpperLeft)*(i)/rows))/2)));
         tiles.add(false);
         //tiles[(rows*(i-1))+(j-1)] = false;
+      }
+      if(i == 1){
+        width = levelPainter.getHeightFromDecimal(((yUpperLeft + (yBottomRight-yUpperLeft)*(i-1)/rows) + (yUpperLeft + (yBottomRight-yUpperLeft)*(i)/rows))/2);
+        width = midPoints[1].dx - midPoints[0].dx;
+        print('WIDTH: $width');
       }
     }
   }
@@ -368,27 +409,27 @@ class Obstacle extends FieldElement{
       ..strokeWidth = 1
       ..color = Colors.white;
     if(this.horizontal == true){
-      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-2+length)], grid.width/2, paint);
+      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-2+length)], grid.width/2 - 3, paint);
       levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
           grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx,
-          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/2), new Offset(
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy - grid.width/3), new Offset(
           grid.midPoints[(grid.rows*(currY-1))+(currX-2+length)].dx,
-          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/2)), paint);
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy + grid.width/3)), paint);
       for(int i = 0; i < length; i++){
         grid.tiles[(grid.rows*(currY-1))+(currX-1+i)] = true;
       }
     } else {
-      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-2+length))+(currX-1)], grid.width/2, paint);
+      levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-2+length))+(currX-1)], grid.width/2 - 3, paint);
       levelPainter.canvas.drawRect(new Rect.fromPoints(new Offset(
-          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/2,
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx - grid.width/3, //+
           grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dy), new Offset(
-          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/2,
+          grid.midPoints[(grid.rows*(currY-1))+(currX-1)].dx + grid.width/3, //-
           grid.midPoints[(grid.rows*(currY-2+length))+(currX-1)].dy)), paint);
       for(int i = 0; i < length; i++){
         grid.tiles[(grid.rows*(currY-1+i))+(currX-1)] = true;
       }
     }
-    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-1)], grid.width/2, whitePaint);
+    levelPainter.canvas.drawCircle(grid.midPoints[(grid.rows*(currY-1))+(currX-1)], grid.width/2 - 3, whitePaint);
     //grid.printTiles();
   }
 }
@@ -449,7 +490,7 @@ class Ball extends FieldElement {
       ..strokeWidth = 1
       ..color = Colors.white;
     levelPainter.canvas.drawCircle(
-        grid.midPoints[(grid.rows * (currY - 1)) + (currX - 1)], grid.width / 2,
+        grid.midPoints[(grid.rows * (currY - 1)) + (currX - 1)], grid.width/2 - 3,
         paint);
     if (direction == Direction.DOWN) {
       levelPainter.canvas.drawLine(new Offset(

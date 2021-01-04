@@ -1,9 +1,9 @@
 {
   "id": 4,
   "grid": {
-    "xUpperLeft": 0.05,
-    "yUpperLeft": 0.05,
-    "magnitude": 0.9,
+    "xUpperLeft": 0.1,
+    "yUpperLeft": 0.3,
+    "magnitude": 0.7,
     "rows": 5,
     "columns": 5
   },

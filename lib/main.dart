@@ -46,7 +46,7 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
                     children: <Widget>[
 
                       Text(
-                        "D-Ball Alpha",
+                        "D-Ball\nPre-Alpha",
                         style: TextStyle(
                           fontFamily: "Goldman",
                           //fontWeight: FontWeight.bold,

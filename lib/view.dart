@@ -46,6 +46,7 @@ class _GameViewState extends State<GameView> {
                           Controller controller = new Controller();
                           controller.currentPos = hi.localPosition;
                           controller.moveObstacle();
+                          controller.startDrag = hi.localPosition;
                         },
                         onPanEnd: (hi){
                           Controller controller = new Controller();
@@ -79,12 +80,15 @@ class _GameViewState extends State<GameView> {
                                       print("###############################################");
                                       print("###############################################");
                                       print("###############################################");
+                                      /*setState((){
+                                        GameView();
+                                        GameView();
+                                      });*/
                                       Navigator.push(
                                         context,
                                         //TODO: DISPOSE EVERYTHING AND RELOAD THE LEVEL
                                         MaterialPageRoute(builder: (context) => GameView()),
                                       );
-                                      GameView.lvlComplete = false;
                                     },
                                     child: Card(
                                       //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
@@ -289,7 +293,6 @@ class Grid {
       if(i == 1){
         width = levelPainter.getHeightFromDecimal(((yUpperLeft + (yBottomRight-yUpperLeft)*(i-1)/rows) + (yUpperLeft + (yBottomRight-yUpperLeft)*(i)/rows))/2);
         width = midPoints[1].dx - midPoints[0].dx;
-        print('WIDTH: $width');
       }
     }
   }

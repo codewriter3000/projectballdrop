@@ -150,11 +150,13 @@ class Controller extends ChangeNotifier {
       if(root.horizontal){
         if((getCoords(startDrag).dx != getCoords(currentPos).dx) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currX = (getCoords(currentPos).dx).toInt();
+          //startDrag = getCoords(currentPos);
           levelPainter.changeNotifier.notifyListeners();
         }
       } else {
         if((getCoords(startDrag).dy != getCoords(currentPos).dy) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currY = (getCoords(currentPos).dy).toInt();
+          //startDrag = getCoords(currentPos);
           levelPainter.changeNotifier.notifyListeners();
         }
       }
@@ -204,8 +206,8 @@ class Controller extends ChangeNotifier {
   bool verifyMove(Offset old, Offset prime, Obstacle root){
     print('old: $old');
     print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
+    //checks if you are clicking on the root
     if(old.dx != root.currX || old.dy != root.currY){
-      print("GUN GUN GUN EVERYBODY DOWN");
       return false;
     }
     //print('------------------------------------');

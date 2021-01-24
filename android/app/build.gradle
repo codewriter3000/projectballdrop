@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '2'
+    //flutterVersionCode = '2'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = 'BUILD10001'
+    //flutterVersionName = 'BUILD10001'
 }
 
 def keystoreProperties = new Properties()
@@ -47,8 +47,8 @@ android {
         applicationId "com.micharski.d_ball"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 2//flutterVersionCode.toInteger()
-        versionName "BUILD10001"//flutterVersionName
+        versionCode 4//flutterVersionCode.toInteger()
+        versionName "BUILD10003"//flutterVersionName
     }
 
     signingConfigs {

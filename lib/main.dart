@@ -1,31 +1,28 @@
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 
 void main() async {
   runApp(DBall());
 }
 
-
 class DBall extends StatefulWidget {
-
   @override
   _DBallState createState() => _DBallState();
 }
 
-class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
+class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 3);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -35,113 +32,107 @@ class _DBallState extends State<DBall>with SingleTickerProviderStateMixin {
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 4,
-        child: Builder(builder: (BuildContext context) {
-          return Scaffold(
-            backgroundColor: Color(0xFF151515),
-            body: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-
-                      Text(
-                        "D-Ball\nPre-Alpha",
-                        style: TextStyle(
-                          fontFamily: "Goldman",
-                          //fontWeight: FontWeight.bold,
-                          fontSize: 60,
-                          color: Color(0xFFFFFFFF),
+        child: Builder(
+          builder: (BuildContext context) {
+            return Scaffold(
+              backgroundColor: Color(0xFF151515),
+              body: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          "D-Ball\nPre-Alpha",
+                          style: TextStyle(
+                            fontFamily: "Goldman",
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 60,
+                            color: Color(0xFFFFFFFF),
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Warning: The game may not work as intended.",
-                        style: TextStyle(
-                          fontFamily: "Goldman",
-                          fontSize: 20,
-                          color: Color(0xFFFFFFFF),
+                        Text(
+                          "Warning: The game may not work as intended.",
+                          style: TextStyle(
+                            fontFamily: "Goldman",
+                            fontSize: 20,
+                            color: Color(0xFFFFFFFF),
+                          ),
                         ),
-                      ),
-                      FlatButton(
-                        padding: EdgeInsets.only(left: 50, right: 50),
-                        onPressed: () {
-                          //print("DBall");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => GameView()),
-                          );
-                        },
-                        child: Card(
-                            margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
-                            borderOnForeground: false,
-                            child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                "DBall",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontFamily: "Goldman"
+                        FlatButton(
+                          padding: EdgeInsets.only(left: 50, right: 50),
+                          onPressed: () {
+                            //print("DBall");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GameView()),
+                            );
+                          },
+                          child: Card(
+                              margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
+                              borderOnForeground: false,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "DBall",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 30, fontFamily: "Goldman"),
                                 ),
-                              ),
-                            )
+                              )),
                         ),
-                      ),
-                      FlatButton(
-                        padding: EdgeInsets.only(left: 100, right: 100),
-                        onPressed: () {
-                          //print("Credits");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Credits()),
-                          );
-                        },
-                        child: Card(
-                          //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
-                            borderOnForeground: false,
-                            child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                "Credits",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontFamily: "Goldman"
+                        FlatButton(
+                          padding: EdgeInsets.only(left: 100, right: 100),
+                          onPressed: () {
+                            //print("Credits");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Credits()),
+                            );
+                          },
+                          child: Card(
+                              //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
+                              borderOnForeground: false,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "Credits",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 30, fontFamily: "Goldman"),
                                 ),
-                              ),
-                            )
+                              )),
                         ),
-                      ),
-                      FlatButton(
-                        padding: EdgeInsets.only(left: 50, right: 50),
-                        onPressed: () {
-                          //print("Contribute");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Contribute()),
-                          );
-                        },
-                        child: Card(
-                          //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
-                            borderOnForeground: false,
-                            child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                "Contribute",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontFamily: "Goldman"
+                        FlatButton(
+                          padding: EdgeInsets.only(left: 50, right: 50),
+                          onPressed: () {
+                            //print("Contribute");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Contribute()),
+                            );
+                          },
+                          child: Card(
+                              //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
+                              borderOnForeground: false,
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "Contribute",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 30, fontFamily: "Goldman"),
                                 ),
-                              ),
-                            )
+                              )),
                         ),
-                      ),
-                    ]),
+                      ]),
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
         ),
       ),
     );
@@ -188,7 +179,8 @@ class _CreditsState extends State<Credits> {
                               print("Back");
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => DBall()),
+                                MaterialPageRoute(
+                                    builder: (context) => DBall()),
                               );
                             },
                             child: Card(
@@ -200,19 +192,11 @@ class _CreditsState extends State<Credits> {
                                     "Back",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 30,
-                                        fontFamily: "Goldman"
-                                    ),
+                                        fontSize: 30, fontFamily: "Goldman"),
                                   ),
-                                )
-                            ),
+                                )),
                           ),
-                        ]
-                    )
-                )
-            )
-        )
-    );
+                        ])))));
   }
 }
 
@@ -222,10 +206,7 @@ class Contribute extends StatefulWidget {
 }
 
 class _ContributeState extends State<Contribute> {
-
-  Future fetchLevels() async {
-
-  }
+  Future fetchLevels() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +242,8 @@ class _ContributeState extends State<Contribute> {
                               print("Back");
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => DBall()),
+                                MaterialPageRoute(
+                                    builder: (context) => DBall()),
                               );
                             },
                             child: Card(
@@ -273,18 +255,10 @@ class _ContributeState extends State<Contribute> {
                                     "Back",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 30,
-                                        fontFamily: "Goldman"
-                                    ),
+                                        fontSize: 30, fontFamily: "Goldman"),
                                   ),
-                                )
-                            ),
+                                )),
                           ),
-                        ]
-                    )
-                )
-            )
-        )
-    );
+                        ])))));
   }
 }

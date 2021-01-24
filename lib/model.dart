@@ -25,7 +25,7 @@ class Level extends ChangeNotifier {
   int id;
   Map<String, dynamic> decodedJson;
 
-  Level(int id){
+  Level(int id) {
     print("Constructor is constructing");
   }
 
@@ -38,7 +38,7 @@ class Level extends ChangeNotifier {
     ball = Ball.fromJson(decodedJson['ball']['1']);
     goal = Goal.fromJson(decodedJson['goal']['1']);
     obstacles = List<Obstacle>();
-    for(int i = 1; i <= decodedJson['obstacles'].length; i++){
+    for (int i = 1; i <= decodedJson['obstacles'].length; i++) {
       obstacles.add(Obstacle.fromJson(decodedJson['obstacles']['$i']));
     }
   }

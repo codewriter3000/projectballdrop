@@ -164,48 +164,60 @@ class Controller extends ChangeNotifier {
   }
 
   void tryBallMove(){
-    while(levelPainter.level.ball.currX != grid.levelPainter.level.goal.initialX || levelPainter.level.ball.currY != grid.levelPainter.level.goal.initialY){
-      if(levelPainter.level.ball.direction == Direction.RIGHT){
-        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX)] == false){
-          print("ball is moved");
-          levelPainter.level.ball.currX += 1;
-        } else {
-          return;
-        }
-      } else if(levelPainter.level.ball.direction == Direction.DOWN){
-        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY))+(levelPainter.level.ball.currX-1)] == false){
-          print("ball is moved");
-          levelPainter.level.ball.currY += 1;
-        } else {
-          return;
-        }
-      } else if(levelPainter.level.ball.direction == Direction.UP){
-        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-2))+(levelPainter.level.ball.currX-1)] == false){
-          print("ball is moved");
-          levelPainter.level.ball.currY -= 1;
-        } else {
-          return;
-        }
-      } else if(levelPainter.level.ball.direction == Direction.LEFT){
-        if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX-2)] == false){
-          print("ball is moved");
-          levelPainter.level.ball.currX -= 1;
-        } else {
-          return;
-        }
-      } else {
-        throw Exception();
+    final int currentLevel = grid.levelPainter.level.id;
+    print("ballX: ${levelPainter.level.ball.currX}");
+    print("ballY: ${levelPainter.level.ball.currY}");
+    print("goalX: ${levelPainter.level.goal.initialX}");
+    print("goalY: ${levelPainter.level.goal.initialY}");
+    while(levelPainter.level.ball.currX != levelPainter.level.goal.initialX || levelPainter.level.ball.currY != levelPainter.level.goal.initialY){
+      switch(levelPainter.level.ball.direction){
+        case Direction.RIGHT:
+          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX)] == false){
+            print("ball is moved");
+            levelPainter.level.ball.currX += 1;
+          } else {
+            return;
+          }
+          break;
+        case Direction.DOWN:
+          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY))+(levelPainter.level.ball.currX-1)] == false){
+            print("ball is moved");
+            levelPainter.level.ball.currY += 1;
+          } else {
+            return;
+          }
+          break;
+        case Direction.UP:
+          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-2))+(levelPainter.level.ball.currX-1)] == false){
+            print("ball is moved");
+            levelPainter.level.ball.currY -= 1;
+          } else {
+            return;
+          }
+          break;
+        case Direction.LEFT:
+          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX-2)] == false){
+            print("ball is moved");
+            levelPainter.level.ball.currX -= 1;
+          } else {
+            return;
+          }
+          break;
+        default:
+          throw Exception();
       }
     }
-    print("LEVEL ${GameView.lvl} COMPLETE");
-    GameView.lvl += 1;
-    GameView.lvlComplete = true;
+    if(GameView.lvl == currentLevel){
+      print("LEVEL ${GameView.lvl} COMPLETE");
+      GameView.lvl += 1;
+      GameView.lvlComplete = true;
+    }
   }
 
   //checks if the move is legal
   bool verifyMove(Offset old, Offset prime, Obstacle root){
     print('old: $old');
-    print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
+    //print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
     //checks if you are clicking on the root
     if(old.dx != root.currX || old.dy != root.currY){
       return false;

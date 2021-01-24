@@ -91,10 +91,7 @@ class _GameViewState extends State<GameView> {
                                   "###############################################");
                               print(
                                   "###############################################");
-                              /*setState((){
-                                        GameView();
-                                        GameView();
-                                      });*/
+
                               Navigator.push(
                                 context,
                                 //TODO: DISPOSE EVERYTHING AND RELOAD THE LEVEL
@@ -145,9 +142,10 @@ class LevelPainter extends CustomPainter {
     changeNotifier = repaint;
   }
 
+
   @override
   void paint(Canvas canvas, Size size) {
-    final grid = level.grid;
+    var grid = level.grid;
     canvasHeight = size.width;
     canvasWidth = size.height;
     this.canvas = canvas;
@@ -174,6 +172,7 @@ class LevelPainter extends CustomPainter {
     Controller controller = new Controller();
     controller.grid = grid;
     controller.levelPainter = this;
+    print("Controller finished implementation");
     /*for(double i = this.getWidthFromDecimal(grid.xUpperLeft); i <= this.getWidthFromDecimal(grid.xBottomRight); i++){
       for(double j = this.getHeightFromDecimal(grid.yUpperLeft); j <= this.getHeightFromDecimal(grid.yBottomRight); j++){
         print(controller.getCoords(Offset(i, j)));
@@ -446,7 +445,7 @@ class Obstacle extends FieldElement {
     if (this.horizontal == true) {
       levelPainter.canvas.drawCircle(
           grid.midPoints[(grid.rows * (currY - 1)) + (currX - 2 + length)],
-          grid.width / 2 - 3,
+          grid.width / 3,
           paint);
       levelPainter.canvas.drawRect(
           new Rect.fromPoints(
@@ -468,7 +467,7 @@ class Obstacle extends FieldElement {
     } else {
       levelPainter.canvas.drawCircle(
           grid.midPoints[(grid.rows * (currY - 2 + length)) + (currX - 1)],
-          grid.width / 2 - 3,
+          grid.width / 3,
           paint);
       levelPainter.canvas.drawRect(
           new Rect.fromPoints(

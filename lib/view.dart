@@ -13,7 +13,7 @@ import 'model.dart';
 final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
-  static int lvl = 7;
+  static int lvl = 0;
   static bool lvlComplete = false;
 
   static _GameViewState of(BuildContext context) =>

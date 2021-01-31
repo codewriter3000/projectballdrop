@@ -4,58 +4,63 @@
     "xUpperLeft": 0.1,
     "yUpperLeft": 0.3,
     "magnitude": 0.7,
-    "rows": 4,
-    "columns": 4
+    "rows": 5,
+    "columns": 5
   },
   "ball": {
     "1": {
-      "id": 1,
-      "color": "0xFFFFCA28",
-      "initX": 4,
+      "color": "0xFF3F51B5",
+      "initX": 1,
       "initY": 1,
       "direction": "down"
     }
   },
   "goal": {
     "1": {
-      "id": 1,
-      "color": "0xFFFFCA28",
-      "initX": 4,
-      "initY": 4
+      "color": "0xFF3F51B5",
+      "initX": 1,
+      "initY": 5
     }
   },
   "obstacles": {
     "1": {
-      "color": "0xFFFF5722",
+      "color": "0xFFE91E63",
       "initX": 1,
-      "initY": 1,
+      "initY": 2,
       "length": 2,
       "horizontal": true
     },
     "2": {
-      "color": "0xFF81C784",
-      "initX": 2,
-      "initY": 2,
-      "length": 3,
+      "color": "0xFFFFEB3B",
+      "initX": 1,
+      "initY": 3,
+      "length": 2,
       "horizontal": true
     },
     "3": {
-      "color": "0xFFB71C1C",
+      "color": "0xFF4DD0E1",
       "initX": 1,
-      "initY": 2,
+      "initY": 4,
       "length": 2,
-      "horizontal": false
+      "horizontal": true
     },
     "4": {
-      "color": "0xFFFFF176",
+      "color": "0xFF66BB6A",
+      "initX": 3,
+      "initY": 2,
+      "length": 2,
+      "horizontal": true
+    },
+    "5": {
+      "color": "0xFFBA68C8",
       "initX": 3,
       "initY": 3,
       "length": 2,
       "horizontal": true
     },
-    "5": {
-      "color": "0xFF01579B",
-      "initX": 1,
+    "6": {
+      "color": "0xFFF57C00",
+      "initX": 3,
       "initY": 4,
       "length": 2,
       "horizontal": true

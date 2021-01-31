@@ -212,6 +212,9 @@ class Controller extends ChangeNotifier {
           throw Exception();
       }
     }
+    print("&&&&&&&&&&&&&&&");
+    print(GameView.lvl);
+    print(currentLevel);
     if(GameView.lvl == currentLevel){
       print("LEVEL ${GameView.lvl} COMPLETE");
       GameView.lvl += 1;

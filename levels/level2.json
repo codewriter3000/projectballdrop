@@ -9,46 +9,55 @@
   },
   "ball": {
     "1": {
-      "color": "0xFFFF5722",
-      "initX": 1,
+      "id": 1,
+      "color": "0xFFFFCA28",
+      "initX": 4,
       "initY": 1,
       "direction": "down"
     }
   },
   "goal": {
     "1": {
-      "color": "0xFFFF5722",
-      "initX": 1,
+      "id": 1,
+      "color": "0xFFFFCA28",
+      "initX": 4,
       "initY": 4
     }
   },
   "obstacles": {
     "1": {
-      "color": "0xFFF44336",
+      "color": "0xFFFF5722",
       "initX": 1,
-      "initY": 2,
+      "initY": 1,
       "length": 2,
       "horizontal": true
     },
     "2": {
-      "color": "0xFF009688",
+      "color": "0xFF81C784",
       "initX": 2,
-      "initY": 1,
+      "initY": 2,
       "length": 3,
       "horizontal": true
     },
     "3": {
-      "color": "0xFFFF9800",
-      "initX": 4,
+      "color": "0xFFB71C1C",
+      "initX": 1,
       "initY": 2,
-      "length": 3,
+      "length": 2,
       "horizontal": false
     },
     "4": {
-      "color": "0xFFFFEB3B",
+      "color": "0xFFFFF176",
+      "initX": 3,
+      "initY": 3,
+      "length": 2,
+      "horizontal": true
+    },
+    "5": {
+      "color": "0xFF01579B",
       "initX": 1,
       "initY": 4,
-      "length": 3,
+      "length": 2,
       "horizontal": true
     }
   }

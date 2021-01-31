@@ -1,7 +1,13 @@
+
+import 'dart:io';
+
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+
+const _INTRO = 'intro.mp3';
 
 void main() async {
   runApp(DBall());
@@ -13,12 +19,22 @@ class DBall extends StatefulWidget {
 }
 
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
+  AudioCache audioCache = AudioCache();
+  AudioPlayer advancedPlayer = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    if (Platform.isIOS){
+      if(audioCache.fixedPlayer != null){
+        audioCache.fixedPlayer.startHeadlessService();
+      }
+      advancedPlayer.startHeadlessService();
+    }
+    audioCache.play(_INTRO);
   }
 
   @override

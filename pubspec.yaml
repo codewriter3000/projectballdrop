@@ -23,9 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flame: ^0.28.0
-  box2d_flame: ^0.4.6
   http: ^0.12.0+1
+  audioplayers: ^0.17.3
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,6 +50,7 @@ flutter:
   uses-material-design: true
   assets:
     - levels/
+    - intro.mp3
   # To add assets to your application, add an assets section, like this:
   fonts:
   - family: Goldman

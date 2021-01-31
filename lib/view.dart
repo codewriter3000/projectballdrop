@@ -92,12 +92,14 @@ class _GameViewState extends State<GameView> {
                               print(
                                   "###############################################");
 
-                              Navigator.push(
+                              level = null;
+                              initState();
+                              /*Navigator.push(
                                 context,
                                 //TODO: DISPOSE EVERYTHING AND RELOAD THE LEVEL
                                 MaterialPageRoute(
                                     builder: (context) => GameView()),
-                              );
+                              );*/
                             },
                             child: Card(
                               //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),

@@ -123,7 +123,9 @@ class Controller extends ChangeNotifier {
     //checks if the drag was started on an obstacle or on the ball
     //loop through every single obstacle and the cells they take up
     for(Obstacle obstacle in levelPainter.level.obstacles){
+      //print('i cant fight this feeling anymore: $obstacle');
       for(int i = 0; i < obstacle.length; i++){
+        //print("TIME FOR ME TO FLY:::::::::::::::::: ${getCoords(startDrag) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)}");
         if(obstacle.horizontal == true){
           //printCondition(getCoords(startDrag), Offset(obstacle.currX+i+0.0, obstacle.currY+0.0));
           if(getCoords(startDrag) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)){
@@ -140,6 +142,7 @@ class Controller extends ChangeNotifier {
   }
 
   void moveObstacle() {
+    //print("don't stop believin");
     //find the root of the obstacle you are moving
     //exit the void if you did not start your drag on an obstacle
     if(findRoot() == null){
@@ -151,12 +154,14 @@ class Controller extends ChangeNotifier {
         if((getCoords(startDrag).dx != getCoords(currentPos).dx) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currX = (getCoords(currentPos).dx).toInt();
           //startDrag = getCoords(currentPos);
+          //print(levelPainter.changeNotifier == null);
           levelPainter.changeNotifier.notifyListeners();
         }
       } else {
         if((getCoords(startDrag).dy != getCoords(currentPos).dy) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
           root.currY = (getCoords(currentPos).dy).toInt();
           //startDrag = getCoords(currentPos);
+          //print(levelPainter.changeNotifier == null);
           levelPainter.changeNotifier.notifyListeners();
         }
       }

@@ -4,8 +4,8 @@
     "xUpperLeft": 0.1,
     "yUpperLeft": 0.3,
     "magnitude": 0.7,
-    "rows": 6,
-    "columns": 6
+    "rows": 9,
+    "columns": 9
   },
   "ball": {
     "1": {

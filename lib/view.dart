@@ -93,6 +93,7 @@ class _GameViewState extends State<GameView> {
                                   "###############################################");
 
                               level = null;
+                              GameView.lvlComplete = false;
                               initState();
                               /*Navigator.push(
                                 context,
@@ -109,8 +110,8 @@ class _GameViewState extends State<GameView> {
                                 child: Padding(
                                   padding: EdgeInsets.all(2),
                                   child: Text(
-                                    "Reset Level",
-                                    //"${GameView.lvlComplete == true ? 'Next Level' : 'Reset Level'}",
+                                    //"Reset Level",
+                                    "${GameView.lvlComplete == true ? 'Next Level' : 'Reset Level'}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 30, fontFamily: "Goldman"),

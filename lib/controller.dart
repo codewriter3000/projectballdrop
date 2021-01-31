@@ -233,7 +233,7 @@ class Controller extends ChangeNotifier {
       /*for(int i = 0; i < root.length; i++){
         levelPainter.level.grid.tiles[(levelPainter.level.grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
       }*/
-      if (prime.dx == 0.0 || prime.dx + root.length - 1 >= 7.0) {
+      if (prime.dx == 0.0 || prime.dx + root.length - 1 >= grid.columns + 1) {
         //print('obstacle is HORIZONTAL and being moved outside of grid');
         return false;
       } else {
@@ -245,7 +245,7 @@ class Controller extends ChangeNotifier {
         }
       }
     } else {
-      if(prime.dy == 0.0 || prime.dy + root.length - 1 >= 7.0){
+      if(prime.dy == 0.0 || prime.dy + root.length - 1 >= grid.rows + 1){
         //print('obstacle is VERTICAL and being moved outside of grid');
         return false;
       } else {

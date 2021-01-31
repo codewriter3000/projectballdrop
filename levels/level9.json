@@ -1,5 +1,5 @@
 {
-  "id": 7,
+  "id": 9,
   "grid": {
     "xUpperLeft": 0.1,
     "yUpperLeft": 0.3,
@@ -27,38 +27,52 @@
   "obstacles": {
     "1": {
       "color": "0xFF4CAF50",
-      "initX": 3,
-      "initY": 4,
+      "initX": 1,
+      "initY": 1,
       "length": 3,
-      "horizontal": false
+      "horizontal": true
     },
     "2": {
       "color": "0xFF795548",
       "initX": 4,
-      "initY": 4,
-      "length": 2,
+      "initY": 1,
+      "length": 3,
       "horizontal": true
     },
     "3": {
       "color": "0xFF009688",
-      "initX": 4,
-      "initY": 5,
-      "length": 2,
+      "initX": 1,
+      "initY": 2,
+      "length": 3,
       "horizontal": true
     },
     "4": {
       "color": "0xFFFF9800",
       "initX": 4,
-      "initY": 6,
-      "length": 2,
+      "initY": 2,
+      "length": 3,
       "horizontal": true
     },
     "5": {
       "color": "0xFFFFEB3B",
-      "initX": 6,
+      "initX": 3,
       "initY": 4,
       "length": 3,
-      "horizontal": false
+      "horizontal": true
+    },
+    "6": {
+      "color": "0xFF2196F3",
+      "initX": 3,
+      "initY": 5,
+      "length": 3,
+      "horizontal": true
+    },
+    "7": {
+      "color": "0xFF9C27B0",
+      "initX": 3,
+      "initY": 6,
+      "length": 3,
+      "horizontal": true
     }
   }
 }

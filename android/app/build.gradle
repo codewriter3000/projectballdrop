@@ -47,8 +47,8 @@ android {
         applicationId "com.micharski.d_ball"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 6//flutterVersionCode.toInteger()
-        versionName "BUILD10005"//flutterVersionName
+        versionCode 7//flutterVersionCode.toInteger()
+        versionName "BUILD10006"//flutterVersionName
     }
 
     signingConfigs {

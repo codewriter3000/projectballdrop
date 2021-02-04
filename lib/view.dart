@@ -15,9 +15,9 @@ import 'level_generator.dart';
 final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
-  static int lvl = 0;
+  static int lvl = 16;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
-  static int lvlQuantity = 14;
+  static int lvlQuantity = 16;
 
   static _GameViewState of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();

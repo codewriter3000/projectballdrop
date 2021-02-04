@@ -1,11 +1,13 @@
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:confetti/confetti.dart';
 
 const _INTRO = 'intro.mp3';
 
@@ -21,10 +23,13 @@ class DBall extends StatefulWidget {
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   AudioCache audioCache = AudioCache();
   AudioPlayer advancedPlayer = AudioPlayer();
+  bool gameComplete = GameView.lvlQuantity < GameView.lvl;
+  ConfettiController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = ConfettiController(duration: Duration(seconds: 5));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -34,7 +39,12 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
       }
       advancedPlayer.startHeadlessService();
     }
-    audioCache.play(_INTRO);
+    if(gameComplete){
+      _controller.play();
+      GameView.lvl = 0;
+      GameView.lvlComplete.value = false;
+    }
+    //audioCache.play(_INTRO);
   }
 
   @override
@@ -58,6 +68,12 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
+                        ConfettiWidget(
+                          confettiController: _controller,
+                          blastDirection: 0,
+                          emissionFrequency: 0.05,
+                          numberOfParticles: 10
+                        ),
                         Text(
                           "D-Ball\nPre-Alpha",
                           style: TextStyle(

@@ -8,13 +8,16 @@ import 'package:gestures/gestures.dart';
 
 import 'controller.dart';
 import 'full_drag.dart';
+import 'main.dart';
 import 'model.dart';
+import 'level_generator.dart';
 
 final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
   static int lvl = 0;
-  static bool lvlComplete = false;
+  static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
+  static int lvlQuantity = 14;
 
   static _GameViewState of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();
@@ -43,90 +46,98 @@ class _GameViewState extends State<GameView> {
       home: Scaffold(
         backgroundColor: Color(0xFF151515),
         body: SafeArea(
-          child: LayoutBuilder(
-            builder: (_, constraints) => GestureDetector(
-              onPanStart: (hi) {
-                Controller controller = new Controller();
-                controller.startDrag = hi.localPosition;
-              },
-              onPanUpdate: (hi) {
-                Controller controller = new Controller();
-                controller.currentPos = hi.localPosition;
-                controller.moveObstacle();
-                controller.startDrag = hi.localPosition;
-              },
-              onPanEnd: (hi) {
-                Controller controller = new Controller();
-                controller.tryBallMove();
-                controller.levelPainter.changeNotifier.notifyListeners();
-                controller.startDrag = null;
-                controller.currentPos = null;
-              },
-              child: Container(
-                //TODO: fix the container so it doesn't take up the entire screen and center align the grid
-                width: constraints.widthConstraints().maxWidth,
-                height: constraints.heightConstraints().maxHeight,
-                child: Container(
-                  child: CustomPaint(
-                    painter: LevelPainter(level, changeNotifier),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "Level ${GameView.lvl}",
-                          style: TextStyle(
-                            fontFamily: "Goldman",
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 60,
-                            color: Color(0xFFFFFFFF),
-                          ),
-                        ),
-                        Container(
-                          //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                          child: FlatButton(
-                            //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
-                            onPressed: () {
-                              print(
-                                  "###############################################");
-                              print(
-                                  "###############################################");
-                              print(
-                                  "###############################################");
-
-                              level = null;
-                              GameView.lvlComplete = false;
-                              initState();
-                              /*Navigator.push(
-                                context,
-                                //TODO: DISPOSE EVERYTHING AND RELOAD THE LEVEL
-                                MaterialPageRoute(
-                                    builder: (context) => GameView()),
-                              );*/
-                            },
-                            child: Card(
-                              //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
-                              borderOnForeground: false,
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: EdgeInsets.all(2),
-                                  child: Text(
-                                    //"Reset Level",
-                                    "${GameView.lvlComplete == true ? 'Next Level' : 'Reset Level'}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 30, fontFamily: "Goldman"),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: GameView.lvlComplete,
+            builder: (BuildContext context, bool lvlComplete, Widget child){
+              return LayoutBuilder(
+                builder: (_, constraints) => GestureDetector(
+                  onPanStart: (hi) {
+                    Controller controller = new Controller();
+                    controller.startDrag = hi.localPosition;
+                  },
+                  onPanUpdate: (hi) {
+                    Controller controller = new Controller();
+                    controller.currentPos = hi.localPosition;
+                    controller.moveObstacle();
+                    controller.startDrag = hi.localPosition;
+                  },
+                  onPanEnd: (hi) {
+                    Controller controller = new Controller();
+                    controller.tryBallMove();
+                    controller.levelPainter.changeNotifier.notifyListeners();
+                    controller.startDrag = null;
+                    controller.currentPos = null;
+                  },
+                  child: Container(
+                    width: constraints.widthConstraints().maxWidth,
+                    height: constraints.heightConstraints().maxHeight,
+                    child: Container(
+                      child: CustomPaint(
+                        painter: LevelPainter(level, changeNotifier),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
+                              style: TextStyle(
+                                fontFamily: "Goldman",
+                                //fontWeight: FontWeight.bold,
+                                fontSize: GameView.lvlComplete.value == false ? 60 : 50,
+                                color: Color(0xFFFFFFFF),
+                              ),
+                            ),
+                            Container(
+                              //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                              child: FlatButton(
+                                //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                                onPressed: () {
+                                  print(
+                                      "###############################################");
+                                  print(
+                                      "###############################################");
+                                  print(
+                                      "###############################################");
+                                  if(GameView.lvl > 100){
+                                    var customLvl = new LevelFactory();
+                                    customLvl.createLevel();
+                                  }
+                                  if (GameView.lvlQuantity < GameView.lvl){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DBall()),
+                                    );
+                                    return;
+                                  }
+                                  level = null;
+                                  GameView.lvlComplete = ValueNotifier(false);
+                                  initState();
+                                },
+                                child: Card(
+                                  //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
+                                  borderOnForeground: false,
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(2),
+                                      child: Text(
+                                        GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 30, fontFamily: "Goldman"),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

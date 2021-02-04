@@ -218,7 +218,7 @@ class Controller extends ChangeNotifier {
     if(GameView.lvl == currentLevel){
       print("LEVEL ${GameView.lvl} COMPLETE");
       GameView.lvl += 1;
-      GameView.lvlComplete = true;
+      GameView.lvlComplete.value = true;
     }
   }
 

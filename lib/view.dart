@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gestures/gestures.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
+import 'ad_manager.dart';
 import 'controller.dart';
 import 'full_drag.dart';
 import 'main.dart';
@@ -15,7 +17,7 @@ import 'level_generator.dart';
 final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
-  static int lvl = 16;
+  static int lvl = 0;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
   static int lvlQuantity = 16;
 
@@ -28,6 +30,15 @@ class GameView extends StatefulWidget {
 
 class _GameViewState extends State<GameView> {
   Level level;
+  BannerAd _bannerAd;
+
+  Future<void> _initAdMob() => FirebaseAdMob.instance.initialize(appId: AdManager.appId);
+
+  void _loadBannerAd(){
+    _bannerAd
+      ..load()
+      ..show(anchorType: AnchorType.top);
+  }
 
   @override
   void initState() {
@@ -37,6 +48,17 @@ class _GameViewState extends State<GameView> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    _bannerAd = BannerAd(
+      adUnitId: AdManager.bannerAdUnitId,
+      size: AdSize.banner,
+    );
+    _loadBannerAd();
+  }
+
+  @override
+  void dispose(){
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   @override

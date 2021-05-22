@@ -29,22 +29,26 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = ConfettiController(duration: Duration(seconds: 5));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    if (Platform.isIOS){
-      if(audioCache.fixedPlayer != null){
-        audioCache.fixedPlayer.startHeadlessService();
+
+    void playIntroAudio(){
+      _controller = ConfettiController(duration: Duration(seconds: 5));
+      if (Platform.isIOS){
+        if(audioCache.fixedPlayer != null){
+          audioCache.fixedPlayer.startHeadlessService();
+        }
+        advancedPlayer.startHeadlessService();
       }
-      advancedPlayer.startHeadlessService();
+      if(gameComplete){
+        _controller.play();
+        GameView.lvl = 0;
+        GameView.lvlComplete.value = false;
+      }
+      audioCache.play(_INTRO);
     }
-    if(gameComplete){
-      _controller.play();
-      GameView.lvl = 0;
-      GameView.lvlComplete.value = false;
-    }
-    //audioCache.play(_INTRO);
+    playIntroAudio();
   }
 
   @override
@@ -56,15 +60,13 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 4,
-        child: Builder(
+        home: Builder(
           builder: (BuildContext context) {
             return Scaffold(
               backgroundColor: Color(0xFF151515),
               body: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
+                child: Container(
+                  margin: EdgeInsets.all(20),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
@@ -78,7 +80,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           "D-Ball\nPre-Alpha",
                           style: TextStyle(
                             fontFamily: "Goldman",
-                            //fontWeight: FontWeight.bold,
                             fontSize: 60,
                             color: Color(0xFFFFFFFF),
                           ),
@@ -92,7 +93,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           ),
                         ),
                         FlatButton(
-                          padding: EdgeInsets.only(left: 50, right: 50),
+                          padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
                           onPressed: () {
                             //print("DBall");
                             Navigator.push(
@@ -102,10 +103,9 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                             );
                           },
                           child: Card(
-                              margin: EdgeInsets.fromLTRB(25, 130, 25, 5),
                               borderOnForeground: false,
-                              child: Padding(
-                                padding: EdgeInsets.all(20),
+                              child: Container(
+                                margin: EdgeInsets.all(20),
                                 child: Text(
                                   "DBall",
                                   textAlign: TextAlign.center,
@@ -127,8 +127,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           child: Card(
                               //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
                               borderOnForeground: false,
-                              child: Padding(
-                                padding: EdgeInsets.all(20),
+                              child: Container(
+                                margin: EdgeInsets.all(20),
                                 child: Text(
                                   "Credits",
                                   textAlign: TextAlign.center,
@@ -150,8 +150,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           child: Card(
                               //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
                               borderOnForeground: false,
-                              child: Padding(
-                                padding: EdgeInsets.all(20),
+                              child: Container(
+                                margin: EdgeInsets.all(20),
                                 child: Text(
                                   "Contribute",
                                   textAlign: TextAlign.center,
@@ -166,7 +166,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
             );
           },
         ),
-      ),
     );
   }
 }

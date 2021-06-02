@@ -74,115 +74,109 @@ class _GameViewState extends State<GameView> {
         backgroundColor: Color(0xFF151515),
         body: SafeArea(
           child: Container(
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  if (_isBannerAdReady)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: _bannerAd.size.width.toDouble(),
-                        height: _bannerAd.size.height.toDouble(),
-                        child: AdWidget(ad: _bannerAd),
+            child: ValueListenableBuilder<bool>(
+              valueListenable: GameView.lvlComplete,
+              builder: (BuildContext context, bool lvlComplete, Widget child){
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    if (_isBannerAdReady)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          width: _bannerAd.size.width.toDouble(),
+                          height: _bannerAd.size.height.toDouble(),
+                          child: AdWidget(ad: _bannerAd),
+                        ),
+                      ),
+                    Text(
+                      GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "Goldman",
+                        //fontWeight: FontWeight.bold,
+                        fontSize: GameView.lvlComplete.value == false ? 60 : 50,
+                        color: Color(0xFFFFFFFF),
                       ),
                     ),
-                  Text(
-                    GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: "Goldman",
-                      //fontWeight: FontWeight.bold,
-                      fontSize: GameView.lvlComplete.value == false ? 60 : 50,
-                      color: Color(0xFFFFFFFF),
-                    ),
-                  ),
-                  Container(
-                    //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                    child: FlatButton(
-                      //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
-                      onPressed: () {
-                        print(
-                            "###############################################");
-                        print(
-                            "###############################################");
-                        print(
-                            "###############################################");
-                        if(GameView.lvl > 100){
-                          var customLvl = new LevelFactory();
-                          customLvl.createLevel();
-                        }
-                        if (GameView.lvlQuantity < GameView.lvl){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DBall()),
-                          );
-                          return;
-                        }
-                        level = null;
-                        GameView.lvlComplete = ValueNotifier(false);
-                        initState();
-                      },
-                      child: Card(
-                        //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
-                        borderOnForeground: false,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: EdgeInsets.all(2),
-                            child: Text(
-                              GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 30, fontFamily: "Goldman"),
+                    Container(
+                      //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                      child: FlatButton(
+                        //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                        onPressed: () {
+                          print(
+                              "###############################################");
+                          print(
+                              "###############################################");
+                          print(
+                              "###############################################");
+                          if(GameView.lvl > 100){
+                            var customLvl = new LevelFactory();
+                            customLvl.createLevel();
+                          }
+                          if (GameView.lvlQuantity < GameView.lvl){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DBall()),
+                            );
+                            return;
+                          }
+                          level = null;
+                          GameView.lvlComplete = ValueNotifier(false);
+                          initState();
+                        },
+                        child: Card(
+                          //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
+                          borderOnForeground: false,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.all(2),
+                              child: Text(
+                                GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 30, fontFamily: "Goldman"),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    //width: MediaQuery.of(context).size.width/MediaQuery.of(context).devicePixelRatio,
-                    //height: MediaQuery.of(context).size.height/MediaQuery.of(context).devicePixelRatio, //make it the distance between height and top of canvas
-                    child: ClipRect(
-                      child: Container(
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: GameView.lvlComplete,
-                          builder: (BuildContext context, bool lvlComplete, Widget child){
-                            return LayoutBuilder(
-                              builder: (_, constraints) => GestureDetector(
-                                  onPanStart: (hi) {
-                                    Controller controller = new Controller();
-                                    controller.startDrag = hi.localPosition;
-                                  },
-                                  onPanUpdate: (hi) {
-                                    Controller controller = new Controller();
-                                    controller.currentPos = hi.localPosition;
-                                    controller.moveObstacle();
-                                    controller.startDrag = hi.localPosition;
-                                    print('Global: ${hi.localPosition}');
-                                    print('Discrete: ${controller.getMouseCoords()}');
-                                  },
-                                  onPanEnd: (hi) {
-                                    Controller controller = new Controller();
-                                    controller.tryBallMove();
-                                    controller.levelPainter.changeNotifier.notifyListeners();
-                                    controller.startDrag = null;
-                                    controller.currentPos = null;
-                                  },
-                                  child: CustomPaint(
-                                      painter: LevelPainter(level, changeNotifier)
-                                  )
-                              ),
-                            );
-                          },
-                        ),
+                    Expanded(
+                      //width: MediaQuery.of(context).size.width/MediaQuery.of(context).devicePixelRatio,
+                      //height: MediaQuery.of(context).size.height/MediaQuery.of(context).devicePixelRatio, //make it the distance between height and top of canvas
+                      child: ClipRect(
+                          child: GestureDetector(
+                            onPanStart: (hi) {
+                              Controller controller = new Controller();
+                              controller.startDrag = hi.localPosition;
+                            },
+                            onPanUpdate: (hi) {
+                              Controller controller = new Controller();
+                              controller.currentPos = hi.localPosition;
+                              controller.moveObstacle();
+                              controller.startDrag = hi.localPosition;
+                              print('Global: ${hi.localPosition}');
+                              print('Discrete: ${controller.getMouseCoords()}');
+                            },
+                            onPanEnd: (hi) {
+                              Controller controller = new Controller();
+                              controller.tryBallMove();
+                              controller.levelPainter.changeNotifier.notifyListeners();
+                              controller.startDrag = null;
+                              controller.currentPos = null;
+                            },
+                            child: CustomPaint(
+                                painter: LevelPainter(level, changeNotifier)
+                            ),
+                          )
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ],
+                );
+              }
             ),
           ),
         ),

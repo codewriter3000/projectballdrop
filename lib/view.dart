@@ -1,15 +1,12 @@
 ///Alex Micharski Updated 2 Jan 2021
 ///Micharski Technologies (c)2021 All Rights Reserved
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gestures/gestures.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_manager.dart';
 import 'controller.dart';
-import 'full_drag.dart';
 import 'main.dart';
 import 'model.dart';
 import 'level_generator.dart';
@@ -31,28 +28,36 @@ class GameView extends StatefulWidget {
 class _GameViewState extends State<GameView> {
   Level level;
   BannerAd _bannerAd;
+  bool _isBannerAdReady = false;
 
-  Future<void> _initAdMob() => FirebaseAdMob.instance.initialize(appId: AdManager.appId);
-
-  void _loadBannerAd(){
-    _bannerAd
-      ..load()
-      ..show(anchorType: AnchorType.top);
-  }
 
   @override
   void initState() {
     level = new Level(GameView.lvl);
     level.execute().then((_) => setState(() {}));
     super.initState();
+    _bannerAd = BannerAd(
+      adUnitId: AdManager.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: AdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd.load();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    _bannerAd = BannerAd(
-      adUnitId: AdManager.bannerAdUnitId,
-      size: AdSize.banner,
-    );
-    _loadBannerAd();
   }
 
   @override
@@ -68,98 +73,117 @@ class _GameViewState extends State<GameView> {
       home: Scaffold(
         backgroundColor: Color(0xFF151515),
         body: SafeArea(
-          child: ValueListenableBuilder<bool>(
-            valueListenable: GameView.lvlComplete,
-            builder: (BuildContext context, bool lvlComplete, Widget child){
-              return LayoutBuilder(
-                builder: (_, constraints) => GestureDetector(
-                  onPanStart: (hi) {
-                    Controller controller = new Controller();
-                    controller.startDrag = hi.localPosition;
-                  },
-                  onPanUpdate: (hi) {
-                    Controller controller = new Controller();
-                    controller.currentPos = hi.localPosition;
-                    controller.moveObstacle();
-                    controller.startDrag = hi.localPosition;
-                  },
-                  onPanEnd: (hi) {
-                    Controller controller = new Controller();
-                    controller.tryBallMove();
-                    controller.levelPainter.changeNotifier.notifyListeners();
-                    controller.startDrag = null;
-                    controller.currentPos = null;
-                  },
-                  child: Container(
-                    width: constraints.widthConstraints().maxWidth,
-                    height: constraints.heightConstraints().maxHeight,
-                    child: Container(
-                      child: CustomPaint(
-                        painter: LevelPainter(level, changeNotifier),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
+          child: Container(
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  if (_isBannerAdReady)
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: _bannerAd.size.width.toDouble(),
+                        height: _bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd),
+                      ),
+                    ),
+                  Text(
+                    GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: "Goldman",
+                      //fontWeight: FontWeight.bold,
+                      fontSize: GameView.lvlComplete.value == false ? 60 : 50,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                  Container(
+                    //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                    child: FlatButton(
+                      //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                      onPressed: () {
+                        print(
+                            "###############################################");
+                        print(
+                            "###############################################");
+                        print(
+                            "###############################################");
+                        if(GameView.lvl > 100){
+                          var customLvl = new LevelFactory();
+                          customLvl.createLevel();
+                        }
+                        if (GameView.lvlQuantity < GameView.lvl){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DBall()),
+                          );
+                          return;
+                        }
+                        level = null;
+                        GameView.lvlComplete = ValueNotifier(false);
+                        initState();
+                      },
+                      child: Card(
+                        //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
+                        borderOnForeground: false,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: EdgeInsets.all(2),
+                            child: Text(
+                              GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontFamily: "Goldman",
-                                //fontWeight: FontWeight.bold,
-                                fontSize: GameView.lvlComplete.value == false ? 60 : 50,
-                                color: Color(0xFFFFFFFF),
-                              ),
+                                  fontSize: 30, fontFamily: "Goldman"),
                             ),
-                            Container(
-                              //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                              child: FlatButton(
-                                //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
-                                onPressed: () {
-                                  print(
-                                      "###############################################");
-                                  print(
-                                      "###############################################");
-                                  print(
-                                      "###############################################");
-                                  if(GameView.lvl > 100){
-                                    var customLvl = new LevelFactory();
-                                    customLvl.createLevel();
-                                  }
-                                  if (GameView.lvlQuantity < GameView.lvl){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DBall()),
-                                    );
-                                    return;
-                                  }
-                                  level = null;
-                                  GameView.lvlComplete = ValueNotifier(false);
-                                  initState();
-                                },
-                                child: Card(
-                                  //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
-                                  borderOnForeground: false,
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(2),
-                                      child: Text(
-                                        GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 30, fontFamily: "Goldman"),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                  Expanded(
+                    //width: MediaQuery.of(context).size.width/MediaQuery.of(context).devicePixelRatio,
+                    //height: MediaQuery.of(context).size.height/MediaQuery.of(context).devicePixelRatio, //make it the distance between height and top of canvas
+                    child: ClipRect(
+                      child: Container(
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: GameView.lvlComplete,
+                          builder: (BuildContext context, bool lvlComplete, Widget child){
+                            return LayoutBuilder(
+                              builder: (_, constraints) => GestureDetector(
+                                  onPanStart: (hi) {
+                                    Controller controller = new Controller();
+                                    controller.startDrag = hi.localPosition;
+                                  },
+                                  onPanUpdate: (hi) {
+                                    Controller controller = new Controller();
+                                    controller.currentPos = hi.localPosition;
+                                    controller.moveObstacle();
+                                    controller.startDrag = hi.localPosition;
+                                    print('Global: ${hi.localPosition}');
+                                    print('Discrete: ${controller.getMouseCoords()}');
+                                  },
+                                  onPanEnd: (hi) {
+                                    Controller controller = new Controller();
+                                    controller.tryBallMove();
+                                    controller.levelPainter.changeNotifier.notifyListeners();
+                                    controller.startDrag = null;
+                                    controller.currentPos = null;
+                                  },
+                                  child: CustomPaint(
+                                      painter: LevelPainter(level, changeNotifier)
+                                  )
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -287,7 +311,15 @@ class Grid {
     this.columns = columns;
   }
 
+  Grid.smallGrid(size) {
+    this.rows = size;
+    this.columns = size;
+  }
+
   static Grid fromJson(dynamic data) {
+    if(data.length == 1){
+      return Grid.smallGrid(data['size']);
+    }
     return Grid(data['xUpperLeft'], data['yUpperLeft'], data['magnitude'],
         data['rows'], data['columns']);
   }
@@ -332,21 +364,23 @@ class Grid {
         print('6th part: ${j-1}');*/
         midPoints.add(new Offset(
             levelPainter.getWidthFromDecimal(((xUpperLeft +
-                        (xBottomRight - xUpperLeft) * (j - 1) / columns) +
-                    (xUpperLeft +
-                        (xBottomRight - xUpperLeft) * (j) / columns)) /
+                (xBottomRight - xUpperLeft) * (j - 1) / columns) +
+                (xUpperLeft +
+                    (xBottomRight - xUpperLeft) * (j) / columns)) /
                 2),
             levelPainter.getHeightFromDecimal(((yUpperLeft +
-                        (yBottomRight - yUpperLeft) * (i - 1) / rows) +
-                    (yUpperLeft + (yBottomRight - yUpperLeft) * (i) / rows)) /
+                (yBottomRight - yUpperLeft) * (i - 1) / rows) +
+                (yUpperLeft + (yBottomRight - yUpperLeft) * (i) / rows)) /
                 2)));
-        tiles.add(false);
+        if(tiles.length != rows*columns){
+          tiles.add(false);
+        }
         //tiles[(rows*(i-1))+(j-1)] = false;
       }
       if (i == 1) {
         width = levelPainter.getHeightFromDecimal(
             ((yUpperLeft + (yBottomRight - yUpperLeft) * (i - 1) / rows) +
-                    (yUpperLeft + (yBottomRight - yUpperLeft) * (i) / rows)) /
+                (yUpperLeft + (yBottomRight - yUpperLeft) * (i) / rows)) /
                 2);
         width = midPoints[1].dx - midPoints[0].dx;
       }
@@ -355,26 +389,60 @@ class Grid {
 
   /*void matchBallAndGoal(){
     for(Ball b in levelPainter.level.ball){
-
     }
   }*/
 
   void draw() {
-    setMidpoints();
+    double centerX = levelPainter.getHeightFromDecimal(0.5);
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
       ..color = Colors.white;
+    final blue = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = Colors.blue;
+    /*levelPainter.canvas.drawLine(
+        new Offset(centerX,
+            0
+        ), new Offset(centerX,
+        1000
+    ), paint
+    );*/
+    setMidpoints();
+    for(int i = 0; i < tiles.length; i++){
+      levelPainter.canvas.drawCircle(
+          midPoints[i]
+          , 5
+          , paint);
+    }
     levelPainter.canvas.drawRect(
-        //TODO: puzzle isn't center-aligned
         Rect.fromPoints(
             new Offset(levelPainter.getWidthFromDecimal(xUpperLeft),
                 levelPainter.getHeightFromDecimal(yUpperLeft)),
             new Offset(levelPainter.getWidthFromDecimal(xBottomRight),
                 levelPainter.getHeightFromDecimal(yBottomRight))),
         paint);
+    //TODO: puzzle isn't center-aligned
+    /*double centerX = (levelPainter.getWidthFromDecimal(xUpperLeft) +
+        levelPainter.getWidthFromDecimal(xUpperLeft + magnitude))/2;
+    double centerY = (levelPainter.getHeightFromDecimal(xUpperLeft) +
+        levelPainter.getWidthFromDecimal(xUpperLeft + magnitude))/2;
+
+    levelPainter.canvas.drawLine(
+        new Offset(
+            centerX - (levelPainter.getWidthFromDecimal(magnitude)/2),
+            centerY - (levelPainter.getHeightFromDecimal(magnitude)/2)
+        ),
+        new Offset(
+            centerX + (levelPainter.getWidthFromDecimal(magnitude)/2),
+            centerY + (levelPainter.getHeightFromDecimal(magnitude)/2)
+        ),
+        blue
+    );*/
     for (int i = 1; i <= this.rows; i++) {
       for (int j = 1; j <= this.columns; j++) {
+        //vertical
         levelPainter.canvas.drawLine(
             new Offset(
                 levelPainter.getWidthFromDecimal(
@@ -386,6 +454,7 @@ class Grid {
               levelPainter.getHeightFromDecimal(yBottomRight),
             ),
             paint);
+        //horizontal
         levelPainter.canvas.drawLine(
             new Offset(
                 levelPainter.getWidthFromDecimal(xUpperLeft),
@@ -400,6 +469,7 @@ class Grid {
       }
     }
     for (int i = 0; i < tiles.length; i++) {
+      //print('imma lay you down on a bed of roses: $i');
       tiles[i] = false;
     }
   }
@@ -413,11 +483,15 @@ class Grid {
     for (int i = 0; i < rows; i++) {
       print(tmp.sublist(columns * i, ((i + 1) * columns)));
     }
-    /*for(int i = 0; i < midPoints.length; i++){
+    for(int i = 0; i < midPoints.length; i++){
       if(tiles[i] == true){
-        levelPainter.canvas.drawCircle(midPoints[i], 5, paint);
+        print(i);
+        levelPainter.canvas.drawCircle(
+            midPoints[i]
+            , 5
+            , paint);
       }
-    }*/
+    }
   }
 }
 
@@ -492,7 +566,7 @@ class Obstacle extends FieldElement {
               new Offset(
                   grid
                       .midPoints[
-                          (grid.rows * (currY - 1)) + (currX - 2 + length)]
+                  (grid.rows * (currY - 1)) + (currX - 2 + length)]
                       .dx,
                   grid.midPoints[(grid.rows * (currY - 1)) + (currX - 1)].dy +
                       grid.width / 3)),
@@ -516,7 +590,7 @@ class Obstacle extends FieldElement {
                       grid.width / 3, //-
                   grid
                       .midPoints[
-                          (grid.rows * (currY - 2 + length)) + (currX - 1)]
+                  (grid.rows * (currY - 2 + length)) + (currX - 1)]
                       .dy)),
           paint);
       for (int i = 0; i < length; i++) {
@@ -737,7 +811,7 @@ class Goal extends FieldElement {
     levelPainter.canvas.drawRect(
         new Rect.fromCircle(
             center:
-                grid.midPoints[(grid.rows * (initialY - 1)) + (initialX - 1)],
+            grid.midPoints[(grid.rows * (initialY - 1)) + (initialX - 1)],
             radius: grid.width * 15 / 32),
         paint);
   }

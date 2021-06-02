@@ -29,7 +29,7 @@ class Controller extends ChangeNotifier {
     //returns the cell that the mouse is currently in
     double dx, dy;
     for(int i = 0; i < grid.columns; i++){
-      if(grid.midPoints[i].dx + grid.width/2 < currentPos.dx){
+      if(grid.midPoints[i].dx < currentPos.dx){ //grid.midPoints[i].dx + grid.width/2 < currentPos.dx
         dx = i+2.0;
       }
     }
@@ -37,7 +37,7 @@ class Controller extends ChangeNotifier {
       dx = 1;
     }
     for(int j = 0; j < grid.rows; j++){
-      if(grid.midPoints[j*grid.rows].dy + grid.width/2 < currentPos.dy){
+      if(grid.midPoints[j*grid.rows].dy < currentPos.dy){ //grid.midPoints[j*grid.rows].dy + grid.width/2 < currentPos.dy
         dy = j+2.0;
       }
     }
@@ -142,6 +142,8 @@ class Controller extends ChangeNotifier {
   }
 
   void moveObstacle() {
+    //print('startDrag: ${getCoords(startDrag)}');
+    //print('currentPos: ${getCoords(currentPos)}');
     //print("don't stop believin");
     //find the root of the obstacle you are moving
     //exit the void if you did not start your drag on an obstacle
@@ -170,10 +172,10 @@ class Controller extends ChangeNotifier {
 
   void tryBallMove(){
     final int currentLevel = grid.levelPainter.level.id;
-    print("ballX: ${levelPainter.level.ball.currX}");
-    print("ballY: ${levelPainter.level.ball.currY}");
-    print("goalX: ${levelPainter.level.goal.initialX}");
-    print("goalY: ${levelPainter.level.goal.initialY}");
+    //print("ballX: ${levelPainter.level.ball.currX}");
+    //print("ballY: ${levelPainter.level.ball.currY}");
+    //print("goalX: ${levelPainter.level.goal.initialX}");
+    //print("goalY: ${levelPainter.level.goal.initialY}");
     while(levelPainter.level.ball.currX != levelPainter.level.goal.initialX || levelPainter.level.ball.currY != levelPainter.level.goal.initialY){
       switch(levelPainter.level.ball.direction){
         case Direction.RIGHT:
@@ -225,17 +227,17 @@ class Controller extends ChangeNotifier {
   //checks if the move is legal
   bool verifyMove(Offset old, Offset prime, Obstacle root){
     print('old: $old');
-    //print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
+    print('root: ${Offset(root.currX+0.0, root.currY+0.0)}');
     //checks if you are clicking on the root
     if(old.dx != root.currX || old.dy != root.currY){
       return false;
     }
-    //print('------------------------------------');
+    print('------------------------------------');
     //turn the entire obstacle tiles to false
     if(root.horizontal) {
-      /*for(int i = 0; i < root.length; i++){
-        levelPainter.level.grid.tiles[(levelPainter.level.grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
-      }*/
+      //for(int i = 0; i < root.length; i++){
+        //levelPainter.level.grid.tiles[(levelPainter.level.grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
+      //}
       if (prime.dx == 0.0 || prime.dx + root.length - 1 >= grid.columns + 1) {
         //print('obstacle is HORIZONTAL and being moved outside of grid');
         return false;

@@ -2,7 +2,7 @@
   "id": 0,
   "grid": {
     "xUpperLeft": 0.1,
-    "yUpperLeft": 0.3,
+    "yUpperLeft": 0.1,
     "magnitude": 0.7,
     "rows": 4,
     "columns": 4

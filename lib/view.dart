@@ -1,11 +1,14 @@
 ///Alex Micharski Updated 2 Jan 2021
 ///Micharski Technologies (c)2021 All Rights Reserved
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_manager.dart';
+import 'audio_controller.dart';
 import 'controller.dart';
 import 'main.dart';
 import 'model.dart';
@@ -16,7 +19,7 @@ final changeNotifier = ChangeNotifier();
 class GameView extends StatefulWidget {
   static int lvl = 0;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
-  static int lvlQuantity = 16;
+  static int lvlQuantity = 18;
 
   static _GameViewState of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();
@@ -29,7 +32,68 @@ class _GameViewState extends State<GameView> {
   Level level;
   BannerAd _bannerAd;
   bool _isBannerAdReady = false;
+  BannerAd _bannerAd2;
+  bool _isBannerAd2Ready = false;
+  Color _backgroundColor = Color(0xFF151515);
+  static AudioCache musicCache;
+  static AudioPlayer instance;
 
+  Color setBackgroundColor(){
+    print('Floor value: ${(GameView.lvl/2).floor()%3+1}');
+    if(!GameView.lvlComplete.value){
+      AudioController audioController = new AudioController();
+      audioController.pauseMusic();
+      audioController.playLoopedMusic((GameView.lvl/2).floor()%3+1);
+      switch((GameView.lvl/2).floor()){
+        case 0:
+          _backgroundColor = Color(0xFF151515);
+          break;
+        case 1:
+          _backgroundColor = Color(0xFF6B1010);
+          break;
+        case 2:
+          _backgroundColor = Color(0xFF6B1E06);
+          break;
+        case 3:
+          _backgroundColor = Color(0xFFAD3D00);
+          break;
+        case 4:
+          _backgroundColor = Color(0xFFC4B700);
+          break;
+        case 5:
+          _backgroundColor = Color(0xFF827717);
+          break;
+        case 6:
+          _backgroundColor = Color(0xFF519602);
+          break;
+        case 7:
+          _backgroundColor = Color(0xFF33691E);
+          break;
+        case 8:
+          _backgroundColor = Color(0xFF1B5E20);
+          break;
+        case 9:
+          _backgroundColor = Color(0xFF004D40);
+          break;
+        case 10:
+          _backgroundColor = Color(0xFF006064);
+          break;
+        case 11:
+          _backgroundColor = Color(0xFF01579B);
+          break;
+        case 12:
+          _backgroundColor = Color(0xFF0D47A1);
+          break;
+        case 13:
+          _backgroundColor = Color(0xFF1A237E);
+          break;
+        case 14:
+          _backgroundColor = Color(0xFF311B92);
+          break;
+      }
+    }
+    return _backgroundColor;
+  }
 
   @override
   void initState() {
@@ -55,6 +119,26 @@ class _GameViewState extends State<GameView> {
     );
 
     _bannerAd.load();
+
+    _bannerAd2 = BannerAd(
+      adUnitId: AdManager.bannerAd2UnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: AdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAd2Ready = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAd2Ready = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd2.load();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -70,116 +154,135 @@ class _GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Color(0xFF151515),
+      home: ValueListenableBuilder<bool>(
+        valueListenable: GameView.lvlComplete,
+          builder: (BuildContext context, bool lvlComplete, Widget child)
+    {
+      return Scaffold(
+        backgroundColor: setBackgroundColor(),
         body: SafeArea(
           child: Container(
-            child: ValueListenableBuilder<bool>(
-              valueListenable: GameView.lvlComplete,
-              builder: (BuildContext context, bool lvlComplete, Widget child){
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    if (_isBannerAdReady)
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          width: _bannerAd.size.width.toDouble(),
-                          height: _bannerAd.size.height.toDouble(),
-                          child: AdWidget(ad: _bannerAd),
-                        ),
-                      ),
-                    Text(
-                      GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Level ${GameView.lvl}" : "Level Complete" : "Game Complete",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: "Goldman",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: GameView.lvlComplete.value == false ? 60 : 50,
-                        color: Color(0xFFFFFFFF),
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                if (_isBannerAdReady)
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      width: _bannerAd.size.width.toDouble(),
+                      height: _bannerAd.size.height.toDouble(),
+                      child: AdWidget(ad: _bannerAd),
                     ),
-                    Container(
-                      //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                      child: FlatButton(
-                        //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
-                        onPressed: () {
-                          print(
-                              "###############################################");
-                          print(
-                              "###############################################");
-                          print(
-                              "###############################################");
-                          if(GameView.lvl > 100){
-                            var customLvl = new LevelFactory();
-                            customLvl.createLevel();
-                          }
-                          if (GameView.lvlQuantity < GameView.lvl){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DBall()),
-                            );
-                            return;
-                          }
-                          level = null;
-                          GameView.lvlComplete = ValueNotifier(false);
-                          initState();
-                        },
-                        child: Card(
-                          //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
-                          borderOnForeground: false,
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Text(
-                                GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete.value == false ? "Reset Level" : "Next Level" : "Celebrate",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 30, fontFamily: "Goldman"),
-                              ),
-                            ),
+                  ),
+                Text(
+                  GameView.lvlQuantity >= GameView.lvl ? GameView.lvlComplete
+                      .value == false
+                      ? "Level ${GameView.lvl}"
+                      : "Level Complete" : "Game Complete",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: "Goldman",
+                    //fontWeight: FontWeight.bold,
+                    fontSize: GameView.lvlComplete.value == false ? 60 : 50,
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+                Container(
+                  //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
+                  child: FlatButton(
+                    //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
+                    onPressed: () {
+                      print(
+                          "###############################################");
+                      print(
+                          "###############################################");
+                      print(
+                          "###############################################");
+                      if (GameView.lvl > 100) {
+                        var customLvl = new LevelFactory();
+                        customLvl.createLevel();
+                      }
+                      if (GameView.lvlComplete.value){
+                        AudioController audioController = new AudioController();
+                        audioController.pauseMusic();
+                      }
+                      if (GameView.lvlQuantity < GameView.lvl) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DBall()),
+                        );
+                        return;
+                      }
+                      level = null;
+                      GameView.lvlComplete = ValueNotifier(false);
+                      initState();
+                    },
+                    child: Card(
+                      //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),
+                      borderOnForeground: false,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.all(2),
+                          child: Text(
+                            GameView.lvlQuantity >= GameView.lvl ? GameView
+                                .lvlComplete.value == false
+                                ? "Reset Level"
+                                : "Next Level" : "Celebrate",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 30, fontFamily: "Goldman"),
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
-                      //width: MediaQuery.of(context).size.width/MediaQuery.of(context).devicePixelRatio,
-                      //height: MediaQuery.of(context).size.height/MediaQuery.of(context).devicePixelRatio, //make it the distance between height and top of canvas
-                      child: ClipRect(
-                          child: GestureDetector(
-                            onPanStart: (hi) {
-                              Controller controller = new Controller();
-                              controller.startDrag = hi.localPosition;
-                            },
-                            onPanUpdate: (hi) {
-                              Controller controller = new Controller();
-                              controller.currentPos = hi.localPosition;
-                              controller.moveObstacle();
-                              controller.startDrag = hi.localPosition;
-                              print('Global: ${hi.localPosition}');
-                              print('Discrete: ${controller.getMouseCoords()}');
-                            },
-                            onPanEnd: (hi) {
-                              Controller controller = new Controller();
-                              controller.tryBallMove();
-                              controller.levelPainter.changeNotifier.notifyListeners();
-                              controller.startDrag = null;
-                              controller.currentPos = null;
-                            },
-                            child: CustomPaint(
-                                painter: LevelPainter(level, changeNotifier)
-                            ),
-                          )
-                      ),
+                  ),
+                ),
+                Expanded(
+                  //width: MediaQuery.of(context).size.width/MediaQuery.of(context).devicePixelRatio,
+                  //height: MediaQuery.of(context).size.height/MediaQuery.of(context).devicePixelRatio, //make it the distance between height and top of canvas
+                  child: ClipRect(
+                      child: GestureDetector(
+                        onPanStart: (hi) {
+                          Controller controller = new Controller();
+                          controller.startDrag = hi.localPosition;
+                        },
+                        onPanUpdate: (hi) {
+                          Controller controller = new Controller();
+                          controller.currentPos = hi.localPosition;
+                          controller.moveObstacle();
+                          controller.startDrag = hi.localPosition;
+                        },
+                        onPanEnd: (hi) {
+                          Controller controller = new Controller();
+                          controller.tryBallMove();
+                          controller.levelPainter.changeNotifier
+                              .notifyListeners();
+                          controller.startDrag = null;
+                          controller.currentPos = null;
+                        },
+                        child: CustomPaint(
+                            painter: LevelPainter(level, changeNotifier)
+                        ),
+                      )
+                  ),
+                ),
+                if (_isBannerAd2Ready)
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      width: _bannerAd2.size.width.toDouble(),
+                      height: _bannerAd2.size.height.toDouble(),
+                      child: AdWidget(ad: _bannerAd2),
                     ),
-                  ],
-                );
-              }
+                  ),
+              ],
             ),
           ),
         ),
+      );
+    }
       ),
     );
   }
@@ -242,7 +345,7 @@ class LevelPainter extends CustomPainter {
   }
 
   double getHeightFromDecimal(double decimal) {
-    if (decimal.ceil() != 1) {
+    if (decimal.ceil() != 1 && decimal != 0) {
       throw new ScaleDecimalOutOfRangeException(decimal);
     } else {
       return decimal * canvasHeight;
@@ -250,7 +353,7 @@ class LevelPainter extends CustomPainter {
   }
 
   double getWidthFromDecimal(double decimal) {
-    if (decimal.ceil() != 1) {
+    if (decimal.ceil() != 1 && decimal != 0) {
       throw new ScaleDecimalOutOfRangeException(decimal);
     } else {
       return decimal * canvasWidth;
@@ -308,6 +411,9 @@ class Grid {
   Grid.smallGrid(size) {
     this.rows = size;
     this.columns = size;
+    this.xUpperLeft = 0.005;
+    this.yUpperLeft = 0.01;
+    this.magnitude = 0.98;
   }
 
   static Grid fromJson(dynamic data) {
@@ -404,12 +510,12 @@ class Grid {
     ), paint
     );*/
     setMidpoints();
-    for(int i = 0; i < tiles.length; i++){
+    /*for(int i = 0; i < tiles.length; i++){
       levelPainter.canvas.drawCircle(
           midPoints[i]
           , 5
           , paint);
-    }
+    }*/
     levelPainter.canvas.drawRect(
         Rect.fromPoints(
             new Offset(levelPainter.getWidthFromDecimal(xUpperLeft),

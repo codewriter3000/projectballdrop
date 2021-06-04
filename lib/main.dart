@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 
 import 'ad_manager.dart';
+import 'audio_controller.dart';
 
 const _INTRO = 'intro.mp3';
 
@@ -30,19 +31,28 @@ class DBall extends StatefulWidget {
 }
 
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
-  AudioCache audioCache = AudioCache();
-  AudioPlayer advancedPlayer = AudioPlayer();
   bool gameComplete = GameView.lvlQuantity < GameView.lvl;
   ConfettiController _controller;
   BannerAd _bannerAd;
   bool _isBannerAdReady = false;
+
+  void playIntroAudio() async {
+    _controller = ConfettiController(duration: Duration(seconds: 5));
+    if(gameComplete){
+      _controller.play();
+      GameView.lvl = 0;
+      GameView.lvlComplete.value = false;
+    }
+    AudioController audioController = new AudioController();
+    audioController.playLoopedMusic(-1);
+  }
 
   @override
   void initState() {
     super.initState();
 
     _bannerAd = BannerAd(
-      adUnitId: AdManager.bannerAdUnitId,
+      adUnitId: AdManager.bannerAd0UnitId,
       request: AdRequest(),
       size: AdSize.banner,
       listener: AdListener(
@@ -64,21 +74,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
       DeviceOrientation.portraitUp,
     ]);
 
-    void playIntroAudio() async {
-      _controller = ConfettiController(duration: Duration(seconds: 5));
-      if (Platform.isIOS){
-        if(audioCache.fixedPlayer != null){
-          audioCache.fixedPlayer.startHeadlessService();
-        }
-        advancedPlayer.startHeadlessService();
-      }
-      if(gameComplete){
-        _controller.play();
-        GameView.lvl = 0;
-        GameView.lvlComplete.value = false;
-      }
-      audioCache.play(_INTRO);
-    }
     playIntroAudio();
   }
 
@@ -135,7 +130,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                         FlatButton(
                           padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
                           onPressed: () {
-                            //print("DBall");
+                            AudioController audioController = new AudioController();
+                            audioController.pauseMusic();
                             Navigator.push(
                               context,
                               MaterialPageRoute(

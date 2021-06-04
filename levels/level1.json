@@ -1,11 +1,7 @@
 {
   "id": 1,
   "grid": {
-    "xUpperLeft": 0.1,
-    "yUpperLeft": 0.3,
-    "magnitude": 0.7,
-    "rows": 4,
-    "columns": 4
+    "size": 4
   },
   "ball": {
     "1": {

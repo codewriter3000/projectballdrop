@@ -203,7 +203,7 @@ class _GameViewState extends State<GameView> {
                         customLvl.createLevel();
                       }
                       if (GameView.lvlComplete.value){
-                        AudioController audioController = new AudioController();
+                        AudioController audioController = AudioController();
                         audioController.pauseMusic();
                       }
                       if (GameView.lvlQuantity < GameView.lvl) {
@@ -329,7 +329,6 @@ class LevelPainter extends CustomPainter {
     Controller controller = new Controller();
     controller.grid = grid;
     controller.levelPainter = this;
-    print("Controller finished implementation");
     /*for(double i = this.getWidthFromDecimal(grid.xUpperLeft); i <= this.getWidthFromDecimal(grid.xBottomRight); i++){
       for(double j = this.getHeightFromDecimal(grid.yUpperLeft); j <= this.getHeightFromDecimal(grid.yBottomRight); j++){
         print(controller.getCoords(Offset(i, j)));

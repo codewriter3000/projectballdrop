@@ -15,6 +15,8 @@ import 'audio_controller.dart';
 
 const _INTRO = 'intro.mp3';
 
+void doNothing(){}
+
 void main() async {
   runApp(DBall());
 }

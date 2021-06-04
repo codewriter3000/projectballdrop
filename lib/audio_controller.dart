@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'main.dart';
+
 class AudioController {
   static final AudioController _audioController = new AudioController._internal();
   static AudioCache musicCache;
@@ -14,12 +16,18 @@ class AudioController {
   }
 
   AudioController._internal(){
-    print("Audio Controller is now implemented");
+    doNothing();
+    //print("Audio Controller is now implemented");
   }
 
   void playLoopedMusic(int song) async {
     if(instance != null){
+      print("instance disposed");
+      instance.pause();
       instance.dispose();
+    }
+    if(musicCache != null){
+      musicCache.clearCache();
     }
     musicCache = AudioCache(prefix: "assets/");
     if(song >= 0){

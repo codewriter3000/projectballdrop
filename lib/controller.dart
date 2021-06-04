@@ -9,6 +9,8 @@ import 'dart:ui';
 import 'package:d_ball/view.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'main.dart';
+
 class Controller extends ChangeNotifier {
   static final Controller _controller = new Controller._internal();
 
@@ -22,7 +24,8 @@ class Controller extends ChangeNotifier {
   }
 
   Controller._internal(){
-    print("Controller is now implemented");
+    doNothing();
+    //print("Controller is now implemented");
   }
 
   Offset getMouseCoords(){

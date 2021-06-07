@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'dart:async';
-import 'dart:math';
 
-import 'package:audioplayers/audio_cache.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:d_ball/view.dart';
@@ -14,6 +11,8 @@ import 'ad_manager.dart';
 import 'audio_controller.dart';
 
 const _INTRO = 'intro.mp3';
+
+AudioController audioController = AudioController();
 
 void doNothing(){}
 
@@ -45,8 +44,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
       GameView.lvl = 0;
       GameView.lvlComplete.value = false;
     }
-    AudioController audioController = new AudioController();
-    audioController.playLoopedMusic(-1);
+    audioController.playLoop(-1);
   }
 
   @override
@@ -129,11 +127,9 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                             color: Color(0xFFFFFFFF),
                           ),
                         ),
-                        FlatButton(
-                          padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
+                        TextButton(
+                          //padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
                           onPressed: () {
-                            AudioController audioController = new AudioController();
-                            audioController.pauseMusic();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -152,8 +148,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                                 ),
                               )),
                         ),
-                        FlatButton(
-                          padding: EdgeInsets.only(left: 100, right: 100),
+                        TextButton(
+                          //padding: EdgeInsets.only(left: 100, right: 100),
                           onPressed: () {
                             //print("Credits");
                             Navigator.push(
@@ -175,8 +171,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                                 ),
                               )),
                         ),
-                        FlatButton(
-                          padding: EdgeInsets.only(left: 50, right: 50),
+                        TextButton(
+                          //padding: EdgeInsets.only(left: 50, right: 50),
                           onPressed: () {
                             //print("Contribute");
                             Navigator.push(
@@ -242,8 +238,8 @@ class _CreditsState extends State<Credits> {
                               color: Color(0xFFFFFFFF),
                             ),
                           ),
-                          FlatButton(
-                            padding: EdgeInsets.only(left: 100, right: 100),
+                          TextButton(
+                            //padding: EdgeInsets.only(left: 100, right: 100),
                             onPressed: () {
                               print("Back");
                               Navigator.push(
@@ -305,8 +301,8 @@ class _ContributeState extends State<Contribute> {
                               color: Color(0xFFFFFFFF),
                             ),
                           ),
-                          FlatButton(
-                            padding: EdgeInsets.only(left: 100, right: 100),
+                          TextButton(
+                            //padding: EdgeInsets.only(left: 100, right: 100),
                             onPressed: () {
                               print("Back");
                               Navigator.push(

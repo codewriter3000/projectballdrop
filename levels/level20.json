@@ -1,5 +1,5 @@
 {
-  "id": 17,
+  "id": 20,
   "grid": {
     "size": 6
   },
@@ -7,68 +7,68 @@
     "1": {
       "id": 1,
       "color": "0xFFF44336",
-      "initX": 3,
-      "initY": 1,
-      "direction": "down"
+      "initX": 6,
+      "initY": 6,
+      "direction": "up"
     }
   },
   "goal": {
     "1": {
       "id": 1,
       "color": "0xFFF44336",
-      "initX": 3,
-      "initY": 3
+      "initX": 6,
+      "initY": 1
     }
   },
   "obstacles": {
     "1": {
       "color": "0xFF4CAF50",
-      "initX": 5,
+      "initX": 3,
       "initY": 1,
-      "length": 3,
+      "length": 2,
       "horizontal": false
     },
     "2": {
       "color": "0xFF795548",
-      "initX": 6,
+      "initX": 5,
       "initY": 1,
-      "length": 3,
-      "horizontal": false
+      "length": 2,
+      "horizontal": true
     },
     "3": {
       "color": "0xFF009688",
-      "initX": 2,
+      "initX": 1,
+      "initY": 2,
+      "length": 2,
+      "horizontal": false
+    },
+    "4": {
+      "color": "0xFFFF9800",
+      "initX": 4,
       "initY": 2,
       "length": 2,
       "horizontal": true
     },
-    "4": {
-      "color": "0xFFFF9800",
-      "initX": 1,
-      "initY": 3,
-      "length": 3,
-      "horizontal": true
-    },
     "5": {
       "color": "0xFFFFEB3B",
-      "initX": 2,
-      "initY": 5,
+      "initX": 3,
+      "initY": 3,
       "length": 2,
       "horizontal": false
     },
     "6": {
       "color": "0xFF9C27B0",
-      "initX": 4,
-      "initY": 6,
-      "length": 3,
-      "horizontal": true
+      "initX": 5,
+      "initY": 3,
+      "length": 2,
+      "horizontal": false
     },
     "7": {
       "color": "0xFF64FFDA",
       "initX": 1,
-      "initY": 1,
+      "initY": 4,
       "length": 2,
-      "horizontal": false
+      "horizontal": true
     },
     "8": {
       "color": "0xFFFFCC80",
@@ -76,6 +76,27 @@
       "initY": 5,
       "length": 2,
       "horizontal": false
+    },
+    "9": {
+      "color": "0xFF2196F3",
+      "initX": 2,
+      "initY": 5,
+      "length": 2,
+      "horizontal": true
+    },
+    "10": {
+      "color": "0xFF00C853",
+      "initX": 4,
+      "initY": 4,
+      "length": 3,
+      "horizontal": false
+    },
+    "11": {
+      "color": "0xFFAA1329",
+      "initX": 5,
+      "initY": 5,
+      "length": 2,
+      "horizontal": true
     }
   }
 }

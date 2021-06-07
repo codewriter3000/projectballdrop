@@ -8,8 +8,7 @@ import 'main.dart';
 class AudioController {
   static final AudioController _audioController = new AudioController._internal();
   static AudioCache musicCache;
-  static AudioPlayer instance;
-  static const _INTRO = 'intro.mp3';
+  static AudioPlayer instance = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
   factory AudioController(){
     return _audioController;
@@ -20,27 +19,32 @@ class AudioController {
     //print("Audio Controller is now implemented");
   }
 
-  void playLoopedMusic(int song) async {
+  Future playLoop(int song) async {
+    if(musicCache == null) {
+      musicCache = AudioCache(prefix: "assets/");
+    }
     if(instance != null){
-      print("instance disposed");
-      instance.pause();
-      instance.dispose();
+      int result = await instance.stop();
+      print("RESULT: $result");
     }
-    if(musicCache != null){
-      musicCache.clearCache();
-    }
-    musicCache = AudioCache(prefix: "assets/");
-    if(song >= 0){
+    if(song == -1){
+      instance = await musicCache.play("intro.mp3");
+    } else {
       instance = await musicCache.loop("alpha$song.ogg");
-    } else if(song == -1){
-      instance = await musicCache.play(_INTRO);
     }
-    instance.setVolume(1.0);
   }
 
   void pauseMusic(){
     if (instance != null){
+      print("music paused");
       instance.pause();
+    }
+  }
+
+  void kill(){
+    if(instance != null){
+      print("instance stopped");
+      instance.stop();
     }
   }
 }

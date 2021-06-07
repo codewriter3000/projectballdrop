@@ -1,6 +1,5 @@
 ///Alex Micharski Updated 2 Jan 2021
 ///Micharski Technologies (c)2021 All Rights Reserved
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +16,9 @@ import 'level_generator.dart';
 final changeNotifier = ChangeNotifier();
 
 class GameView extends StatefulWidget {
-  static int lvl = 0;
+  static int lvl = 20;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
-  static int lvlQuantity = 18;
+  static int lvlQuantity = 20;
 
   static _GameViewState of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();
@@ -35,15 +34,12 @@ class _GameViewState extends State<GameView> {
   BannerAd _bannerAd2;
   bool _isBannerAd2Ready = false;
   Color _backgroundColor = Color(0xFF151515);
-  static AudioCache musicCache;
-  static AudioPlayer instance;
+  AudioController audioController = AudioController();
 
-  Color setBackgroundColor(){
+  Color setBackgroundFX(){
     print('Floor value: ${(GameView.lvl/2).floor()%3+1}');
     if(!GameView.lvlComplete.value){
-      AudioController audioController = new AudioController();
-      audioController.pauseMusic();
-      audioController.playLoopedMusic((GameView.lvl/2).floor()%3+1);
+      audioController.playLoop((GameView.lvl/2).floor()%3+1);
       switch((GameView.lvl/2).floor()){
         case 0:
           _backgroundColor = Color(0xFF151515);
@@ -95,10 +91,14 @@ class _GameViewState extends State<GameView> {
     return _backgroundColor;
   }
 
-  @override
-  void initState() {
+  void newLevel(){
     level = new Level(GameView.lvl);
     level.execute().then((_) => setState(() {}));
+  }
+
+  @override
+  void initState() {
+    newLevel();
     super.initState();
     _bannerAd = BannerAd(
       adUnitId: AdManager.bannerAdUnitId,
@@ -159,7 +159,7 @@ class _GameViewState extends State<GameView> {
           builder: (BuildContext context, bool lvlComplete, Widget child)
     {
       return Scaffold(
-        backgroundColor: setBackgroundColor(),
+        backgroundColor: setBackgroundFX(),
         body: SafeArea(
           child: Container(
             child: Column(
@@ -189,22 +189,19 @@ class _GameViewState extends State<GameView> {
                 ),
                 Container(
                   //margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 3/10, left: MediaQuery.of(context).size.width * 3/10, top: MediaQuery.of(context).size.height * 8.5/10),
-                  child: FlatButton(
+                  child: TextButton(
                     //padding: EdgeInsets.only(left: 100, right: 100, top: 600),
                     onPressed: () {
-                      print(
+                      /*print(
                           "###############################################");
                       print(
                           "###############################################");
                       print(
-                          "###############################################");
+                          "###############################################");*/
+                      audioController.pauseMusic();
                       if (GameView.lvl > 100) {
                         var customLvl = new LevelFactory();
                         customLvl.createLevel();
-                      }
-                      if (GameView.lvlComplete.value){
-                        AudioController audioController = AudioController();
-                        audioController.pauseMusic();
                       }
                       if (GameView.lvlQuantity < GameView.lvl) {
                         Navigator.push(
@@ -216,7 +213,8 @@ class _GameViewState extends State<GameView> {
                       }
                       level = null;
                       GameView.lvlComplete = ValueNotifier(false);
-                      initState();
+                      newLevel();
+                      //initState();
                     },
                     child: Card(
                       //margin: EdgeInsets.fromLTRB(25, 30, 25, 5),

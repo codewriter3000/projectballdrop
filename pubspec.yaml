@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.3
-  audioplayers: ^0.18.0 #downgrade from 0.19.0
+  audioplayers: ^0.18.2 #downgrade from 0.19.0
   google_mobile_ads: ^0.12.0 #downgrade from 0.13.0
 
 

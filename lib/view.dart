@@ -1,6 +1,5 @@
 ///Alex Micharski Updated 2 Jan 2021
 ///Micharski Technologies (c)2021 All Rights Reserved
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,14 +12,14 @@ import 'main.dart';
 import 'model.dart';
 import 'level_generator.dart';
 
-final changeNotifier = ChangeNotifier();
+final changeNotifierMain = ChangeNotifier();
 
 class GameView extends StatefulWidget {
-  static int lvl = 20;
+  static int lvl = 0;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
   static int lvlQuantity = 20;
 
-  static _GameViewState of(BuildContext context) =>
+  static _GameViewState? of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();
 
   @override
@@ -28,10 +27,10 @@ class GameView extends StatefulWidget {
 }
 
 class _GameViewState extends State<GameView> {
-  Level level;
-  BannerAd _bannerAd;
+  late Level level;
+  late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
-  BannerAd _bannerAd2;
+  late BannerAd _bannerAd2;
   bool _isBannerAd2Ready = false;
   Color _backgroundColor = Color(0xFF151515);
   AudioController audioController = AudioController();
@@ -104,7 +103,7 @@ class _GameViewState extends State<GameView> {
       adUnitId: AdManager.bannerAdUnitId,
       request: AdRequest(),
       size: AdSize.banner,
-      listener: AdListener(
+      listener: BannerAdListener(
         onAdLoaded: (_) {
           setState(() {
             _isBannerAdReady = true;
@@ -124,7 +123,7 @@ class _GameViewState extends State<GameView> {
       adUnitId: AdManager.bannerAd2UnitId,
       request: AdRequest(),
       size: AdSize.banner,
-      listener: AdListener(
+      listener: BannerAdListener(
         onAdLoaded: (_) {
           setState(() {
             _isBannerAd2Ready = true;
@@ -146,7 +145,7 @@ class _GameViewState extends State<GameView> {
 
   @override
   void dispose(){
-    _bannerAd?.dispose();
+    _bannerAd.dispose();
     super.dispose();
   }
 
@@ -156,7 +155,7 @@ class _GameViewState extends State<GameView> {
       debugShowCheckedModeBanner: false,
       home: ValueListenableBuilder<bool>(
         valueListenable: GameView.lvlComplete,
-          builder: (BuildContext context, bool lvlComplete, Widget child)
+          builder: (BuildContext context, bool lvlComplete, Widget? child)
     {
       return Scaffold(
         backgroundColor: setBackgroundFX(),
@@ -211,7 +210,7 @@ class _GameViewState extends State<GameView> {
                         );
                         return;
                       }
-                      level = null;
+                      level.dispose();
                       GameView.lvlComplete = ValueNotifier(false);
                       newLevel();
                       //initState();
@@ -244,24 +243,24 @@ class _GameViewState extends State<GameView> {
                       child: GestureDetector(
                         onPanStart: (hi) {
                           Controller controller = new Controller();
-                          controller.startDrag = hi.localPosition;
+                          controller.setStartDrag(hi.localPosition);
                         },
                         onPanUpdate: (hi) {
                           Controller controller = new Controller();
-                          controller.currentPos = hi.localPosition;
+                          controller.setCurrentPos(hi.localPosition);
                           controller.moveObstacle();
-                          controller.startDrag = hi.localPosition;
+                          controller.setStartDrag(hi.localPosition);
                         },
                         onPanEnd: (hi) {
                           Controller controller = new Controller();
                           controller.tryBallMove();
-                          controller.levelPainter.changeNotifier
+                          controller.getLevelPainter()!.changeNotifier
                               .notifyListeners();
-                          controller.startDrag = null;
-                          controller.currentPos = null;
+                          controller.setStartDrag(Offset(0, 0));
+                          controller.setCurrentPos(Offset(0, 0));
                         },
                         child: CustomPaint(
-                            painter: LevelPainter(level, changeNotifier)
+                            painter: LevelPainter(level, changeNotifierMain)
                         ),
                       )
                   ),
@@ -287,14 +286,14 @@ class _GameViewState extends State<GameView> {
 }
 
 class LevelPainter extends CustomPainter {
-  Level level;
-  double canvasHeight;
-  double canvasWidth;
-  Canvas canvas;
-  ChangeNotifier changeNotifier;
+  late Level level;
+  late double canvasHeight;
+  late double canvasWidth;
+  late Canvas canvas;
+  ChangeNotifier changeNotifier = changeNotifierMain;
 
   LevelPainter(this.level, Listenable repaint) : super(repaint: repaint) {
-    changeNotifier = repaint;
+    changeNotifier.addListener(() => repaint);
   }
 
 
@@ -325,8 +324,8 @@ class LevelPainter extends CustomPainter {
     ball.draw();
 
     Controller controller = new Controller();
-    controller.grid = grid;
-    controller.levelPainter = this;
+    controller.setGrid(grid);
+    controller.setLevelPainter(this);
     /*for(double i = this.getWidthFromDecimal(grid.xUpperLeft); i <= this.getWidthFromDecimal(grid.xBottomRight); i++){
       for(double j = this.getHeightFromDecimal(grid.yUpperLeft); j <= this.getHeightFromDecimal(grid.yBottomRight); j++){
         print(controller.getCoords(Offset(i, j)));
@@ -367,7 +366,7 @@ class LevelPainter extends CustomPainter {
 }
 
 class ScaleDecimalOutOfRangeException implements Exception {
-  String _message;
+  late String _message;
 
   ScaleDecimalOutOfRangeException(double decimal,
       [String message = 'Scale decimal is out of range: ']) {
@@ -381,20 +380,20 @@ class ScaleDecimalOutOfRangeException implements Exception {
 }
 
 class Grid {
-  LevelPainter levelPainter;
-  double xUpperLeft; //scale decimal
-  double yUpperLeft; //scale decimal
-  double magnitude; //scale decimal
-  int rows; //quantity of rows
-  int columns; //quantity of columns
+  late LevelPainter levelPainter;
+  late double xUpperLeft; //scale decimal
+  late double yUpperLeft; //scale decimal
+  late double magnitude; //scale decimal
+  late int rows; //quantity of rows
+  late int columns; //quantity of columns
   //needs to be filled manually by constructors
-  double xBottomRight; //scale decimal
-  double yBottomRight; //scale decimal
-  double cellWidth; //scale decimal
-  double cellHeight; //scale decimal
-  double width; //width of each cell
-  List<Offset> midPoints = List<Offset>.empty(growable: true); //scale decimals
-  List<bool> tiles = List<bool>.empty(
+  late double xBottomRight; //scale decimal
+  late double yBottomRight; //scale decimal
+  late double cellWidth; //scale decimal
+  late double cellHeight; //scale decimal
+  late double width; //width of each cell
+  late List<Offset> midPoints = List<Offset>.empty(growable: true); //scale decimals
+  late List<bool> tiles = List<bool>.empty(
       growable: true); //detects whether a field element exists on this square
 
   Grid(xUpperLeft, yUpperLeft, magnitude, rows, columns) {
@@ -593,24 +592,24 @@ class Grid {
 }
 
 abstract class FieldElement {
-  LevelPainter levelPainter;
-  Color color; //color of the field element
-  int initialX; //initial x-value
-  int initialY; //initial y-value
-  Grid grid; //grid that the field element is on
+  late LevelPainter levelPainter;
+  late Color color; //color of the field element
+  late int initialX; //initial x-value
+  late int initialY; //initial y-value
+  late Grid grid; //grid that the field element is on
 
   void draw();
 }
 
 class Obstacle extends FieldElement {
-  int id;
-  int length; //length of the obstacle
-  bool horizontal; //true = horizontal, false = vertical
-  int tempX; //temporary x-value
-  int tempY; //temporary y-value
-  int currX; //current x-value
-  int currY; //current y-value
-  Obstacle old; //old backup of obstacle
+  late int id;
+  late int length; //length of the obstacle
+  late bool horizontal; //true = horizontal, false = vertical
+  late int tempX; //temporary x-value
+  late int tempY; //temporary y-value
+  late int currX; //current x-value
+  late int currY; //current y-value
+  late Obstacle old; //old backup of obstacle
 
   Obstacle(
       String color, int initialX, int initialY, int length, bool horizontal) {
@@ -705,11 +704,11 @@ class Obstacle extends FieldElement {
 enum Direction { UP, DOWN, LEFT, RIGHT }
 
 class Ball extends FieldElement {
-  int id;
-  int currX;
-  int currY;
-  Direction direction;
-  Goal goal;
+  late int id;
+  late int currX;
+  late int currY;
+  late Direction direction;
+  late Goal goal;
 
   Ball(String color, int initialX, int initialY, String direction) {
     this.color = LevelPainter.hexToColor(color);
@@ -881,9 +880,9 @@ class Ball extends FieldElement {
 }
 
 class Goal extends FieldElement {
-  int id;
-  int currX;
-  int currY;
+  late int id;
+  late int currX;
+  late int currY;
 
   Goal(String color, int initialX, int initialY) {
     this.color = LevelPainter.hexToColor(color);

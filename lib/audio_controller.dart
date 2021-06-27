@@ -1,14 +1,11 @@
-import 'dart:io';
-
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'main.dart';
 
 class AudioController {
-  static final AudioController _audioController = new AudioController._internal();
-  static AudioCache musicCache;
-  static AudioPlayer instance = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  static final AudioController _audioController = AudioController._internal();
+  AudioCache? _musicCache;
+  AudioPlayer _instance = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
   factory AudioController(){
     return _audioController;
@@ -19,32 +16,21 @@ class AudioController {
     //print("Audio Controller is now implemented");
   }
 
-  Future playLoop(int song) async {
-    if(musicCache == null) {
-      musicCache = AudioCache(prefix: "assets/");
+  Future<void> playLoop(int song) async {
+    if(_musicCache == null) {
+      _musicCache = AudioCache(prefix: "assets/");
     }
-    if(instance != null){
-      int result = await instance.stop();
-      print("RESULT: $result");
-    }
+    int? result = await _instance.stop();
+    print("RESULT: $result");
     if(song == -1){
-      instance = await musicCache.play("intro.mp3");
+      _instance = await _musicCache!.play("intro.mp3");
     } else {
-      instance = await musicCache.loop("alpha$song.ogg");
+      _instance = await _musicCache!.loop("alpha$song.ogg");
     }
   }
 
   void pauseMusic(){
-    if (instance != null){
-      print("music paused");
-      instance.pause();
-    }
-  }
-
-  void kill(){
-    if(instance != null){
-      print("instance stopped");
-      instance.stop();
-    }
+    print("music paused");
+    _instance.pause();
   }
 }

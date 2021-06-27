@@ -1,6 +1,6 @@
 class Levels {
-  int id;
-  String text;
+  late int id;
+  late String text;
 
   Levels(this.id, this.text);
 

@@ -3,7 +3,7 @@
 
 
 //reads the gestures from the canvas and tells the view what to do
-//(grid.rows*(initialY-1))+(initialX-1)
+//(_grid.rows*(initialY-1))+(initialX-1)
 import 'dart:ui';
 
 import 'package:d_ball/view.dart';
@@ -12,12 +12,12 @@ import 'package:flutter/cupertino.dart';
 import 'main.dart';
 
 class Controller extends ChangeNotifier {
-  static final Controller _controller = new Controller._internal();
+  static final Controller _controller = Controller._internal();
 
-  LevelPainter levelPainter;
-  Offset startDrag;
-  Offset currentPos;
-  Grid grid;
+  LevelPainter? _levelPainter;
+  Offset? _startDrag;
+  Offset? _currentPos;
+  Grid? _grid;
 
   factory Controller(){
     return _controller;
@@ -28,19 +28,31 @@ class Controller extends ChangeNotifier {
     //print("Controller is now implemented");
   }
 
+  Offset? getStartDrag() { return _startDrag; }
+  void setStartDrag(Offset startDrag) { this._startDrag = startDrag; }
+
+  Offset? getCurrentPos() { return _currentPos; }
+  void setCurrentPos(Offset currentPos){ this._currentPos = currentPos; }
+
+  Grid? getGrid(){ return _grid; }
+  void setGrid(Grid grid){ this._grid = grid; }
+
+  LevelPainter? getLevelPainter(){ return _levelPainter; }
+  void setLevelPainter(LevelPainter levelPainter){ this._levelPainter = levelPainter; }
+
   Offset getMouseCoords(){
     //returns the cell that the mouse is currently in
-    double dx, dy;
-    for(int i = 0; i < grid.columns; i++){
-      if(grid.midPoints[i].dx < currentPos.dx){ //grid.midPoints[i].dx + grid.width/2 < currentPos.dx
+    double? dx, dy;
+    for(int i = 0; i < _grid!.columns; i++){
+      if(_grid!.midPoints[i].dx < _currentPos!.dx){ //_grid.midPoints[i].dx + _grid.width/2 < _currentPos.dx
         dx = i+2.0;
       }
     }
     if(dx == null){
       dx = 1;
     }
-    for(int j = 0; j < grid.rows; j++){
-      if(grid.midPoints[j*grid.rows].dy < currentPos.dy){ //grid.midPoints[j*grid.rows].dy + grid.width/2 < currentPos.dy
+    for(int j = 0; j < _grid!.rows; j++){
+      if(_grid!.midPoints[j*_grid!.rows].dy < _currentPos!.dy){ //_grid.midPoints[j*_grid.rows].dy + _grid.width/2 < _currentPos.dy
         dy = j+2.0;
       }
     }
@@ -53,17 +65,17 @@ class Controller extends ChangeNotifier {
   //NOT FULLY TESTED YET
   Offset getCoords(Offset point){
     //returns the cell that the point is in
-    double dx, dy;
-    for(int i = 0; i < grid.columns; i++){
-      if(grid.midPoints[i].dx + grid.width/2 < point.dx){
+    double? dx, dy;
+    for(int i = 0; i < _grid!.columns; i++){
+      if(_grid!.midPoints[i].dx + _grid!.width/2 < point.dx){
         dx = i+2.0;
       }
     }
     if(dx == null){
       dx = 1;
     }
-    for(int j = 0; j < grid.rows; j++){
-      if(grid.midPoints[j*grid.rows].dy + grid.width/2 < point.dy){
+    for(int j = 0; j < _grid!.rows; j++){
+      if(_grid!.midPoints[j*_grid!.rows].dy + _grid!.width/2 < point.dy){
         dy = j+2.0;
       }
     }
@@ -75,9 +87,9 @@ class Controller extends ChangeNotifier {
 
   bool obstacleExists(Offset coords){
     try{
-      if(grid.tiles[((coords.dy-1)*grid.rows + coords.dx).toInt() - 1] == true && !(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows)){
+      if(_grid!.tiles[((coords.dy-1)*_grid!.rows + coords.dx).toInt() - 1] == true && !(coords.dx < 1 || coords.dy < 1 || coords.dx > _grid!.columns || coords.dy > _grid!.rows)){
         return true;
-      } else if(coords.dx < 1 || coords.dy < 1 || coords.dx > grid.columns || coords.dy > grid.rows){
+      } else if(coords.dx < 1 || coords.dy < 1 || coords.dx > _grid!.columns || coords.dy > _grid!.rows){
         return true;
       } else {
         return false;
@@ -90,7 +102,7 @@ class Controller extends ChangeNotifier {
   List<bool> obstacleBorders(Obstacle obstacle){
     //finds out the possible ways an obstacle can move
     //0 = top or left, 1 = bottom or right
-    List<bool> tmp = new List(2);
+    List<bool> tmp = List.filled(2, false, growable: false);
       if(obstacle.horizontal){
         //print('${obstacle.currX-1.0} ${obstacle.currY+0.0}');
         if(obstacleExists(new Offset(obstacle.currX-1.0, obstacle.currY+0.0))){
@@ -121,22 +133,22 @@ class Controller extends ChangeNotifier {
     return tmp;
   }
 
-  Obstacle findRoot(){
-    //possible null exception because levelPainter is instantiated in the LevelPainter and not in the event where move would be called
+  Obstacle? findRoot(){
+    //possible null exception because _levelPainter is instantiated in the LevelPainter and not in the event where move would be called
     //checks if the drag was started on an obstacle or on the ball
     //loop through every single obstacle and the cells they take up
-    for(Obstacle obstacle in levelPainter.level.obstacles){
+    for(Obstacle obstacle in _levelPainter!.level.obstacles){
       //print('i cant fight this feeling anymore: $obstacle');
       for(int i = 0; i < obstacle.length; i++){
-        //print("TIME FOR ME TO FLY:::::::::::::::::: ${getCoords(startDrag) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)}");
+        //print("TIME FOR ME TO FLY:::::::::::::::::: ${getCoords(_startDrag) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)}");
         if(obstacle.horizontal == true){
-          //printCondition(getCoords(startDrag), Offset(obstacle.currX+i+0.0, obstacle.currY+0.0));
-          if(getCoords(startDrag) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)){
+          //printCondition(getCoords(_startDrag), Offset(obstacle.currX+i+0.0, obstacle.currY+0.0));
+          if(getCoords(_startDrag!) == Offset(obstacle.currX+i+0.0, obstacle.currY+0.0)){
             return obstacle;
           }
         } else {
-          //printCondition(getCoords(startDrag), Offset(obstacle.currX+0.0, obstacle.currY+i+0.0));
-          if(getCoords(startDrag) == Offset(obstacle.currX+0.0, obstacle.currY+i+0.0)){
+          //printCondition(getCoords(_startDrag), Offset(obstacle.currX+0.0, obstacle.currY+i+0.0));
+          if(getCoords(_startDrag!) == Offset(obstacle.currX+0.0, obstacle.currY+i+0.0)){
             return obstacle;
           }
         }
@@ -145,8 +157,8 @@ class Controller extends ChangeNotifier {
   }
 
   void moveObstacle() {
-    //print('startDrag: ${getCoords(startDrag)}');
-    //print('currentPos: ${getCoords(currentPos)}');
+    //print('_startDrag: ${getCoords(_startDrag)}');
+    //print('_currentPos: ${getCoords(_currentPos)}');
     //print("don't stop believin");
     //find the root of the obstacle you are moving
     //exit the void if you did not start your drag on an obstacle
@@ -154,61 +166,65 @@ class Controller extends ChangeNotifier {
       return;
     } else {
       //if the current mouse cell is different from the start drag cell, then start the move process
-      Obstacle root = findRoot();
-      if(root.horizontal){
-        if((getCoords(startDrag).dx != getCoords(currentPos).dx) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
-          root.currX = (getCoords(currentPos).dx).toInt();
-          //startDrag = getCoords(currentPos);
-          //print(levelPainter.changeNotifier == null);
-          levelPainter.changeNotifier.notifyListeners();
+      Obstacle? root = findRoot();
+      if(root!.horizontal){
+        if((getCoords(_startDrag!).dx != getCoords(_currentPos!).dx) && verifyMove(getCoords(_startDrag!), getCoords(_currentPos!), root)){
+          root.currX = (getCoords(_currentPos!).dx).toInt();
+          //_startDrag = getCoords(_currentPos);
+          //print(_levelPainter.changeNotifier == null);
+          _levelPainter!.changeNotifier.notifyListeners();
         }
       } else {
-        if((getCoords(startDrag).dy != getCoords(currentPos).dy) && verifyMove(getCoords(startDrag), getCoords(currentPos), root)){
-          root.currY = (getCoords(currentPos).dy).toInt();
-          //startDrag = getCoords(currentPos);
-          //print(levelPainter.changeNotifier == null);
-          levelPainter.changeNotifier.notifyListeners();
+        if((getCoords(_startDrag!).dy != getCoords(_currentPos!).dy) && verifyMove(getCoords(_startDrag!), getCoords(_currentPos!), root)){
+          root.currY = (getCoords(_currentPos!).dy).toInt();
+          //_startDrag = getCoords(_currentPos);
+          //print(_levelPainter.changeNotifier == null);
+          _levelPainter!.changeNotifier.notifyListeners();
         }
       }
     }
   }
 
   void tryBallMove(){
-    final int currentLevel = grid.levelPainter.level.id;
-    //print("ballX: ${levelPainter.level.ball.currX}");
-    //print("ballY: ${levelPainter.level.ball.currY}");
-    //print("goalX: ${levelPainter.level.goal.initialX}");
-    //print("goalY: ${levelPainter.level.goal.initialY}");
-    while(levelPainter.level.ball.currX != levelPainter.level.goal.initialX || levelPainter.level.ball.currY != levelPainter.level.goal.initialY){
-      switch(levelPainter.level.ball.direction){
+    final int currentLevel = _grid!.levelPainter.level.id;
+    //print("ballX: ${_levelPainter.level.ball.currX}");
+    //print("ballY: ${_levelPainter.level.ball.currY}");
+    //print("goalX: ${_levelPainter.level.goal.initialX}");
+    //print("goalY: ${_levelPainter.level.goal.initialY}");
+    while(_levelPainter!.level.ball.currX != _levelPainter!.level.goal.initialX || _levelPainter!.level.ball.currY != _levelPainter!.level.goal.initialY){
+      switch(_levelPainter!.level.ball.direction){
         case Direction.RIGHT:
-          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX)] == false){
+          final num nullSafeIndex = ((_grid!.rows*(_levelPainter!.level.ball.currY-1))+(_levelPainter!.level.ball.currX));
+          if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
-            levelPainter.level.ball.currX += 1;
+            _levelPainter!.level.ball.currX += 1;
           } else {
             return;
           }
           break;
         case Direction.DOWN:
-          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY))+(levelPainter.level.ball.currX-1)] == false){
+          final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY))+(_levelPainter!.level.ball.currX-1);
+          if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
-            levelPainter.level.ball.currY += 1;
+            _levelPainter!.level.ball.currY += 1;
           } else {
             return;
           }
           break;
         case Direction.UP:
-          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-2))+(levelPainter.level.ball.currX-1)] == false){
+          final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY-2))+(_levelPainter!.level.ball.currX-1);
+          if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
-            levelPainter.level.ball.currY -= 1;
+            _levelPainter!.level.ball.currY -= 1;
           } else {
             return;
           }
           break;
         case Direction.LEFT:
-          if(grid.tiles[(grid.rows*(levelPainter.level.ball.currY-1))+(levelPainter.level.ball.currX-2)] == false){
+          final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY-1))+(_levelPainter!.level.ball.currX-2);
+          if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
-            levelPainter.level.ball.currX -= 1;
+            _levelPainter!.level.ball.currX -= 1;
           } else {
             return;
           }
@@ -239,10 +255,10 @@ class Controller extends ChangeNotifier {
     //turn the entire obstacle tiles to false
     if(root.horizontal) {
       //for(int i = 0; i < root.length; i++){
-        //levelPainter.level.grid.tiles[(levelPainter.level.grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
+        //_levelPainter.level._grid.tiles[(_levelPainter.level._grid.rows*(old.dy-1)).toInt()+(old.dx-1).toInt()] = false;
       //}
-      if (prime.dx == 0.0 || prime.dx + root.length - 1 >= grid.columns + 1) {
-        //print('obstacle is HORIZONTAL and being moved outside of grid');
+      if (prime.dx == 0.0 || prime.dx + root.length - 1 >= _grid!.columns + 1) {
+        //print('obstacle is HORIZONTAL and being moved outside of _grid');
         return false;
       } else {
         if((prime.dx < old.dx && obstacleBorders(root)[0] == true) || (prime.dx+root.length-1 > old.dx+root.length-1 && obstacleBorders(root)[1] == true)){
@@ -253,8 +269,8 @@ class Controller extends ChangeNotifier {
         }
       }
     } else {
-      if(prime.dy == 0.0 || prime.dy + root.length - 1 >= grid.rows + 1){
-        //print('obstacle is VERTICAL and being moved outside of grid');
+      if(prime.dy == 0.0 || prime.dy + root.length - 1 >= _grid!.rows + 1){
+        //print('obstacle is VERTICAL and being moved outside of _grid');
         return false;
       } else {
         //print('obstacle is VERTICAL and being merged with an existing field element');
@@ -265,7 +281,7 @@ class Controller extends ChangeNotifier {
         }
       }
     }
-    /*} else if(((!root.horizontal) && (prime.dy == 0.0 || prime.dy+root.length-1 >= 7.0)) || (root.grid.tiles[(grid.rows*((prime.dy+root.length-1).toInt()-1))+((prime.dx).toInt()-1)] == true)){
+    /*} else if(((!root.horizontal) && (prime.dy == 0.0 || prime.dy+root.length-1 >= 7.0)) || (root._grid.tiles[(_grid.rows*((prime.dy+root.length-1).toInt()-1))+((prime.dx).toInt()-1)] == true)){
       print(false);
       return false;
     } else {
@@ -275,14 +291,14 @@ class Controller extends ChangeNotifier {
   }
 
   void printStats(){
-    if(grid != null && currentPos != null){
-      print('currentPos: $currentPos');
+    if(_grid != null && _currentPos != null){
+      print('_currentPos: $_currentPos');
     } else {
-      if(grid == null){
-        print('grid is null');
+      if(_grid == null){
+        print('_grid is null');
       }
-      if (currentPos == null){
-        print('currentPos is null');
+      if (_currentPos == null){
+        print('_currentPos is null');
       }
     }
   }

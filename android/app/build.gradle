@@ -48,8 +48,8 @@ android {
         applicationId "com.micharski.dball"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 9//flutterVersionCode.toInteger()
-        versionName "BUILD11006A"//flutterVersionName
+        versionCode 10//flutterVersionCode.toInteger()
+        versionName "BUILD11007"//flutterVersionName
     }
 
     signingConfigs {
@@ -76,7 +76,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10"
-    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.gms:play-services-ads:19.7.0'
     implementation 'com.google.android.gms:play-services-basement:17.5.0'
 }

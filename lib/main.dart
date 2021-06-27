@@ -33,8 +33,8 @@ class DBall extends StatefulWidget {
 
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   bool gameComplete = GameView.lvlQuantity < GameView.lvl;
-  ConfettiController _controller;
-  BannerAd _bannerAd;
+  late ConfettiController _controller;
+  late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
 
   void playIntroAudio() async {
@@ -55,7 +55,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
       adUnitId: AdManager.bannerAd0UnitId,
       request: AdRequest(),
       size: AdSize.banner,
-      listener: AdListener(
+      listener: BannerAdListener(
         onAdLoaded: (_) {
           setState(() {
             _isBannerAdReady = true;

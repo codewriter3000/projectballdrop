@@ -7,8 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'model.dart';
 
 class LevelFactory {
-  Level level;
-  File levelFile;
+  late Level level;
+  late File levelFile;
 
   Future<File> _createLevelFile() async {
     Future<Directory> appDocDir = getApplicationDocumentsDirectory();
@@ -17,9 +17,6 @@ class LevelFactory {
   }
 
   Future<void> createLevel() async {
-    if(level != null){
-      level = null;
-    }
     levelFile = await _createLevelFile();
     levelFile.create(recursive: true);
     print('******');

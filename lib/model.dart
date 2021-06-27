@@ -17,13 +17,13 @@ Future<String> loadAsset() async {
 }
 
 class Level extends ChangeNotifier {
-  Future<String> file;
-  Grid grid;
-  var ball;
-  var goal;
-  List<Obstacle> obstacles;
-  int id;
-  Map<String, dynamic> decodedJson;
+  late Future<String> file;
+  late Grid grid;
+  late var ball;
+  late var goal;
+  late List<Obstacle> obstacles;
+  late int id;
+  late Map<String, dynamic> decodedJson;
 
   Level(int id) {
     print("Constructor is constructing");
@@ -37,7 +37,8 @@ class Level extends ChangeNotifier {
     grid = Grid.fromJson(decodedJson['grid']);
     ball = Ball.fromJson(decodedJson['ball']['1']);
     goal = Goal.fromJson(decodedJson['goal']['1']);
-    obstacles = List<Obstacle>();
+    // String color, int initialX, int initialY, int length, bool horizontal
+    obstacles = [];
     for (int i = 1; i <= decodedJson['obstacles'].length; i++) {
       obstacles.add(Obstacle.fromJson(decodedJson['obstacles']['$i']));
     }

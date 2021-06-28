@@ -251,7 +251,7 @@ class Controller extends ChangeNotifier {
     if(old.dx != root.currX || old.dy != root.currY){
       return false;
     }
-    print('------------------------------------');
+    //print('------------------------------------');
     //turn the entire obstacle tiles to false
     if(root.horizontal) {
       //for(int i = 0; i < root.length; i++){

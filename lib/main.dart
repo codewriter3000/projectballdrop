@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_manager.dart';
 import 'audio_controller.dart';
@@ -28,7 +28,10 @@ class DBall extends StatefulWidget {
   }
 
   @override
-  _DBallState createState() => _DBallState();
+  _DBallState createState() {
+    this._initGoogleMobileAds();
+    return _DBallState();
+  }
 }
 
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
@@ -50,7 +53,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     _bannerAd = BannerAd(
       adUnitId: AdManager.bannerAd0UnitId,
       request: AdRequest(),
@@ -130,6 +132,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                         TextButton(
                           //padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
                           onPressed: () {
+                            print("DDOWN");
                             Navigator.push(
                               context,
                               MaterialPageRoute(

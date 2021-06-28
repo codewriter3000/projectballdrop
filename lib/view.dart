@@ -23,7 +23,9 @@ class GameView extends StatefulWidget {
       context.findAncestorStateOfType<_GameViewState>();
 
   @override
-  _GameViewState createState() => _GameViewState();
+  _GameViewState createState(){
+    return _GameViewState();
+  }
 }
 
 class _GameViewState extends State<GameView> {
@@ -32,13 +34,12 @@ class _GameViewState extends State<GameView> {
   bool _isBannerAdReady = false;
   late BannerAd _bannerAd2;
   bool _isBannerAd2Ready = false;
-  Color _backgroundColor = Color(0xFF151515);
+  late Color _backgroundColor;
   AudioController audioController = AudioController();
-
   Color setBackgroundFX(){
-    print('Floor value: ${(GameView.lvl/2).floor()%3+1}');
+    print('Floor value: ${(GameView.lvl/2).floor()%5+1}');
     if(!GameView.lvlComplete.value){
-      audioController.playLoop((GameView.lvl/2).floor()%3+1);
+      audioController.playLoop((GameView.lvl/2).floor()%5+1);
       switch((GameView.lvl/2).floor()){
         case 0:
           _backgroundColor = Color(0xFF151515);
@@ -92,6 +93,7 @@ class _GameViewState extends State<GameView> {
 
   void newLevel(){
     level = new Level(GameView.lvl);
+    _backgroundColor = setBackgroundFX();
     level.execute().then((_) => setState(() {}));
   }
 
@@ -151,6 +153,7 @@ class _GameViewState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
+    print(context);
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ValueListenableBuilder<bool>(
@@ -158,7 +161,7 @@ class _GameViewState extends State<GameView> {
           builder: (BuildContext context, bool lvlComplete, Widget? child)
     {
       return Scaffold(
-        backgroundColor: setBackgroundFX(),
+        backgroundColor: _backgroundColor,
         body: SafeArea(
           child: Container(
             child: Column(

@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
+import 'package:d_ball/tutorial.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:d_ball/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:upgrader/upgrader.dart';
 
 import 'ad_manager.dart';
 import 'audio_controller.dart';
@@ -53,6 +56,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    if(Platform.isAndroid)
+      InAppUpdate.performImmediateUpdate();
     _bannerAd = BannerAd(
       adUnitId: AdManager.bannerAd0UnitId,
       request: AdRequest(),
@@ -65,6 +70,9 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
         },
         onAdFailedToLoad: (ad, err) {
           print('Failed to load a banner ad: ${err.message}');
+          print(err.responseInfo);
+          print(err.code);
+          print(err.domain);
           _isBannerAdReady = false;
           ad.dispose();
         },
@@ -98,6 +106,8 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
+                        if (Platform.isIOS)
+                          UpgradeAlert(child: Center(child: Text('Checking for updates...'))),
                         if (_isBannerAdReady)
                           Align(
                             alignment: Alignment.topCenter,
@@ -114,25 +124,16 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           numberOfParticles: 10
                         ),
                         Text(
-                          "D-Ball\nPre-Alpha",
+                          "D-Ball\nLite",
                           style: TextStyle(
                             fontFamily: "Goldman",
                             fontSize: 60,
                             color: Color(0xFFFFFFFF),
                           ),
                         ),
-                        Text(
-                          "Warning: The game may not work as intended.",
-                          style: TextStyle(
-                            fontFamily: "Goldman",
-                            fontSize: 20,
-                            color: Color(0xFFFFFFFF),
-                          ),
-                        ),
                         TextButton(
                           //padding: EdgeInsets.fromLTRB(25, 130, 25, 5),
                           onPressed: () {
-                            print("DDOWN");
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -142,7 +143,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           child: Card(
                               borderOnForeground: false,
                               child: Container(
-                                margin: EdgeInsets.all(20),
+                                margin: EdgeInsets.all(10),
                                 child: Text(
                                   "DBall",
                                   textAlign: TextAlign.center,
@@ -165,7 +166,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                               //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
                               borderOnForeground: false,
                               child: Container(
-                                margin: EdgeInsets.all(20),
+                                margin: EdgeInsets.all(10),
                                 child: Text(
                                   "Credits",
                                   textAlign: TextAlign.center,
@@ -188,9 +189,55 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                               //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
                               borderOnForeground: false,
                               child: Container(
-                                margin: EdgeInsets.all(20),
+                                margin: EdgeInsets.all(10),
                                 child: Text(
                                   "Contribute",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 30, fontFamily: "Goldman"),
+                                ),
+                              )),
+                        ),
+                        TextButton(
+                          //padding: EdgeInsets.only(left: 100, right: 100),
+                          onPressed: () {
+                            //print("Credits");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Tutorial()),
+                            );
+                          },
+                          child: Card(
+                            //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
+                              borderOnForeground: false,
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                child: Text(
+                                  "Tutorial",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 30, fontFamily: "Goldman"),
+                                ),
+                              )),
+                        ),
+                        TextButton(
+                          //padding: EdgeInsets.only(left: 100, right: 100),
+                          onPressed: () {
+                            //print("Credits");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Tutorial()),
+                            );
+                          },
+                          child: Card(
+                            //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
+                              borderOnForeground: false,
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                child: Text(
+                                  "Full Version",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 30, fontFamily: "Goldman"),
@@ -220,7 +267,7 @@ class _CreditsState extends State<Credits> {
             backgroundColor: Color(0xFF151515),
             body: SafeArea(
                 child: Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(10),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -283,7 +330,7 @@ class _ContributeState extends State<Contribute> {
             backgroundColor: Color(0xFF151515),
             body: SafeArea(
                 child: Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(10),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[

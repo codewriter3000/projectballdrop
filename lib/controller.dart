@@ -6,6 +6,7 @@
 //(_grid.rows*(initialY-1))+(initialX-1)
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:d_ball/view.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -18,6 +19,8 @@ class Controller extends ChangeNotifier {
   Offset? _startDrag;
   Offset? _currentPos;
   Grid? _grid;
+  AudioCache _musicCache = AudioCache(prefix: "assets/");
+  AudioPlayer _instance = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
   factory Controller(){
     return _controller;
@@ -156,6 +159,15 @@ class Controller extends ChangeNotifier {
     }
   }
 
+  Future<void> playTick() async {
+    //_instance = await _musicCache.play("tick.wav");
+  }
+
+  Future<void> playPowerUp() async {
+    _instance = await _musicCache.play("powerup.wav");
+    _instance.setVolume(0.5);
+  }
+
   void moveObstacle() {
     //print('_startDrag: ${getCoords(_startDrag)}');
     //print('_currentPos: ${getCoords(_currentPos)}');
@@ -171,14 +183,14 @@ class Controller extends ChangeNotifier {
         if((getCoords(_startDrag!).dx != getCoords(_currentPos!).dx) && verifyMove(getCoords(_startDrag!), getCoords(_currentPos!), root)){
           root.currX = (getCoords(_currentPos!).dx).toInt();
           //_startDrag = getCoords(_currentPos);
-          //print(_levelPainter.changeNotifier == null);
+          playTick();
           _levelPainter!.changeNotifier.notifyListeners();
         }
       } else {
         if((getCoords(_startDrag!).dy != getCoords(_currentPos!).dy) && verifyMove(getCoords(_startDrag!), getCoords(_currentPos!), root)){
           root.currY = (getCoords(_currentPos!).dy).toInt();
           //_startDrag = getCoords(_currentPos);
-          //print(_levelPainter.changeNotifier == null);
+          playTick();
           _levelPainter!.changeNotifier.notifyListeners();
         }
       }
@@ -197,6 +209,7 @@ class Controller extends ChangeNotifier {
           final num nullSafeIndex = ((_grid!.rows*(_levelPainter!.level.ball.currY-1))+(_levelPainter!.level.ball.currX));
           if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
+            playPowerUp();
             _levelPainter!.level.ball.currX += 1;
           } else {
             return;
@@ -206,6 +219,7 @@ class Controller extends ChangeNotifier {
           final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY))+(_levelPainter!.level.ball.currX-1);
           if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
+            playPowerUp();
             _levelPainter!.level.ball.currY += 1;
           } else {
             return;
@@ -215,6 +229,7 @@ class Controller extends ChangeNotifier {
           final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY-2))+(_levelPainter!.level.ball.currX-1);
           if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
+            playPowerUp();
             _levelPainter!.level.ball.currY -= 1;
           } else {
             return;
@@ -224,6 +239,7 @@ class Controller extends ChangeNotifier {
           final num nullSafeIndex = (_grid!.rows*(_levelPainter!.level.ball.currY-1))+(_levelPainter!.level.ball.currX-2);
           if(_grid!.tiles[nullSafeIndex.toInt()] == false){
             //print("ball is moved");
+            playPowerUp();
             _levelPainter!.level.ball.currX -= 1;
           } else {
             return;

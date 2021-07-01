@@ -17,7 +17,7 @@ final changeNotifierMain = ChangeNotifier();
 class GameView extends StatefulWidget {
   static int lvl = 0;
   static ValueNotifier<bool> lvlComplete = ValueNotifier(false);
-  static int lvlQuantity = 20;
+  static int lvlQuantity = 21;
 
   static _GameViewState? of(BuildContext context) =>
       context.findAncestorStateOfType<_GameViewState>();
@@ -34,11 +34,16 @@ class _GameViewState extends State<GameView> {
   bool _isBannerAdReady = false;
   late BannerAd _bannerAd2;
   bool _isBannerAd2Ready = false;
+  late InterstitialAd _interAd;
+  bool _isInterAdReady = false;
   late Color _backgroundColor;
   AudioController audioController = AudioController();
   Color setBackgroundFX(){
     print('Floor value: ${(GameView.lvl/2).floor()%5+1}');
     if(!GameView.lvlComplete.value){
+      if(GameView.lvl%10 == 0){
+        loadInterstitialAd();
+      }
       audioController.playLoop((GameView.lvl/2).floor()%5+1);
       switch((GameView.lvl/2).floor()){
         case 0:
@@ -143,6 +148,37 @@ class _GameViewState extends State<GameView> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+  }
+
+  Future<void> loadInterstitialAd() async {
+    InterstitialAd.load(
+        adUnitId: AdManager.interstitialAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            // Keep a reference to the ad so you can show it later.
+            this._interAd = ad;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('InterstitialAd failed to load: $error');
+          },
+        ));
+
+    _interAd.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (InterstitialAd ad) =>
+          print('$ad onAdShowedFullScreenContent.'),
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        print('$ad onAdDismissedFullScreenContent.');
+        ad.dispose();
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        print('$ad onAdFailedToShowFullScreenContent: $error');
+        ad.dispose();
+      },
+      onAdImpression: (InterstitialAd ad) => print('$ad impression occurred.'),
+    );
+
+    _interAd.show();
   }
 
   @override

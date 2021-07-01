@@ -31,6 +31,9 @@ class AudioController {
       print(_isPlaying);
       if(!_isPlaying){
         _instance = await _musicCache!.loop("alpha$song.ogg");
+        if(song != 1){
+          _instance.setVolume(0.5);
+        }
         _isPlaying = true;
         print("I'M PLAYING NOW BUDDY");
       }

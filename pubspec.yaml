@@ -17,8 +17,11 @@ dependencies:
   path_provider: 2.0.2
   confetti: ^0.6.0-nullsafety
   http: 0.13.3
-  audioplayers: 0.19.0 #downgrade from 0.19.0
-  google_mobile_ads: 0.13.0 #downgrade from 0.13.0
+  audioplayers: 0.19.0
+  google_mobile_ads: 0.13.0
+  in_app_update: ^2.0.0
+  upgrader: ^3.3.1
+  video_player: 2.1.6
 
 
 
@@ -41,6 +44,8 @@ flutter:
     - alpha3.ogg
     - alpha4.ogg
     - alpha5.ogg
+    - tick.wav
+    - powerup.wav
   # To add assets to your application, add an assets section, like this:
   fonts:
   - family: Goldman

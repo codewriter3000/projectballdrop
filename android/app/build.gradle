@@ -33,7 +33,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -45,11 +45,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.micharski.dball"
+        applicationId "com.micharski.d_ball"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 10//flutterVersionCode.toInteger()
-        versionName "BUILD11007"//flutterVersionName
+        versionCode 14//flutterVersionCode.toInteger()
+        versionName "1.0.0.1"//flutterVersionName
     }
 
     signingConfigs {
@@ -76,6 +76,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10"
-    implementation 'com.google.android.gms:play-services-ads:19.7.0'
+    implementation 'com.google.android.gms:play-services-ads:20.2.0'
     implementation 'com.google.android.gms:play-services-basement:17.5.0'
 }

@@ -10,7 +10,6 @@ import 'package:confetti/confetti.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:upgrader/upgrader.dart';
 
-import 'ad_manager.dart';
 import 'audio_controller.dart';
 
 const _INTRO = 'intro.mp3';
@@ -26,7 +25,6 @@ void main() async {
 class DBall extends StatefulWidget {
 
   Future<InitializationStatus> _initGoogleMobileAds() {
-    // TODO: Initialize Google Mobile Ads SDK
     return MobileAds.instance.initialize();
   }
 
@@ -40,8 +38,6 @@ class DBall extends StatefulWidget {
 class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
   bool gameComplete = GameView.lvlQuantity < GameView.lvl;
   late ConfettiController _controller;
-  late BannerAd _bannerAd;
-  bool _isBannerAdReady = false;
 
   void playIntroAudio() async {
     _controller = ConfettiController(duration: Duration(seconds: 5));
@@ -58,28 +54,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
     super.initState();
     if(Platform.isAndroid)
       InAppUpdate.performImmediateUpdate();
-    _bannerAd = BannerAd(
-      adUnitId: AdManager.bannerAd0UnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isBannerAdReady = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          print(err.responseInfo);
-          print(err.code);
-          print(err.domain);
-          _isBannerAdReady = false;
-          ad.dispose();
-        },
-      ),
-    );
-
-    _bannerAd.load();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -108,15 +82,6 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                       children: <Widget>[
                         if (Platform.isIOS)
                           UpgradeAlert(child: Center(child: Text('Checking for updates...'))),
-                        if (_isBannerAdReady)
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              width: _bannerAd.size.width.toDouble(),
-                              height: _bannerAd.size.height.toDouble(),
-                              child: AdWidget(ad: _bannerAd),
-                            ),
-                          ),
                         ConfettiWidget(
                           confettiController: _controller,
                           blastDirection: 0,
@@ -124,7 +89,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                           numberOfParticles: 10
                         ),
                         Text(
-                          "D-Ball\nLite",
+                          "D-Ball",
                           style: TextStyle(
                             fontFamily: "Goldman",
                             fontSize: 60,
@@ -220,30 +185,7 @@ class _DBallState extends State<DBall> with SingleTickerProviderStateMixin {
                                       fontSize: 30, fontFamily: "Goldman"),
                                 ),
                               )),
-                        ),
-                        TextButton(
-                          //padding: EdgeInsets.only(left: 100, right: 100),
-                          onPressed: () {
-                            //print("Credits");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Tutorial()),
-                            );
-                          },
-                          child: Card(
-                            //margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
-                              borderOnForeground: false,
-                              child: Container(
-                                margin: EdgeInsets.all(10),
-                                child: Text(
-                                  "Full Version",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 30, fontFamily: "Goldman"),
-                                ),
-                              )),
-                        ),
+                        )
                       ]),
                 ),
               ),

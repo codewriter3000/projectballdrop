@@ -7,7 +7,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:video_player/video_player.dart';
 
-import 'ad_manager.dart';
 import 'audio_controller.dart';
 import 'main.dart';
 
@@ -25,8 +24,6 @@ class Tutorial extends StatefulWidget {
 
   class _TutorialState extends State<Tutorial> {
     AudioController _audioController = AudioController();
-    late var _bannerAd;
-    bool _isBannerAdReady = false;
     late VideoPlayerController _controller;
 
     @override
@@ -39,28 +36,7 @@ class Tutorial extends StatefulWidget {
       });
       if(Platform.isAndroid)
         InAppUpdate.performImmediateUpdate();
-      _bannerAd = BannerAd(
-        adUnitId: AdManager.bannerAd0UnitId,
-        request: AdRequest(),
-        size: AdSize.banner,
-        listener: BannerAdListener(
-          onAdLoaded: (_) {
-            setState(() {
-              _isBannerAdReady = true;
-            });
-          },
-          onAdFailedToLoad: (ad, err) {
-            print('Failed to load a banner ad: ${err.message}');
-            print(err.responseInfo);
-            print(err.code);
-            print(err.domain);
-            _isBannerAdReady = false;
-            ad.dispose();
-          },
-        ),
-      );
 
-      _bannerAd.load();
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
@@ -74,15 +50,6 @@ class Tutorial extends StatefulWidget {
               backgroundColor: Color(0xFF151515),
               body: Column(
                 children: <Widget>[
-                  if (_isBannerAdReady)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: _bannerAd.size.width.toDouble(),
-                        height: _bannerAd.size.height.toDouble(),
-                        child: AdWidget(ad: _bannerAd),
-                      ),
-                    ),
                   Center(
                     child: _controller.value.isInitialized
                         ? AspectRatio(

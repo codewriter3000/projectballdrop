@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'ad_manager.dart';
 import 'audio_controller.dart';
 import 'controller.dart';
 import 'main.dart';
@@ -41,9 +40,6 @@ class _GameViewState extends State<GameView> {
   Color setBackgroundFX(){
     print('Floor value: ${(GameView.lvl/2).floor()%5+1}');
     if(!GameView.lvlComplete.value){
-      if(GameView.lvl%10 == 0){
-        loadInterstitialAd();
-      }
       audioController.playLoop((GameView.lvl/2).floor()%5+1);
       switch((GameView.lvl/2).floor()){
         case 0:
@@ -106,79 +102,9 @@ class _GameViewState extends State<GameView> {
   void initState() {
     newLevel();
     super.initState();
-    _bannerAd = BannerAd(
-      adUnitId: AdManager.bannerAdUnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isBannerAdReady = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          _isBannerAdReady = false;
-          ad.dispose();
-        },
-      ),
-    );
-
-    _bannerAd.load();
-
-    _bannerAd2 = BannerAd(
-      adUnitId: AdManager.bannerAd2UnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isBannerAd2Ready = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          _isBannerAd2Ready = false;
-          ad.dispose();
-        },
-      ),
-    );
-
-    _bannerAd2.load();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-  }
-
-  Future<void> loadInterstitialAd() async {
-    InterstitialAd.load(
-        adUnitId: AdManager.interstitialAdUnitId,
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            // Keep a reference to the ad so you can show it later.
-            this._interAd = ad;
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error');
-          },
-        ));
-
-    _interAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdShowedFullScreenContent: (InterstitialAd ad) =>
-          print('$ad onAdShowedFullScreenContent.'),
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
-        ad.dispose();
-      },
-      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
-        ad.dispose();
-      },
-      onAdImpression: (InterstitialAd ad) => print('$ad impression occurred.'),
-    );
-
-    _interAd.show();
   }
 
   @override
